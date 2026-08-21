@@ -26,8 +26,12 @@ android {
 
     defaultConfig {
         applicationId = "app.morphe.lsposed"
-        versionCode = 106
-        versionName = "2.0.$versionCode"
+        val configuredVersionCode = providers.gradleProperty("MORPHE_LSPOSED_VERSION_CODE").orNull?.toIntOrNull()
+            ?: error("MORPHE_LSPOSED_VERSION_CODE must be a valid integer")
+        val configuredVersionName = providers.gradleProperty("MORPHE_LSPOSED_VERSION_NAME").orNull
+            ?: error("MORPHE_LSPOSED_VERSION_NAME must be defined")
+        versionCode = configuredVersionCode
+        versionName = configuredVersionName
         val patchVersion = Properties().apply {
             rootProject.file("morphe-patches/gradle.properties").inputStream().use { load(it) }
         }["version"]
@@ -46,8 +50,9 @@ android {
         )
     }
     val ksFile = rootProject.file("signing.properties")
+    val hasReleaseSigning = ksFile.isFile
     signingConfigs {
-        if (ksFile.exists()) {
+        if (hasReleaseSigning) {
             create("release") {
                 val properties = Properties().apply {
                     ksFile.inputStream().use { load(it) }
