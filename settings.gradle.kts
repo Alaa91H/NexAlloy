@@ -33,6 +33,6 @@ android {
     minSdk = 27
 }
 
-rootProject.name = "NexAlloy"
+rootProject.name = "Morphe LSPosed"
 include(":app")
 include(":stub")
