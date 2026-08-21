@@ -32,6 +32,10 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("Threads", "com.instagram.barcelona", MetaPatches),
     AppPatchInfo("Strava", "com.strava", StravaPatches),
     AppPatchInfo("AllTrails", "com.alltrails.alltrails", AllTrailsPatches),
+    AppPatchInfo("Gboard", "com.google.android.inputmethod.latin", emptyArray()),
+    AppPatchInfo("Truecaller", "com.truecaller", emptyArray()),
+    AppPatchInfo("Telegram", "org.telegram.messenger", emptyArray()),
+    AppPatchInfo("Messenger", "com.facebook.orca", emptyArray()),
 )
 
 val patchesByPackage = appPatchConfigurations.associate { it.packageName to it.patches }

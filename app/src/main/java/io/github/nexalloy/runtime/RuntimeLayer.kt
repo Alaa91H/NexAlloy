@@ -94,6 +94,89 @@ data class ExistingPatchRuntimeLayerDefinition(
  * Declarative, compile-time safe definition for a uniquely matched Void method that
  * must be skipped entirely. This operation is limited to reviewed built-in layers.
  */
+data class BooleanMethodTarget(
+    val definingClass: String,
+    val methodName: String,
+    val replacementValue: Boolean,
+    val parameterTypes: List<String> = emptyList(),
+)
+
+data class MultiBooleanReturnOverrideLayerDefinition(
+    val id: String,
+    val sourceRepository: String,
+    val sourcePatchName: String,
+    val packageNames: Set<String>,
+    val patchName: String,
+    val description: String,
+    val targets: List<BooleanMethodTarget>,
+    val enabledByDefault: Boolean = false,
+) {
+    fun compile(): RuntimeLayer {
+        val compiledPatch = patch(
+            name = patchName,
+            description = description,
+            use = enabledByDefault,
+        ) {
+            targets.forEach { target ->
+                FingerprintDsl {
+                    definingClass(target.definingClass)
+                    name(target.methodName)
+                    parameters(*target.parameterTypes.toTypedArray())
+                    returns("Z")
+                }.build().hookMethod(XC_MethodReplacement.returnConstant(target.replacementValue))
+            }
+        }
+        return RuntimeLayer(
+            id = id,
+            sourceRepository = sourceRepository,
+            sourcePatchName = sourcePatchName,
+            packageNames = packageNames,
+            patch = compiledPatch,
+        )
+    }
+}
+
+data class VoidMethodTarget(
+    val definingClass: String,
+    val methodName: String,
+    val parameterTypes: List<String> = emptyList(),
+)
+
+data class MultiVoidMethodSkipLayerDefinition(
+    val id: String,
+    val sourceRepository: String,
+    val sourcePatchName: String,
+    val packageNames: Set<String>,
+    val patchName: String,
+    val description: String,
+    val targets: List<VoidMethodTarget>,
+    val enabledByDefault: Boolean = false,
+) {
+    fun compile(): RuntimeLayer {
+        val compiledPatch = patch(
+            name = patchName,
+            description = description,
+            use = enabledByDefault,
+        ) {
+            targets.forEach { target ->
+                FingerprintDsl {
+                    definingClass(target.definingClass)
+                    name(target.methodName)
+                    parameters(*target.parameterTypes.toTypedArray())
+                    returns("V")
+                }.build().hookMethod(XC_MethodReplacement.DO_NOTHING)
+            }
+        }
+        return RuntimeLayer(
+            id = id,
+            sourceRepository = sourceRepository,
+            sourcePatchName = sourcePatchName,
+            packageNames = packageNames,
+            patch = compiledPatch,
+        )
+    }
+}
+
 data class VoidMethodSkipLayerDefinition(
     val id: String,
     val sourceRepository: String,
@@ -141,6 +224,10 @@ object RuntimeLayerTargetRegistry {
         "com.instagram.barcelona",
         "com.strava",
         "com.alltrails.alltrails",
+        "com.google.android.inputmethod.latin",
+        "com.truecaller",
+        "org.telegram.messenger",
+        "com.facebook.orca",
     )
 }
 

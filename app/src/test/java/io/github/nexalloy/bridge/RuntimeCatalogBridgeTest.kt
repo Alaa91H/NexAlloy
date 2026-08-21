@@ -58,6 +58,38 @@ class RuntimeCatalogBridgeTest {
                 packageName = "com.reddit.frontpage",
             )?.id,
         )
+        assertEquals(
+            "kveld.gboard.block-telemetry.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "kveld9/kveld-morphe-patches",
+                sourcePatchName = "Block Telemetry",
+                packageName = "com.google.android.inputmethod.latin",
+            )?.id,
+        )
+        assertEquals(
+            "paresh.truecaller.disable-telemetry.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "Paresh-Maheshwari/paresh-patches",
+                sourcePatchName = "Disable telemetry",
+                packageName = "com.truecaller",
+            )?.id,
+        )
+        assertEquals(
+            "morphe.telegram.remove-sponsored-messages.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "rushiranpise/morphe-patches",
+                sourcePatchName = "Remove ads",
+                packageName = "org.telegram.messenger",
+            )?.id,
+        )
+        assertEquals(
+            "morphe.messenger.open-links-externally.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "rushiranpise/morphe-patches",
+                sourcePatchName = "Open links externally",
+                packageName = "com.facebook.orca",
+            )?.id,
+        )
     }
 
     @Test
