@@ -42,7 +42,13 @@ class MorpheBundleBridgeTest {
         )
 
         assertEquals("piko.instagram.disable-video-autoplay.runtime", layer?.id)
-        assertTrue(RuntimeLayerRegistry.layersFor("com.instagram.android").isNotEmpty())
+        val storyLayer = RuntimeLayerRegistry.find(
+            sourceRepository = "crimera/piko",
+            sourcePatchName = "Disable story flipping",
+            packageName = "com.instagram.android",
+        )
+        assertEquals("piko.instagram.disable-story-flipping.runtime", storyLayer?.id)
+        assertEquals(2, RuntimeLayerRegistry.layersFor("com.instagram.android").size)
         assertTrue(RuntimeLayerRegistry.layersFor("com.reddit.frontpage").isEmpty())
     }
 
@@ -102,6 +108,18 @@ class MorpheBundleBridgeTest {
 
         assertEquals(recipe.spec.id, parsed.id)
         assertEquals(false, parsed.enabled)
+    }
+
+    @Test
+    fun `runtime store classifies story flipping layer as ready`() {
+        val catalog = MorpheCatalogParser().parse(
+            SAMPLE_CATALOG.replace("Disable video autoplay", "Disable story flipping")
+        )
+
+        val item = RuntimeStoreClassifier().classify(catalog).single()
+
+        assertEquals(RuntimeStoreAvailability.READY, item.availability)
+        assertEquals("piko.instagram.disable-story-flipping.runtime", item.runtimeLayer?.id)
     }
 
     @Test

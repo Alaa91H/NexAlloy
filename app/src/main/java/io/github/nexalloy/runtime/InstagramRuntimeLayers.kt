@@ -22,7 +22,20 @@ object InstagramRuntimeLayers {
         replacementValue = true,
     )
 
+    private val disableStoryFlippingDefinition = VoidMethodSkipLayerDefinition(
+        id = "piko.instagram.disable-story-flipping.runtime",
+        sourceRepository = "crimera/piko",
+        sourcePatchName = "Disable story flipping",
+        packageNames = setOf("com.instagram.android"),
+        patchName = "Runtime · Disable story flipping",
+        description = "Runtime layer adapted from Piko's Disable story flipping patch.",
+        definingClass = "Linstagram/features/stories/fragment/ReelViewerFragment;",
+        fingerprintStrings = listOf("userSession"),
+        parameterTypes = listOf("Ljava/lang/Object;"),
+    )
+
     val layers: List<RuntimeLayer> = listOf(
         disableVideoAutoplayDefinition.compile(),
+        disableStoryFlippingDefinition.compile(),
     )
 }

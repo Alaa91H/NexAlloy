@@ -66,6 +66,46 @@ data class BooleanReturnOverrideLayerDefinition(
     }
 }
 
+/**
+ * Declarative, compile-time safe definition for a uniquely matched Void method that
+ * must be skipped entirely. This operation is limited to reviewed built-in layers.
+ */
+data class VoidMethodSkipLayerDefinition(
+    val id: String,
+    val sourceRepository: String,
+    val sourcePatchName: String,
+    val packageNames: Set<String>,
+    val patchName: String,
+    val description: String,
+    val definingClass: String,
+    val fingerprintStrings: List<String>,
+    val parameterTypes: List<String>,
+    val enabledByDefault: Boolean = false,
+) {
+    fun compile(): RuntimeLayer {
+        val fingerprint = FingerprintDsl {
+            definingClass(definingClass)
+            strings(*fingerprintStrings.toTypedArray())
+            parameters(*parameterTypes.toTypedArray())
+            returns("V")
+        }.build()
+        val compiledPatch = patch(
+            name = patchName,
+            description = description,
+            use = enabledByDefault,
+        ) {
+            fingerprint.hookMethod(XC_MethodReplacement.DO_NOTHING)
+        }
+        return RuntimeLayer(
+            id = id,
+            sourceRepository = sourceRepository,
+            sourcePatchName = sourcePatchName,
+            packageNames = packageNames,
+            patch = compiledPatch,
+        )
+    }
+}
+
 object RuntimeLayerTargetRegistry {
     val packageNames = setOf(
         "com.google.android.youtube",
