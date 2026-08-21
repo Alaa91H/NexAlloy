@@ -14,7 +14,10 @@ data class RuntimeStoreItem(
     val sourceRepository: String,
     val sourcePatchName: String,
     val description: String?,
+    /** Target packages supported by the local LSPosed build. */
     val packageNames: Set<String>,
+    /** Target packages declared by the public catalog, retained for visible metadata cards. */
+    val catalogPackageNames: Set<String> = packageNames,
     val availability: RuntimeStoreAvailability,
     val runtimeLayer: RuntimeLayer? = null,
     val recipe: RuntimeStoreRecipe? = null,
@@ -71,6 +74,7 @@ class RuntimeStoreClassifier(
             sourcePatchName = patch.name,
             description = patch.description,
             packageNames = supportedPackages,
+            catalogPackageNames = patch.compatiblePackages,
             availability = availability,
             runtimeLayer = layer,
             recipe = installableRecipe,

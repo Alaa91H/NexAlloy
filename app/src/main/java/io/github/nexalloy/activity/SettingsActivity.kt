@@ -6,6 +6,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import app.morphe.extension.shared.Utils
 import io.github.nexalloy.R
+import io.github.nexalloy.common.MorphePreferences
 import io.github.nexalloy.common.UpdateChecker
 
 /**
@@ -34,9 +35,11 @@ class SettingsActivity : Activity() {
             showDestination(navigation.selectedItemId)
         }
 
-        UpdateChecker().apply {
-            setActivity(this@SettingsActivity)
-            autoCheckUpdate()
+        if (MorphePreferences.shouldCheckApplicationUpdate(this)) {
+            UpdateChecker().apply {
+                setActivity(this@SettingsActivity)
+                autoCheckUpdate()
+            }
         }
     }
 

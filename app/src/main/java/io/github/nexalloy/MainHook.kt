@@ -8,11 +8,9 @@ import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.IXposedHookZygoteInit
 import de.robv.android.xposed.IXposedHookZygoteInit.StartupParam
 import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XSharedPreferences
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam
-import io.github.nexalloy.common.UpdateChecker
 import io.github.nexalloy.morphe.ResourceFinder
 import io.github.nexalloy.morphe.resourceMappings
 import io.github.nexalloy.runtime.RuntimeLayerRegistry
@@ -80,12 +78,6 @@ fun inContext(lpparam: LoadPackageParam, f: (Application) -> Unit) {
             val app = param.thisObject as Application
             Utils.setContext(app)
             f(app)
-            if (XposedInit.modulePath.startsWith("/data/app/")) {
-                val prefs = XSharedPreferences(BuildConfig.APPLICATION_ID, "prefs")
-                if (!prefs.file.canRead() || !prefs.getBoolean("disable_auto_check_update", false)) {
-                    UpdateChecker().hookNewActivity()
-                }
-            }
         }
     })
 }

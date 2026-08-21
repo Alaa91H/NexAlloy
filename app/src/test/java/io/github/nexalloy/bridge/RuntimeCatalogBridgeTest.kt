@@ -11,10 +11,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class MorpheBundleBridgeTest {
+class RuntimeCatalogBridgeTest {
     @Test
     fun `parser reads compatible packages options and catalog hash`() {
-        val catalog = MorpheCatalogParser().parse(SAMPLE_CATALOG, fetchedAtMillis = 1L)
+        val catalog = RuntimeCatalogParser().parse(SAMPLE_CATALOG, fetchedAtMillis = 1L)
 
         assertEquals(1L, catalog.fetchedAtMillis)
         assertEquals(64, catalog.sha256.length)
@@ -91,7 +91,7 @@ class MorpheBundleBridgeTest {
 
     @Test
     fun `runtime store classifies compiled layer as ready`() {
-        val catalog = MorpheCatalogParser().parse(SAMPLE_CATALOG)
+        val catalog = RuntimeCatalogParser().parse(SAMPLE_CATALOG)
 
         val item = RuntimeStoreClassifier().classify(catalog).single()
 
@@ -112,7 +112,7 @@ class MorpheBundleBridgeTest {
 
     @Test
     fun `runtime store classifies story flipping layer as ready`() {
-        val catalog = MorpheCatalogParser().parse(
+        val catalog = RuntimeCatalogParser().parse(
             SAMPLE_CATALOG.replace("Disable video autoplay", "Disable story flipping")
         )
 
@@ -124,7 +124,7 @@ class MorpheBundleBridgeTest {
 
     @Test
     fun `runtime store marks matching host patch without adapter`() {
-        val catalog = MorpheCatalogParser().parse(
+        val catalog = RuntimeCatalogParser().parse(
             SAMPLE_CATALOG.replace("Disable video autoplay", "Disable story autoplay")
         )
 
@@ -135,7 +135,7 @@ class MorpheBundleBridgeTest {
 
     @Test
     fun `runtime store marks unknown host package unsupported`() {
-        val catalog = MorpheCatalogParser().parse(
+        val catalog = RuntimeCatalogParser().parse(
             SAMPLE_CATALOG.replace("com.instagram.android", "com.example.notregistered")
         )
 
@@ -146,7 +146,7 @@ class MorpheBundleBridgeTest {
 
     @Test
     fun `all valid github sources require review rather than auto trust`() {
-        val catalog = MorpheCatalogParser().parse(
+        val catalog = RuntimeCatalogParser().parse(
             SAMPLE_CATALOG.replace("crimera/piko", "community/unknown-bundle")
         )
 
@@ -161,7 +161,7 @@ class MorpheBundleBridgeTest {
 
     @Test
     fun `current approved profile is eligible for Morphe handoff`() {
-        val catalog = MorpheCatalogParser().parse(SAMPLE_CATALOG)
+        val catalog = RuntimeCatalogParser().parse(SAMPLE_CATALOG)
         val profile = profile(catalog, patchId = "disable-video-autoplay")
 
         val validation = MorpheProfileValidator.validate(profile, catalog) { it == "crimera/piko" }
@@ -172,7 +172,7 @@ class MorpheBundleBridgeTest {
 
     @Test
     fun `changed catalog requires profile review before handoff`() {
-        val catalog = MorpheCatalogParser().parse(SAMPLE_CATALOG)
+        val catalog = RuntimeCatalogParser().parse(SAMPLE_CATALOG)
         val profile = profile(catalog, catalogHash = "previous-catalog")
 
         val validation = MorpheProfileValidator.validate(profile, catalog) { true }
@@ -183,7 +183,7 @@ class MorpheBundleBridgeTest {
 
     @Test
     fun `unsupported target app blocks profile handoff`() {
-        val catalog = MorpheCatalogParser().parse(SAMPLE_CATALOG)
+        val catalog = RuntimeCatalogParser().parse(SAMPLE_CATALOG)
         val profile = profile(catalog).copy(packageName = "com.reddit.frontpage")
 
         val validation = MorpheProfileValidator.validate(profile, catalog) { true }
@@ -194,7 +194,7 @@ class MorpheBundleBridgeTest {
 
     @Test
     fun `missing enabled patch blocks profile handoff`() {
-        val catalog = MorpheCatalogParser().parse(SAMPLE_CATALOG)
+        val catalog = RuntimeCatalogParser().parse(SAMPLE_CATALOG)
         val profile = profile(catalog, patchId = "retired-patch")
 
         val validation = MorpheProfileValidator.validate(profile, catalog) { true }
@@ -205,7 +205,7 @@ class MorpheBundleBridgeTest {
 
     @Test
     fun `catalog parser drops incomplete bundle records`() {
-        val catalog = MorpheCatalogParser().parse(
+        val catalog = RuntimeCatalogParser().parse(
             """
             {
               "compatibilities": [],

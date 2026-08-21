@@ -55,7 +55,9 @@
 
     <!-- Patches page -->
     <string name="patches_page_intro_title">Your patch controls</string>
-    <string name="patches_page_intro_summary">%1$d local hooks are available across registered applications. Enable only the changes you want, then force-stop the target app.</string>
+    <string name="patches_page_intro_summary">%1$d supported applications contain %2$d local patches. Each application has one card with all of its available controls.</string>
+    <string name="patches_app_summary">Package: %1$s · %2$d patch(es)</string>
+    <string name="patches_app_status">%1$d of %2$d enabled</string>
     <string name="patches_page_intro_status">Local controls</string>
     <string name="patches_empty_title">No local patches are registered</string>
     <string name="patches_empty_summary">Install a build that includes reviewed hooks, then return to this page.</string>
@@ -65,7 +67,7 @@
 
     <!-- Runtime Store page -->
     <string name="store_page_intro_title">Runtime Store</string>
-    <string name="store_page_intro_summary">Refresh the public catalog to classify compatible entries. Only reviewed local adapters bundled with Morphe LSPosed can be enabled.</string>
+    <string name="store_page_intro_summary">Every catalog entry is shown here. Reviewed local adapters can be enabled; other entries remain visible with their compatibility status and source link.</string>
     <string name="store_catalog_loaded">%1$d catalog patches classified</string>
     <string name="store_catalog_loading">Catalog will refresh automatically</string>
     <string name="store_refresh_action">Refresh catalog</string>
@@ -82,22 +84,43 @@
     <string name="store_needs_adapter_title">More catalog entries need an adapter</string>
     <string name="store_needs_adapter_summary">%1$d catalog patch(es) target registered apps but require a reviewed Runtime adapter before they can run here.</string>
     <string name="store_metadata_only_status">Metadata only</string>
+    <string name="store_auto_refresh_success">Runtime Store catalog updated automatically.</string>
+    <string name="store_auto_refresh_failed">Automatic catalog update failed: %1$s</string>
+    <string name="store_layers_empty_title">No compiled Runtime layers</string>
+    <string name="store_layers_empty_summary">This build does not include a compiled local adapter yet. Catalog entries are still listed below.</string>
+    <string name="store_catalogue_title">Full patch catalog</string>
+    <string name="store_catalogue_summary">%1$d ready to add · %2$d need an adapter · %3$d target other apps</string>
+    <string name="store_catalogue_status">All catalog entries visible</string>
+    <string name="store_catalog_empty_title">The catalog has no visible entries</string>
+    <string name="store_catalog_empty_summary">Refresh the catalog or open it in the browser to confirm the published sources.</string>
+    <string name="store_catalog_item_summary">Source: %1$s\nTarget: %2$s\n%3$s</string>
+    <string name="store_target_unknown">No package metadata</string>
+    <string name="store_needs_adapter_status">Needs local adapter</string>
+    <string name="store_unsupported_status">Other target app</string>
 
     <!-- Module settings page -->
     <string name="settings_page_intro_title">Module setup</string>
     <string name="settings_page_intro_summary">Enable Morphe LSPosed in LSPosed Module Management and select only the target applications you intend to modify.</string>
     <string name="settings_page_intro_status">Required before hooks apply</string>
-    <string name="settings_updates_title">Updates</string>
-    <string name="settings_updates_summary">Use GitHub releases to keep the local hook catalog and Runtime Store features current.</string>
-    <string name="settings_auto_update_switch">Check for updates automatically</string>
+    <string name="settings_catalog_updates_title">Patch catalog updates</string>
+    <string name="settings_catalog_updates_summary">Refresh public Runtime Store metadata automatically when the store is opened. No patch code is downloaded or executed.</string>
+    <string name="settings_catalog_auto_update_switch">Update patch catalog automatically</string>
+    <string name="settings_catalog_auto_update_switch_summary">Enabled by default; checks at most once every six hours while opening the Runtime Store.</string>
+    <string name="settings_app_updates_title">Application updates</string>
+    <string name="settings_app_updates_summary">Check GitHub releases for a newer Morphe LSPosed APK and open the official release page when one is available.</string>
+    <string name="settings_app_auto_update_switch">Check GitHub releases automatically</string>
+    <string name="settings_app_auto_update_switch_summary">Enabled by default; checks at most once every twelve hours while opening Morphe LSPosed.</string>
     <string name="settings_check_update_action">Check for update now</string>
-    <string name="settings_launcher_title">Launcher icon</string>
-    <string name="settings_launcher_summary">Keep the app icon visible for direct access to patch controls, the Runtime Store, and settings.</string>
-    <string name="settings_launcher_switch">Show launcher icon</string>
-    <string name="settings_info_title">About this build</string>
-    <string name="settings_info_summary">Version %1$s · %2$s\nBuilt %3$s</string>
-    <string name="settings_faq_action">Open FAQ</string>
-    <string name="settings_licenses_action">Open licenses</string>
+    <string name="settings_open_releases_action">Open official releases</string>
+    <string name="settings_launcher_title">Hide from launcher</string>
+    <string name="settings_launcher_summary">Hide the launcher entry while keeping the module available through LSPosed. This option is disabled by default.</string>
+    <string name="settings_launcher_switch">Hide Morphe LSPosed from launcher</string>
+    <string name="settings_launcher_switch_summary">You can restore it from LSPosed module settings at any time.</string>
+    <string name="settings_about_title">About Morphe LSPosed</string>
+    <string name="settings_about_summary">Morphe LSPosed is maintained by Alaa, an Android and systems developer.\nVersion %1$s · Commit %2$s</string>
+    <string name="settings_about_status">Project and support</string>
+    <string name="settings_open_profile_action">Open developer profile</string>
+    <string name="settings_donate_action">Support development</string>
 
     <string name="status_enabled">Enabled</string>
     <string name="status_disabled">Disabled</string>

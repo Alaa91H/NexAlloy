@@ -3,7 +3,6 @@ package io.github.nexalloy.common
 import android.R
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
 import android.text.Html
@@ -13,8 +12,6 @@ import app.morphe.extension.shared.Logger
 import app.morphe.extension.shared.Utils
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedHelpers
 import fuel.Fuel
 import fuel.get
 import io.github.nexalloy.BuildConfig
@@ -25,7 +22,6 @@ import kotlinx.coroutines.launch
 import kotlinx.io.readString
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
-import kotlin.random.Random
 
 data class ReleaseInfo(
     @SerializedName("tag_name") val tagName: String,
@@ -36,21 +32,23 @@ data class ReleaseInfo(
 data class VersionInfo(val versionCode: Int, val versionName: String) {
     companion object {
         fun fromTagName(tagName: String): VersionInfo {
-            val versionCode: Int
-            val versionName: String
-
-            val split = tagName.split('-', limit = 2)
-            if (split.count() == 2) {
-                // VersionCode-VersionName
-                versionCode = split[0].toIntOrNull() ?: 0
-                versionName = split[1]
-            } else {
-                // X.Y.Z, Z is versionCode
-                versionCode = tagName.split('.').last().toIntOrNull() ?: 0
-                versionName = tagName
+            val explicitCode = tagName.substringBefore('-').toIntOrNull()
+            if (explicitCode != null) {
+                return VersionInfo(explicitCode, tagName.substringAfter('-', tagName))
             }
-            return VersionInfo(versionCode, versionName)
+
+            val match = SEMVER_TAG.matchEntire(tagName) ?: return VersionInfo(0, tagName)
+            val major = match.groupValues[1].toInt()
+            val minor = match.groupValues[2].toInt()
+            val patch = match.groupValues[3].toInt()
+            val alpha = match.groupValues[4].toIntOrNull() ?: 0
+            return VersionInfo(
+                versionCode = major * 1_000_000 + minor * 10_000 + patch * 100 + alpha,
+                versionName = tagName,
+            )
         }
+
+        private val SEMVER_TAG = Regex("^v?(\\d+)\\.(\\d+)\\.(\\d+)(?:-alpha\\.(\\d+))?$")
     }
 }
 
@@ -68,39 +66,21 @@ class UpdateChecker() : CoroutineScope {
     private lateinit var latestVersionInfo: VersionInfo
     private lateinit var latestRelease: ReleaseInfo
 
-    lateinit var unhook: XC_MethodHook.Unhook
-
     fun setActivity(activity: Activity) {
         currentActivity = WeakReference(activity)
     }
 
-    fun hookNewActivity() {
-        unhook = XposedHelpers.findAndHookMethod(
-            Instrumentation::class.java,
-            "newActivity",
-            ClassLoader::class.java,
-            String::class.java,
-            Intent::class.java,
-            object : XC_MethodHook() {
-                override fun afterHookedMethod(param: MethodHookParam) {
-                    currentActivity = WeakReference(param.result as Activity)
-                    autoCheckUpdate()
-                    unhook.unhook()
-                }
-            })
-    }
-
+    /** Starts a foreground-only check from Morphe LSPosed settings. */
     fun autoCheckUpdate() {
-        if (Random.nextInt(0, 10) != 0) return
-        Logger.printInfo { "start auto check update." }
-        runCatching { checkUpdate() }
+        Logger.printInfo { "start automatic application update check." }
+        checkUpdate()
     }
 
     fun checkUpdate(silent: Boolean = true) {
         launch {
             try {
                 val response = Fuel.get(
-                    "https://api.github.com/repos/$OWNER/$REPO/releases/latest",
+                    "https://api.github.com/repos/$OWNER/$REPO/releases",
                     headers = mapOf("Accept" to "application/vnd.github.html+json")
                 )
                 if (response.statusCode != 200) {
@@ -110,7 +90,15 @@ class UpdateChecker() : CoroutineScope {
 
                 val content = response.source.readString()
                 Logger.printDebug { content }
-                latestRelease = Gson().fromJson(content, ReleaseInfo::class.java)
+                val releases = Gson().fromJson(content, Array<ReleaseInfo>::class.java)
+                    ?.toList()
+                    .orEmpty()
+                val latest = releases.maxByOrNull { VersionInfo.fromTagName(it.tagName).versionCode }
+                    ?: run {
+                        if (!silent) Utils.showToastLong("No published Morphe LSPosed release was found.")
+                        return@launch
+                    }
+                latestRelease = latest
                 latestVersionInfo = VersionInfo.fromTagName(latestRelease.tagName)
                 Logger.printDebug { "$latestVersionInfo" }
                 if (latestVersionInfo.versionCode > currentVersionCode) {

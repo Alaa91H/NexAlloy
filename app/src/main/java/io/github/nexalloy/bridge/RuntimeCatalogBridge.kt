@@ -20,7 +20,7 @@ import java.security.MessageDigest
  * Morphe applies those archives during APK patching; this bridge only indexes metadata,
  * stores profiles, and generates a handoff URI for the Morphe source flow.
  */
-object MorpheBridgeConfig {
+object RuntimeCatalogConfig {
     const val CATALOG_URL = "https://morphe-patches.software/data/bundles.json"
     const val CATALOG_PAGE_URL = "https://morphe-patches.software/"
     private const val MORPHE_ADD_SOURCE_URL = "https://morphe.software/add-source"
@@ -208,12 +208,12 @@ class MorpheSourceReviewStore(context: Context) {
         .orEmpty()
 
     companion object {
-        private const val PREFERENCES_NAME = "morphe_bundle_bridge"
+        private const val PREFERENCES_NAME = "morphe_runtime_catalog"
         private const val KEY_APPROVED_REPOSITORIES = "approved_source_repositories"
     }
 }
 
-class MorpheCatalogParser {
+class RuntimeCatalogParser {
     fun parse(payload: String, fetchedAtMillis: Long = System.currentTimeMillis()): CommunityCatalog {
         val root = JsonParser.parseString(payload).asJsonObject
         val compatibility = root["compatibilities"]?.asJsonArray ?: JsonArray()
@@ -309,10 +309,10 @@ class MorpheCatalogParser {
         ?.asString
 }
 
-class MorpheCatalogStore(context: Context) {
+class RuntimeCatalogStore(context: Context) {
     private val preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
     private val catalogFile = File(context.filesDir, CATALOG_FILE_NAME)
-    private val parser = MorpheCatalogParser()
+    private val parser = RuntimeCatalogParser()
 
     fun load(): CommunityCatalog? {
         if (!catalogFile.exists()) return null
@@ -333,8 +333,8 @@ class MorpheCatalogStore(context: Context) {
     }
 
     companion object {
-        private const val PREFERENCES_NAME = "morphe_bundle_bridge"
-        private const val CATALOG_FILE_NAME = "morphe-community-catalog.json"
+        private const val PREFERENCES_NAME = "morphe_runtime_catalog"
+        private const val CATALOG_FILE_NAME = "morphe-runtime-catalog.json"
         private const val KEY_CATALOG_FETCHED_AT = "catalog_fetched_at"
     }
 }
@@ -363,13 +363,13 @@ class MorpheProfileStore(context: Context) {
     }
 
     companion object {
-        private const val PREFERENCES_NAME = "morphe_bundle_bridge"
+        private const val PREFERENCES_NAME = "morphe_runtime_catalog"
         private const val KEY_PROFILES = "patch_profiles"
     }
 }
 
-class MorpheCatalogClient(
-    private val store: MorpheCatalogStore,
+class RuntimeCatalogClient(
+    private val store: RuntimeCatalogStore,
 ) {
     private companion object {
         const val MAX_CATALOG_BYTES = 2_000_000
@@ -380,11 +380,11 @@ class MorpheCatalogClient(
      */
     suspend fun refresh(): CommunityCatalog {
         val response = Fuel.get(
-            MorpheBridgeConfig.CATALOG_URL,
+            RuntimeCatalogConfig.CATALOG_URL,
             headers = mapOf(
                 "Accept" to "application/json, text/plain, */*",
-                "Referer" to MorpheBridgeConfig.CATALOG_PAGE_URL,
-                "User-Agent" to "Morphe-LSPosed-MorpheBundleBridge/1.0",
+                "Referer" to RuntimeCatalogConfig.CATALOG_PAGE_URL,
+                "User-Agent" to "Morphe-LSPosed-RuntimeCatalog/1.0",
             )
         )
         if (response.statusCode !in 200..299) {
