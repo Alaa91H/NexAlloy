@@ -17,6 +17,7 @@ data class RuntimeStoreItem(
     val packageNames: Set<String>,
     val availability: RuntimeStoreAvailability,
     val runtimeLayer: RuntimeLayer? = null,
+    val recipe: RuntimeStoreRecipe? = null,
 ) {
     val primaryPackageName: String?
         get() = packageNames.firstOrNull()
@@ -32,6 +33,7 @@ data class RuntimeStoreItem(
 class RuntimeStoreClassifier(
     private val targetPackages: Set<String> = RuntimeLayerTargetRegistry.packageNames,
     private val runtimeLayers: List<RuntimeLayer> = RuntimeLayerRegistry.all(),
+    private val recipes: List<RuntimeStoreRecipe> = RuntimeStoreRecipeRegistry.all(),
 ) {
     fun classify(catalog: CommunityCatalog): List<RuntimeStoreItem> = catalog.bundles
         .flatMap { bundle ->
@@ -51,8 +53,15 @@ class RuntimeStoreClassifier(
                     packageName in it.packageNames
             }
         }.firstOrNull()
+        val recipe = supportedPackages.asSequence().mapNotNull { packageName ->
+            recipes.firstOrNull {
+                it.sourceRepository == sourceRepository &&
+                    it.sourcePatchName == patch.name &&
+                    it.packageName == packageName
+            }
+        }.firstOrNull()
         val availability = when {
-            layer != null -> RuntimeStoreAvailability.READY
+            layer != null || recipe != null -> RuntimeStoreAvailability.READY
             supportedPackages.isNotEmpty() -> RuntimeStoreAvailability.NEEDS_RUNTIME_ADAPTER
             else -> RuntimeStoreAvailability.UNSUPPORTED_TARGET
         }
@@ -63,6 +72,7 @@ class RuntimeStoreClassifier(
             packageNames = supportedPackages,
             availability = availability,
             runtimeLayer = layer,
+            recipe = recipe,
         )
     }
 }

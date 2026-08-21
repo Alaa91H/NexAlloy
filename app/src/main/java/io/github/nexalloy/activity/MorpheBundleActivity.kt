@@ -160,7 +160,7 @@ class MorpheBundleActivity : Activity() {
                             item.primaryPackageName ?: "",
                         )
                         setOnPreferenceClickListener {
-                            item.runtimeLayer?.let(::showRuntimeLayerDialog)
+                            showReadyStoreItemDialog(item)
                             true
                         }
                         category.addPreference(this)
@@ -196,6 +196,51 @@ class MorpheBundleActivity : Activity() {
                     root.addPreference(this)
                 }
             }
+        }
+
+        private fun showReadyStoreItemDialog(item: RuntimeStoreItem) {
+            val currentActivity = activity ?: return
+            val recipe = item.recipe
+            if (recipe == null) {
+                item.runtimeLayer?.let(::showRuntimeLayerDialog)
+                return
+            }
+            val existing = ImportedRuntimeLayerStore.loadFromContext(context)
+                .firstOrNull { it.id == recipe.spec.id }
+            val isEnabled = existing?.enabled ?: false
+            AlertDialog.Builder(currentActivity)
+                .setTitle(item.sourcePatchName)
+                .setMessage(
+                    getString(
+                        R.string.runtime_store_recipe_dialog_summary,
+                        item.sourceRepository,
+                        item.primaryPackageName ?: "",
+                    )
+                )
+                .setNegativeButton(android.R.string.cancel, null)
+                .setNeutralButton(R.string.morphe_bundle_view_source) { _, _ ->
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            android.net.Uri.parse("https://github.com/${item.sourceRepository}"),
+                        )
+                    )
+                }
+                .setPositiveButton(
+                    when {
+                        existing == null -> R.string.runtime_store_add_action
+                        isEnabled -> R.string.runtime_disable_action
+                        else -> R.string.runtime_enable_action
+                    }
+                ) { _, _ ->
+                    when {
+                        existing == null -> ImportedRuntimeLayerStore.save(context, recipe.spec)
+                        else -> ImportedRuntimeLayerStore.setEnabled(context, existing.id, !existing.enabled)
+                    }
+                    rebuildScreen()
+                    Toast.makeText(context, R.string.runtime_restart_required, Toast.LENGTH_LONG).show()
+                }
+                .show()
         }
 
         private fun addRuntimeLayerPreferences(root: PreferenceScreen) {

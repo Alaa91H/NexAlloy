@@ -6,6 +6,7 @@ import io.github.nexalloy.runtime.RuntimeLayerRegistry
 import io.github.nexalloy.runtime.RuntimeLayerSpecCodec
 import io.github.nexalloy.runtime.RuntimeStoreAvailability
 import io.github.nexalloy.runtime.RuntimeStoreClassifier
+import io.github.nexalloy.runtime.RuntimeStoreRecipeRegistry
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -90,6 +91,17 @@ class MorpheBundleBridgeTest {
 
         assertEquals(RuntimeStoreAvailability.READY, item.availability)
         assertEquals("piko.instagram.disable-video-autoplay.runtime", item.runtimeLayer?.id)
+        assertEquals("piko.instagram.disable-video-autoplay.runtime", item.recipe?.spec?.id)
+    }
+
+    @Test
+    fun `runtime store recipe encodes as a constrained specification`() {
+        val recipe = RuntimeStoreRecipeRegistry.all().single()
+
+        val parsed = RuntimeLayerSpecCodec.parse(RuntimeLayerSpecCodec.encode(recipe.spec))
+
+        assertEquals(recipe.spec.id, parsed.id)
+        assertEquals(false, parsed.enabled)
     }
 
     @Test
