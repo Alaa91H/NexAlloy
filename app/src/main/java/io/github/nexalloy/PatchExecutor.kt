@@ -147,8 +147,9 @@ class PatchExecutor(val appContext: Application, val lpparam: LoadPackageParam) 
     override val classLoader = lpparam.classLoader!!
 
     /**
-     * @see io.github.nexalloy.activity.AppPatchSettingsActivity.AppPatchSettingsFragment.onCreate
-     * */
+     * Patch state is stored per target package by the Material Patches page.
+     * The hooked process reads the same world-readable preference file.
+     */
     private val patchPreferences = XSharedPreferences(
         BuildConfig.APPLICATION_ID, lpparam.packageName
     ).takeIf { it.file.canRead() }
@@ -205,9 +206,7 @@ class PatchExecutor(val appContext: Application, val lpparam: LoadPackageParam) 
     private fun executePatches() {
         patches.forEach { hook ->
             if (appliedPatches.contains(hook)) return@forEach
-            /**
-             * @see io.github.nexalloy.activity.AppPatchSettingsActivity.AppPatchSettingsFragment.onCreate
-             * */
+            // The Material Patches page writes this per-hook preference key.
             val isEnabled = patchPreferences?.getBoolean(hook.name, hook.use) ?: hook.use
             if (!isEnabled) return@forEach // Pref Key
             runCatching { hook.run(this) }.onFailure { err ->
