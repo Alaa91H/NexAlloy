@@ -2,6 +2,22 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <style name="MorpheMaterialTheme" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/morphe_primary</item>
+        <item name="colorOnPrimary">@color/morphe_on_primary</item>
+        <item name="colorSurface">@color/morphe_surface</item>
+        <item name="colorOnSurface">@color/morphe_on_surface</item>
+        <item name="colorSurfaceVariant">@color/morphe_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/morphe_on_surface_variant</item>
+        <item name="colorOutline">@color/morphe_outline</item>
+        <item name="android:windowBackground">@color/morphe_background</item>
+        <item name="android:statusBarColor">@color/morphe_background</item>
+        <item name="android:navigationBarColor">@color/morphe_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="p">false</item>
+        <item name="android:fontFamily">sans</item>
+    </style>
+
     <style name="MainTheme" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="p">true</item>
@@ -9,7 +25,6 @@
         <item name="android:fitsSystemWindows">true</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-
         <item name="android:textColorPrimary">@android:color/primary_text_light_nodisable</item>
         <item name="android:textColorSecondary">@android:color/secondary_text_light_nodisable</item>
     </style>
@@ -21,7 +36,6 @@
     <style name="SettingsTheme" parent="android:Theme.DeviceDefault.Settings">
         <item name="android:fitsSystemWindows">true</item>
         <item name="android:singleLineTitle">false</item>
-
         <item name="android:listDivider">@null</item>
     </style>
 

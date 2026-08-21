@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Morphe LSPosed</string>
     <string name="application_name">YouTube</string>
-    <string name="morphe_settings">Morphe</string>
+    <string name="morphe_settings">Morphe LSPosed</string>
     <string name="app_description">An independent LSPosed runtime layer module for supported Android apps.</string>
     <string name="app_launcher_name">PLACEHOLDER</string>
     <string name="check_for_update_title">Check for update</string>
@@ -87,4 +87,57 @@
     <string name="runtime_delete_action">Delete</string>
     <string name="runtime_deleted">Runtime layer deleted.</string>
     <string name="runtime_restart_required">Layer state updated. Force-stop and reopen the target app to apply it.</string>
+    <!-- Material home navigation -->
+    <string name="navigation_patches">Patches</string>
+    <string name="navigation_store">Runtime Store</string>
+    <string name="navigation_settings">Settings</string>
+
+    <!-- Patches page -->
+    <string name="patches_page_intro_title">Your patch controls</string>
+    <string name="patches_page_intro_summary">%1$d local hooks are available across registered applications. Enable only the changes you want, then force-stop the target app.</string>
+    <string name="patches_page_intro_status">Local controls</string>
+    <string name="patches_empty_title">No local patches are registered</string>
+    <string name="patches_empty_summary">Install a build that includes reviewed hooks, then return to this page.</string>
+    <string name="patch_description_unavailable">No additional description is available for this hook.</string>
+    <string name="patch_switch_label">Enable this patch</string>
+    <string name="patch_state_saved">Patch state saved. Force-stop and reopen the target app.</string>
+
+    <!-- Runtime Store page -->
+    <string name="store_page_intro_title">Runtime Store</string>
+    <string name="store_page_intro_summary">Refresh the public catalog to classify compatible entries. Only reviewed local adapters bundled with Morphe LSPosed can be enabled.</string>
+    <string name="store_catalog_loaded">%1$d catalog patches classified</string>
+    <string name="store_catalog_loading">Catalog will refresh automatically</string>
+    <string name="store_refresh_action">Refresh catalog</string>
+    <string name="store_open_catalog_action">Open catalog in browser</string>
+    <string name="store_refresh_started">Refreshing Runtime Store catalog…</string>
+    <string name="store_refresh_success">Runtime Store catalog refreshed.</string>
+    <string name="store_refresh_failed">Could not refresh catalog: %1$s</string>
+    <string name="store_layer_summary">Source: %1$s\nPatch: %2$s\nTarget: %3$s</string>
+    <string name="store_layer_switch_label">Enable local Runtime layer</string>
+    <string name="store_recipe_summary">Source: %1$s · Target: %2$s · A constrained local adapter is available.</string>
+    <string name="store_recipe_status">Ready to add</string>
+    <string name="store_recipe_switch_label">Add and enable local Runtime layer</string>
+    <string name="store_view_source_action">View source</string>
+    <string name="store_needs_adapter_title">More catalog entries need an adapter</string>
+    <string name="store_needs_adapter_summary">%1$d catalog patch(es) target registered apps but require a reviewed Runtime adapter before they can run here.</string>
+    <string name="store_metadata_only_status">Metadata only</string>
+
+    <!-- Module settings page -->
+    <string name="settings_page_intro_title">Module setup</string>
+    <string name="settings_page_intro_summary">Enable Morphe LSPosed in LSPosed Module Management and select only the target applications you intend to modify.</string>
+    <string name="settings_page_intro_status">Required before hooks apply</string>
+    <string name="settings_updates_title">Updates</string>
+    <string name="settings_updates_summary">Use GitHub releases to keep the local hook catalog and Runtime Store features current.</string>
+    <string name="settings_auto_update_switch">Check for updates automatically</string>
+    <string name="settings_check_update_action">Check for update now</string>
+    <string name="settings_launcher_title">Launcher icon</string>
+    <string name="settings_launcher_summary">Keep the app icon visible for direct access to patch controls, the Runtime Store, and settings.</string>
+    <string name="settings_launcher_switch">Show launcher icon</string>
+    <string name="settings_info_title">About this build</string>
+    <string name="settings_info_summary">Version %1$s · %2$s\nBuilt %3$s</string>
+    <string name="settings_faq_action">Open FAQ</string>
+    <string name="settings_licenses_action">Open licenses</string>
+
+    <string name="status_enabled">Enabled</string>
+    <string name="status_disabled">Disabled</string>
 </resources>

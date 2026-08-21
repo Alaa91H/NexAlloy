@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="skip_ad_button_foreground_color">#ffff</color>
+    <color name="skip_ad_button_foreground_color">#FFFFFFFF</color>
     <!-- YouTube colors referenced by Morphe settings icons -->
     <color name="yt_white1">#FFFFFFFF</color>
     <color name="yt_black0">#FF000000</color>
+
+    <!-- Morphe LSPosed Material dark palette -->
+    <color name="morphe_background">#FF101114</color>
+    <color name="morphe_surface">#FF191A1E</color>
+    <color name="morphe_surface_variant">#FF24262B</color>
+    <color name="morphe_card_light">#FF303136</color>
+    <color name="morphe_card_dark">#FF25262A</color>
+    <color name="morphe_card_stroke">#FF4A4D55</color>
+    <color name="morphe_primary">#FFA8C7FA</color>
+    <color name="morphe_on_primary">#FF062E60</color>
+    <color name="morphe_on_surface">#FFF4F4F7</color>
+    <color name="morphe_on_surface_variant">#FFC4C7CF</color>
+    <color name="morphe_outline">#FF8E929D</color>
+    <color name="morphe_success">#FF82E8A2</color>
+    <color name="morphe_warning">#FFFFD97D</color>
+    <color name="morphe_error">#FFFFB4AB</color>
 </resources>

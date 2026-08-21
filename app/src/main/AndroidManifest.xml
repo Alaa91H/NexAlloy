@@ -53,7 +53,7 @@
             android:exported="true"
             android:launchMode="singleTop"
             android:showForAllUsers="true"
-            android:theme="@style/SettingsTheme">
+            android:theme="@style/MorpheMaterialTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
