@@ -17,6 +17,7 @@ import io.github.nexalloy.bridge.CommunityCatalog
 import io.github.nexalloy.bridge.MorpheBridgeConfig
 import io.github.nexalloy.bridge.MorpheCatalogClient
 import io.github.nexalloy.bridge.MorpheCatalogStore
+import io.github.nexalloy.runtime.BuiltInRuntimeLayerState
 import io.github.nexalloy.runtime.ImportedBooleanRuntimeLayerSpec
 import io.github.nexalloy.runtime.ImportedRuntimeLayerStore
 import io.github.nexalloy.runtime.RuntimeLayer
@@ -200,11 +201,12 @@ class MorpheBundleActivity : Activity() {
 
         private fun showReadyStoreItemDialog(item: RuntimeStoreItem) {
             val currentActivity = activity ?: return
-            val recipe = item.recipe
-            if (recipe == null) {
-                item.runtimeLayer?.let(::showRuntimeLayerDialog)
+            val builtInLayer = item.runtimeLayer
+            if (builtInLayer != null) {
+                showBuiltInRuntimeStoreDialog(item, builtInLayer)
                 return
             }
+            val recipe = item.recipe ?: return
             val existing = ImportedRuntimeLayerStore.loadFromContext(context)
                 .firstOrNull { it.id == recipe.spec.id }
             val isEnabled = existing?.enabled ?: false
@@ -237,6 +239,37 @@ class MorpheBundleActivity : Activity() {
                         existing == null -> ImportedRuntimeLayerStore.save(context, recipe.spec)
                         else -> ImportedRuntimeLayerStore.setEnabled(context, existing.id, !existing.enabled)
                     }
+                    rebuildScreen()
+                    Toast.makeText(context, R.string.runtime_restart_required, Toast.LENGTH_LONG).show()
+                }
+                .show()
+        }
+
+        private fun showBuiltInRuntimeStoreDialog(item: RuntimeStoreItem, layer: RuntimeLayer) {
+            val currentActivity = activity ?: return
+            val isEnabled = BuiltInRuntimeLayerState.isEnabled(context, layer)
+            AlertDialog.Builder(currentActivity)
+                .setTitle(item.sourcePatchName)
+                .setMessage(
+                    getString(
+                        R.string.runtime_store_built_in_dialog_summary,
+                        item.sourceRepository,
+                        item.primaryPackageName ?: "",
+                    )
+                )
+                .setNegativeButton(android.R.string.cancel, null)
+                .setNeutralButton(R.string.morphe_bundle_view_source) { _, _ ->
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            android.net.Uri.parse("https://github.com/${item.sourceRepository}"),
+                        )
+                    )
+                }
+                .setPositiveButton(
+                    if (isEnabled) R.string.runtime_disable_action else R.string.runtime_enable_action
+                ) { _, _ ->
+                    BuiltInRuntimeLayerState.setEnabled(context, layer, !isEnabled)
                     rebuildScreen()
                     Toast.makeText(context, R.string.runtime_restart_required, Toast.LENGTH_LONG).show()
                 }

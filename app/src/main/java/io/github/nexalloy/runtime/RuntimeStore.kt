@@ -60,8 +60,9 @@ class RuntimeStoreClassifier(
                     it.packageName == packageName
             }
         }.firstOrNull()
+        val installableRecipe = recipe?.takeIf { layer == null }
         val availability = when {
-            layer != null || recipe != null -> RuntimeStoreAvailability.READY
+            layer != null || installableRecipe != null -> RuntimeStoreAvailability.READY
             supportedPackages.isNotEmpty() -> RuntimeStoreAvailability.NEEDS_RUNTIME_ADAPTER
             else -> RuntimeStoreAvailability.UNSUPPORTED_TARGET
         }
@@ -72,7 +73,7 @@ class RuntimeStoreClassifier(
             packageNames = supportedPackages,
             availability = availability,
             runtimeLayer = layer,
-            recipe = recipe,
+            recipe = installableRecipe,
         )
     }
 }

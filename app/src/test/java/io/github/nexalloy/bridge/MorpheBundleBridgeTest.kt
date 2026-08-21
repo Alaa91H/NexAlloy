@@ -91,7 +91,7 @@ class MorpheBundleBridgeTest {
 
         assertEquals(RuntimeStoreAvailability.READY, item.availability)
         assertEquals("piko.instagram.disable-video-autoplay.runtime", item.runtimeLayer?.id)
-        assertEquals("piko.instagram.disable-video-autoplay.runtime", item.recipe?.spec?.id)
+        assertEquals(null, item.recipe)
     }
 
     @Test

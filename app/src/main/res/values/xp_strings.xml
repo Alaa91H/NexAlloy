@@ -63,6 +63,7 @@
     <string name="runtime_store_ready_title">Ready for LSPosed runtime</string>
     <string name="runtime_store_ready_summary">%1$s · Target: %2$s · Open to add or enable as an LSPosed Runtime layer.</string>
     <string name="runtime_store_recipe_dialog_summary">Source: %1$s\nTarget: %2$s\nThis reviewed recipe uses only a constrained Boolean Runtime hook. It does not download or execute a .mpp archive.</string>
+    <string name="runtime_store_built_in_dialog_summary">Source: %1$s\nTarget: %2$s\nThis is a reviewed NexAlloy runtime layer. Enable it directly here; no APK build or archive download is involved.</string>
     <string name="runtime_store_add_action">Add Runtime layer</string>
     <string name="runtime_store_needs_adapter_title">Needs a runtime adapter</string>
     <string name="runtime_store_needs_adapter_summary">%1$s · Target: %2$s · This patch needs a reviewed runtime adapter before it can run in LSPosed.</string>
