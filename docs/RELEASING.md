@@ -19,7 +19,7 @@ The repository stores only encrypted Actions secret values. The signing key and 
 
 | Secret | Purpose |
 | --- | --- |
-| `KEYSTORE` | Base64-encoded PKCS12 keystore |
+| `KEYSTORE` | Base64-encoded JKS release keystore |
 | `KEYSTORE_PASSWORD` | Keystore password |
 | `KEYSTORE_ALIAS` | Release key alias |
 | `KEYSTORE_ALIAS_PASSWORD` | Alias password |
