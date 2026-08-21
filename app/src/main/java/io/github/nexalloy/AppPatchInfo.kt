@@ -8,8 +8,17 @@ import io.github.nexalloy.revanced.googlephotos.GooglePhotosPatches
 import io.github.nexalloy.revanced.meta.MetaPatches
 import io.github.nexalloy.revanced.photomath.PhotomathPatches
 import io.github.nexalloy.revanced.strava.StravaPatches
+import io.github.nexalloy.runtime.RuntimeLayerRegistry
 
-class AppPatchInfo(val appName: String, val packageName: String, val patches: Array<Patch>)
+class AppPatchInfo(
+    val appName: String,
+    val packageName: String,
+    private val builtInPatches: Array<Patch>,
+) {
+    /** Built-in patches plus compiled runtime layers for this host package. */
+    val patches: Array<Patch>
+        get() = builtInPatches + RuntimeLayerRegistry.layersFor(packageName)
+}
 
 val appPatchConfigurations = listOf(
     AppPatchInfo("YouTube", "com.google.android.youtube", YouTubePatches),

@@ -54,4 +54,10 @@
     <string name="morphe_bundle_delete_profile">Delete profile</string>
     <string name="morphe_bundle_delete_profile_summary">Delete the saved selection “%1$s”? This does not change Morphe or any installed app.</string>
     <string name="morphe_bundle_profile_deleted">Saved patch profile deleted.</string>
+    <string name="runtime_catalog_summary">Community catalog metadata is read-only. Only compiled NexAlloy runtime layers can be enabled; no APK is built or modified.</string>
+    <string name="runtime_layers_title">Compiled runtime layers</string>
+    <string name="runtime_layer_summary">Source: %1$s · Adapter: %2$s</string>
+    <string name="runtime_layer_dialog_summary">This is a NexAlloy-compiled runtime adapter for the community patch “%2$s” from %1$s. It runs through the ordinary Xposed/DexKit patch pipeline and does not build or modify an APK.</string>
+    <string name="runtime_layer_open_settings">Open NexAlloy settings</string>
+    <string name="runtime_layer_target_unavailable">No NexAlloy settings target is registered for this runtime layer.</string>
 </resources>

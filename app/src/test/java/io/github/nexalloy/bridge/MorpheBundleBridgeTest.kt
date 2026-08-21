@@ -1,5 +1,6 @@
 package io.github.nexalloy.bridge
 
+import io.github.nexalloy.runtime.RuntimeLayerRegistry
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -24,6 +25,19 @@ class MorpheBundleBridgeTest {
         assertEquals(setOf("com.instagram.android"), patch.compatiblePackages)
         assertEquals(1, patch.options.size)
         assertEquals("enabled", patch.options.single().key)
+    }
+
+    @Test
+    fun `runtime layer registry exposes only compiled Instagram layer`() {
+        val layer = RuntimeLayerRegistry.find(
+            sourceRepository = "crimera/piko",
+            sourcePatchName = "Disable video autoplay",
+            packageName = "com.instagram.android",
+        )
+
+        assertEquals("piko.instagram.disable-video-autoplay.runtime", layer?.id)
+        assertTrue(RuntimeLayerRegistry.layersFor("com.instagram.android").isNotEmpty())
+        assertTrue(RuntimeLayerRegistry.layersFor("com.reddit.frontpage").isEmpty())
     }
 
     @Test
