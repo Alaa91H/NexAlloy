@@ -2,8 +2,8 @@
   <h1>Morphe LSPosed</h1>
   <a href="https://discord.gg/QWUrAA2mKq"><img alt="Discord Server" src="https://img.shields.io/badge/Discord%20Server-5865F2.svg?logo=discord&logoColor=white"></a>
   <a href="https://t.me/revancedxposed"><img alt="Telegram Channel" src="https://img.shields.io/badge/Telegram_Channel-blue.svg?logo=telegram&logoColor=white"></a>
-  <a href="https://github.com/NexAlloy/NexAlloy/releases/latest"><img alt="GitHub Downloads" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fshields.chsbuffer.workers.dev%2F%3Frepos%3DNexAlloy%2FNexAlloy%26cacheSeconds%3D3600"></a>
-  <a href="https://github.com/NexAlloy/NexAlloy"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/NexAlloy/NexAlloy"></a>  
+  <a href="https://github.com/Alaa91H/Morphe-LSPosed/releases/latest"><img alt="GitHub Downloads" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fshields.chsbuffer.workers.dev%2F%3Frepos%3DAlaa91H%2FMorphe-LSPosed%26cacheSeconds%3D3600"></a>
+  <a href="https://github.com/Alaa91H/Morphe-LSPosed"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/Alaa91H/Morphe-LSPosed"></a>
   <br>
 </div>
 
@@ -16,11 +16,11 @@
 >[!IMPORTANT]  
 > - This is **NOT an official Morphe or ReVanced project**, do not ask their developers for help.  
 > - **Root access** is strictly **required** to use this module!
-> - **Having issues?** Check the **[FAQ](https://github.com/NexAlloy/NexAlloy/wiki/Frequently-Asked-Questions)** before reporting.
+> - **Having issues?** Check the **[FAQ](https://github.com/Alaa91H/Morphe-LSPosed/wiki/Frequently-Asked-Questions)** before reporting.
 
 ## Downloads
-- **Release build**: [Download](https://github.com/NexAlloy/NexAlloy/releases/latest)
-- **Nightly build**: [Download](https://nightly.link/NexAlloy/NexAlloy/workflows/android/main)
+- **Release build**: [Download](https://github.com/Alaa91H/Morphe-LSPosed/releases/latest)
+- **Nightly build**: [Download](https://nightly.link/Alaa91H/Morphe-LSPosed/workflows/android/main)
 
 <sub>If you've joined the YouTube beta program, please try the nightly build before reporting an issue.</sub>
 
@@ -81,8 +81,8 @@
 
 ## Supports
 [![Discord Server](https://img.shields.io/badge/Join-Discord-5865F2.svg?logo=discord)](https://discord.gg/QWUrAA2mKq)  
-[![FAQ](https://img.shields.io/badge/Read-FAQ-orange.svg?logo=github)](https://github.com/NexAlloy/NexAlloy/wiki/Frequently-Asked-Questions)  
-or [Create an issue](https://github.com/NexAlloy/NexAlloy/issues/new/choose)
+[![FAQ](https://img.shields.io/badge/Read-FAQ-orange.svg?logo=github)](https://github.com/Alaa91H/Morphe-LSPosed/wiki/Frequently-Asked-Questions)
+or [Create an issue](https://github.com/Alaa91H/Morphe-LSPosed/issues/new/choose)
 
 ## ⭐ Credits
 

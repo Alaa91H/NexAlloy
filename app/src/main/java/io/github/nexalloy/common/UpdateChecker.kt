@@ -55,7 +55,7 @@ data class VersionInfo(val versionCode: Int, val versionName: String) {
 }
 
 const val OWNER = "Alaa91H"
-const val REPO = "NexAlloy"
+const val REPO = "Morphe-LSPosed"
 const val currentVersionCode = BuildConfig.VERSION_CODE
 
 class UpdateChecker() : CoroutineScope {

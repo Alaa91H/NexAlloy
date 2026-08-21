@@ -140,7 +140,7 @@ class SettingsActivity : Activity() {
                 setTitle(R.string.faq_title)
                 intent = Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://github.com/NexAlloy/NexAlloy/wiki/Frequently-Asked-Questions")
+                    Uri.parse("https://github.com/Alaa91H/Morphe-LSPosed/wiki/Frequently-Asked-Questions")
                 )
                 rootScreen.addPreference(this)
             }
