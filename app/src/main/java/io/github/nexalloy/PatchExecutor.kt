@@ -306,7 +306,8 @@ class PatchExecutor(val appContext: Application, val lpparam: LoadPackageParam) 
     // Fingerprint object extensions
 
     private val Fingerprint.cacheKey
-        get() = this::class.simpleName ?: error("Anonymous Fingerprint has no cache key")
+        get() = runtimeCacheKey ?: this::class.simpleName
+            ?: error("Anonymous Fingerprint has no cache key")
 
     fun Fingerprint.hookMethod(block: HookDsl<IHookCallback>.() -> Unit) {
         getDexMethod(cacheKey) { this@hookMethod.run() }.hookMethod(block)

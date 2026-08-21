@@ -1,5 +1,6 @@
 package io.github.nexalloy.bridge
 
+import io.github.nexalloy.morphe.FingerprintDsl
 import io.github.nexalloy.runtime.ImportedBooleanRuntimeLayerSpec
 import io.github.nexalloy.runtime.RuntimeLayerImportException
 import io.github.nexalloy.runtime.RuntimeLayerRegistry
@@ -90,6 +91,31 @@ class RuntimeCatalogBridgeTest {
                 packageName = "com.facebook.orca",
             )?.id,
         )
+        assertEquals(
+            "paresh.proton-vpn.disable-telemetry.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "Paresh-Maheshwari/paresh-patches",
+                sourcePatchName = "Disable telemetry",
+                packageName = "ch.protonvpn.android",
+            )?.id,
+        )
+    }
+
+    @Test
+    fun `runtime fingerprints use distinct cache keys for distinct targets`() {
+        val first = FingerprintDsl {
+            definingClass("Lexample/First;")
+            name("first")
+            returns("V")
+        }.build()
+        val second = FingerprintDsl {
+            definingClass("Lexample/Second;")
+            name("second")
+            returns("V")
+        }.build()
+
+        assertTrue(first.runtimeCacheKey!!.isNotBlank())
+        assertTrue(first.runtimeCacheKey != second.runtimeCacheKey)
     }
 
     @Test

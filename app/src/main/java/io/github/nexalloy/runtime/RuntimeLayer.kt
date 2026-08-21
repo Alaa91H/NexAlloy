@@ -2,6 +2,7 @@ package io.github.nexalloy.runtime
 
 import de.robv.android.xposed.XC_MethodReplacement
 import io.github.nexalloy.Patch
+import io.github.nexalloy.morphe.AccessFlags
 import io.github.nexalloy.morphe.FingerprintDsl
 import io.github.nexalloy.patch
 
@@ -177,6 +178,67 @@ data class MultiVoidMethodSkipLayerDefinition(
     }
 }
 
+/**
+ * A reviewed target that returns Kotlin's Unit object through an Object-typed suspend bridge.
+ * The target is local source metadata, not an imported patch payload.
+ */
+data class KotlinUnitMethodTarget(
+    val definingClass: String? = null,
+    val methodName: String? = null,
+    val parameterTypes: List<String> = emptyList(),
+    val returnType: String = "Ljava/lang/Object;",
+    val accessFlags: List<AccessFlags> = emptyList(),
+)
+
+/**
+ * Replaces selected Kotlin Unit-returning methods with Unit before their body executes.
+ * This is limited to exact, locally reviewed telemetry and observability targets.
+ */
+data class MultiKotlinUnitReturnOverrideLayerDefinition(
+    val id: String,
+    val sourceRepository: String,
+    val sourcePatchName: String,
+    val packageNames: Set<String>,
+    val patchName: String,
+    val description: String,
+    val targets: List<KotlinUnitMethodTarget>,
+    val enabledByDefault: Boolean = false,
+) {
+    fun compile(): RuntimeLayer {
+        val compiledPatch = patch(
+            name = patchName,
+            description = description,
+            use = enabledByDefault,
+        ) {
+            targets.forEach { target ->
+                val kotlinUnitInstance by lazy(LazyThreadSafetyMode.NONE) {
+                    classLoader.loadClass("kotlin.Unit").getField("INSTANCE").get(null)
+                }
+                FingerprintDsl {
+                    target.definingClass?.let(::definingClass)
+                    target.methodName?.let(::name)
+                    if (target.parameterTypes.isNotEmpty()) {
+                        parameters(*target.parameterTypes.toTypedArray())
+                    }
+                    if (target.accessFlags.isNotEmpty()) {
+                        accessFlags(*target.accessFlags.toTypedArray())
+                    }
+                    returns(target.returnType)
+                }.build().hookMethod {
+                    before { it.result = kotlinUnitInstance }
+                }
+            }
+        }
+        return RuntimeLayer(
+            id = id,
+            sourceRepository = sourceRepository,
+            sourcePatchName = sourcePatchName,
+            packageNames = packageNames,
+            patch = compiledPatch,
+        )
+    }
+}
+
 data class VoidMethodSkipLayerDefinition(
     val id: String,
     val sourceRepository: String,
@@ -228,6 +290,7 @@ object RuntimeLayerTargetRegistry {
         "com.truecaller",
         "org.telegram.messenger",
         "com.facebook.orca",
+        "ch.protonvpn.android",
     )
 }
 

@@ -1,5 +1,6 @@
 package io.github.nexalloy.runtime
 
+import io.github.nexalloy.morphe.AccessFlags
 import io.github.nexalloy.morphe.reddit.ad.HideAds
 import io.github.nexalloy.morphe.reddit.misc.privacy.SanitizeSharingLinks
 import io.github.nexalloy.revanced.googlephotos.misc.backup.EnableDCIMFoldersBackupControl
@@ -82,6 +83,38 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val disableProtonVpnTelemetryDefinition = MultiKotlinUnitReturnOverrideLayerDefinition(
+        id = "paresh.proton-vpn.disable-telemetry.runtime",
+        sourceRepository = "Paresh-Maheshwari/paresh-patches",
+        sourcePatchName = "Disable telemetry",
+        packageNames = setOf("ch.protonvpn.android"),
+        patchName = "Runtime · Disable telemetry",
+        description = "Blocks reviewed Proton VPN telemetry scheduling, observability upload, and local event recording paths.",
+        targets = listOf(
+            KotlinUnitMethodTarget(
+                definingClass = "Lme/proton/core/telemetry/data/worker/TelemetryWorkerManagerImpl;",
+                methodName = "enqueueOrKeep-HG0u8IE",
+                returnType = "V",
+            ),
+            KotlinUnitMethodTarget(
+                definingClass = "Lme/proton/core/observability/data/usecase/SendObservabilityEventsImpl;",
+                methodName = "invoke",
+                parameterTypes = listOf(
+                    "Ljava/util/List;",
+                    "Lkotlin/coroutines/Continuation;",
+                ),
+            ),
+            KotlinUnitMethodTarget(
+                parameterTypes = listOf(
+                    "Lcom/protonvpn/android/telemetry/TelemetryEvent;",
+                    "Z",
+                    "Lkotlin/coroutines/Continuation;",
+                ),
+                accessFlags = listOf(AccessFlags.PRIVATE, AccessFlags.FINAL),
+            ),
+        ),
+    )
+
     private val disableTruecallerTelemetryDefinition = MultiVoidMethodSkipLayerDefinition(
         id = "paresh.truecaller.disable-telemetry.runtime",
         sourceRepository = "Paresh-Maheshwari/paresh-patches",
@@ -128,6 +161,7 @@ object CommunityRuntimeLayers {
         blockGboardTelemetryDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),
         removeTelegramSponsoredMessagesDefinition.compile(),
+        disableProtonVpnTelemetryDefinition.compile(),
         disableTruecallerTelemetryDefinition.compile(),
         enableDcimFoldersBackupControlDefinition.compile(),
         disableReelsScrollingDefinition.compile(),

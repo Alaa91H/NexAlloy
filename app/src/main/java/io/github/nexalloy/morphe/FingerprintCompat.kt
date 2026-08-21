@@ -199,6 +199,19 @@ class FingerprintDsl(init: FingerprintDsl.() -> Unit) {
             fp.extraMethodMatcherBlocks = methodMatcherBlocks.toList()
         }
 
+        // Runtime-layer definitions create anonymous fingerprints. Unlike named Fingerprint
+        // objects, they would otherwise all share the anonymous-class cache key. Derive a
+        // stable key from the declarative constraints so each target is resolved and cached
+        // independently by DexKit.
+        fp.runtimeCacheKey = listOf(
+            definingClass.orEmpty(),
+            name.orEmpty(),
+            accessFlags.orEmpty().joinToString(",") { it.name },
+            returnType.orEmpty(),
+            parameters.orEmpty().joinToString(","),
+            strings.orEmpty().joinToString(","),
+        ).joinToString("|")
+
         return fp
     }
 }
@@ -216,6 +229,7 @@ open class Fingerprint internal constructor(
 ) {
     internal var classFinder: FindClassFunc? = null
     internal var classMatcherBlock: (ClassMatcher.() -> Unit)? = null
+    internal var runtimeCacheKey: String? = null
     internal var extraMethodMatcherBlocks: List<MethodMatcher.() -> Unit>? = null
 
     init {

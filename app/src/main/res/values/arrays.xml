@@ -10,5 +10,10 @@
         <item>com.instagram.barcelona</item>
         <item>com.strava</item>
         <item>com.alltrails.alltrails</item>
+        <item>com.google.android.inputmethod.latin</item>
+        <item>com.truecaller</item>
+        <item>org.telegram.messenger</item>
+        <item>com.facebook.orca</item>
+        <item>ch.protonvpn.android</item>
     </string-array>
 </resources>
