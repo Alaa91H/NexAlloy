@@ -15,4 +15,25 @@
     <string name="disable_auto_check_update_title">Disable auto update check</string>
     <string name="module_not_activated_summary">Activate this module in Module Management!</string>
     <string name="slogan_summary">ChsBuffer\'s LSPosed module, powered by Morphe, ReVanced, and beyond.\n\nThis is not an official Morphe or ReVanced project, do not ask their developers for help.</string>
+    <string name="morphe_bundle_bridge_title">Morphe community bundles</string>
+    <string name="morphe_bundle_bridge_summary">Browse community bundle metadata, save a patch selection, then hand off compatible patching to Morphe. Bundle code is never executed by NexAlloy.</string>
+    <string name="morphe_bundle_catalogue_open">Open community catalogue</string>
+    <string name="morphe_bundle_catalogue_open_summary">Browse the public Morphe community patch catalogue.</string>
+    <string name="morphe_bundle_refresh">Refresh bundle catalogue</string>
+    <string name="morphe_bundle_refresh_summary">Downloads metadata only. No patch bundle is downloaded or executed.</string>
+    <string name="morphe_bundle_cache_title">Cached catalogue</string>
+    <string name="morphe_bundle_cache_empty">No catalogue is cached yet. Refresh to load bundle metadata.</string>
+    <string name="morphe_bundle_cache_summary">%1$d sources · %2$d patches · SHA-256 %3$s…</string>
+    <string name="morphe_bundle_sources_title">Community sources</string>
+    <string name="morphe_bundle_source_summary">%1$s · %2$d patches · %3$d apps · %4$s</string>
+    <string name="morphe_bundle_trust_approved">approved</string>
+    <string name="morphe_bundle_trust_review_required">review required</string>
+    <string name="morphe_bundle_trust_blocked">blocked by policy</string>
+    <string name="morphe_bundle_refresh_started">Refreshing community metadata…</string>
+    <string name="morphe_bundle_refresh_success">Community bundle metadata refreshed.</string>
+    <string name="morphe_bundle_refresh_failed">Could not refresh catalogue: %1$s</string>
+    <string name="morphe_bundle_dialog_summary">Save a local selection for %1$s, then open Morphe to add and patch with this source. Review the source and compatibility before applying patches.</string>
+    <string name="morphe_bundle_open_in_morphe">Open in Morphe</string>
+    <string name="morphe_bundle_save_profile">Save selection</string>
+    <string name="morphe_bundle_profile_saved">Patch selection saved locally.</string>
 </resources>

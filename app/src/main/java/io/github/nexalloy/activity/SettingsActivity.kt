@@ -145,6 +145,13 @@ class SettingsActivity : Activity() {
                 rootScreen.addPreference(this)
             }
 
+            Preference(context).apply {
+                setTitle(R.string.morphe_bundle_bridge_title)
+                summary = getString(R.string.morphe_bundle_bridge_summary)
+                intent = Intent(context, MorpheBundleActivity::class.java)
+                rootScreen.addPreference(this)
+            }
+
             addPreferencesFromResource(R.xml.license_prefs)
 
             Preference(context).apply {

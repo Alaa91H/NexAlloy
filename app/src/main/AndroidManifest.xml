@@ -65,5 +65,11 @@
             android:exported="false"
             android:parentActivityName=".activity.SettingsActivity"
             android:theme="@style/SettingsTheme" />
+
+        <activity
+            android:name=".activity.MorpheBundleActivity"
+            android:exported="false"
+            android:parentActivityName=".activity.SettingsActivity"
+            android:theme="@style/SettingsTheme" />
     </application>
 </manifest>
