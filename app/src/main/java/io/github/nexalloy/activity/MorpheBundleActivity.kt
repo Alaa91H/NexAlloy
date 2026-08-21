@@ -34,10 +34,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * Read-only Morphe catalogue view plus a launcher for compiled NexAlloy runtime layers.
+ * Read-only Morphe catalogue view plus a launcher for compiled Morphe LSPosed runtime layers.
  *
  * Community .mpp archives are never downloaded or executed here. Each listed runtime
- * layer is compiled into NexAlloy and opened through the ordinary app patch settings.
+ * layer is compiled into Morphe LSPosed and opened through the ordinary app patch settings.
  */
 class MorpheBundleActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {

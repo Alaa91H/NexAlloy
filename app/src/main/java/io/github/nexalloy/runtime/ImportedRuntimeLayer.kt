@@ -8,7 +8,7 @@ import de.robv.android.xposed.XSharedPreferences
 import io.github.nexalloy.BuildConfig
 
 /**
- * On-device import format for the small set of runtime operations that NexAlloy can
+ * On-device import format for the small set of runtime operations that Morphe LSPosed can
  * validate safely. It is data only: no Java/Kotlin/Smali code, class names, method
  * names, reflection expressions, URLs, or bytecode can be provided by an import.
  */
@@ -82,7 +82,7 @@ object RuntimeLayerSpecCodec {
             throw RuntimeLayerImportException("Target package name is invalid")
         }
         if (spec.packageName !in RuntimeLayerTargetRegistry.packageNames) {
-            throw RuntimeLayerImportException("Target package is not registered by NexAlloy")
+            throw RuntimeLayerImportException("Target package is not registered by Morphe LSPosed")
         }
         if (spec.sourcePatchName.isBlank() || spec.sourcePatchName.length > MAX_TEXT_LENGTH) {
             throw RuntimeLayerImportException("Source patch name is invalid")

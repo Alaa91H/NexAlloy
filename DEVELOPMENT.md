@@ -1,225 +1,87 @@
-# Development Guide
+# Morphe LSPosed Development Guide
 
-## Project Structure
+This guide explains how to develop and verify **Morphe LSPosed**. The module applies local DexKit/Xposed hooks to applications selected in LSPosed; it does not produce modified target APKs or execute external patch archives.
 
-The primary hook entry point is [MainHook.kt](app/src/main/java/io/github/nexalloy/MainHook.kt).
+## Project boundaries
 
-### Patch Organization and Conventions
+| Area | Responsibility |
+| --- | --- |
+| `app/` | Android module, LSPosed entry point, hook definitions, UI, Runtime Store, and tests. |
+| `morphe-patches/` | Bundled source dependency used by existing patch implementations. |
+| `morphe-patches-library/` | Bundled shared extension dependency required by existing patch implementations. |
+| `docs/` | Runtime-layer and release procedures. |
+| `.github/workflows/` | Continuous integration and signed prerelease automation. |
 
-Patches adhere to a specific structure:
+The Android package is `app.morphe.lsposed`. Some inherited Kotlin namespaces remain in the source tree because bundled extension sources link to them. They are implementation details, not public product branding. Do not rename individual namespaces, the LSPosed entry point, or shrinker rules in isolation; a namespace migration must update the complete dependency graph and be validated on-device.
 
-```text
-📦your.patches.app.category
- ├ Fingerprints.kt
- └ SomePatch.kt
+## Local setup
+
+Use JDK 17 and Android SDK API 37. Initialize the repository with its submodules before building:
+
+```bash
+git submodule update --init --recursive
+./gradlew --no-daemon :app:testDebugUnitTest :app:assembleDebug
 ```
 
--   **Project-specific patches:** [app/src/main/java/io/github/nexalloy/morphe](app/src/main/java/io/github/nexalloy/morphe)
--   **Upstream patches:** [revanced-patches/patches/src/main/kotlin/app/revanced/patches](revanced-patches/patches/src/main/kotlin/app/revanced/patches)
+The unit suite validates the Morphe catalog bridge, Runtime Store classification, trust policy, imported runtime specifications, and layer state. APK fingerprint fixtures are optional: when `app/binaries/` is absent, fixture-dependent tests are skipped while the normal unit suite remains reproducible.
 
-Upstream patches are included via Git submodule for reference and to utilize shared extension code. They are not modified within this project.
+## Runtime hook model
 
-### Example: Patch Implementation (Contoso App)
+A hook must be narrow, deterministic, and disabled by default. It should use a reliable DexKit fingerprint and fail closed when the fingerprint is not unique. Avoid broad class-name matching, version-agnostic method hooks, arbitrary reflection, and any mechanism that executes external source code in a target process.
 
-#### Add Contoso to module scope
+> A Runtime Store entry is an attribution and compatibility record. It is not authority to execute a community archive.
 
-- `app/src/main/AndroidManifest.xml`: Query package for module settings
-- `app/src/main/res/values/arrays.xml`: Xposed scope recommendation
-- `README.md`
+### Adding a built-in hook
 
-#### `Fingerprints.kt`
-```kotlin
-package io.github.nexalloy.morphe.contoso.misc.unlock.plus
+1. Register the target host package in the application registry only when it has a reviewed patch set.
+2. Add a Kotlin hook definition under the host application's patch area.
+3. Use a fingerprint that resolves to exactly one class or method on the supported host version.
+4. Make the action reversible through the module settings and keep it disabled until the user enables it.
+5. Add a unit test for the fingerprint or runtime-layer definition.
+6. Test the hook on a rooted device with LSPosed before documenting it as supported.
 
-import io.github.nexalloy.morphe.AccessFlags
-import io.github.nexalloy.morphe.fingerprint
-import org.luckypray.dexkit.query.enums.StringMatchType
+### Adding a Runtime Store adapter
 
-val isPlusUnlockedFingerprint = fingerprint {
-    returns("Z")
-    strings("genius")
-}
+Runtime Store adapters are compiled into the APK and registered by identifier. The currently supported operations are a Boolean return override and a matched `Void` method skip. Do not add a generic archive interpreter, bytecode loader, Smali evaluator, URL-based code fetcher, or arbitrary callback facility.
+
+1. Verify that the catalog entry targets a registered application.
+2. Record its source repository and source patch name for attribution.
+3. Translate only the safe runtime behavior into a reviewed adapter definition.
+4. Register the adapter and its target package in the runtime registry.
+5. Add tests for the enabled state, target uniqueness, and failure behavior.
+6. Update [Runtime Layers](docs/RUNTIME_LAYERS.md) and validate the adapter on-device.
+
+## Imported runtime specifications
+
+Imported specifications are deliberately constrained data. The importer accepts only registered target packages, bounded fingerprint strings, and the documented Boolean override operation. It rejects executable code, arbitrary class or method names, bytecode payloads, callbacks, URLs, and network-loaded content.
+
+Any expansion of this format is a security-sensitive design change. Document it, test malformed input, preserve explicit user enablement, and confirm that an unmatched or ambiguous fingerprint cannot apply a hook.
+
+## Testing
+
+| Goal | Command |
+| --- | --- |
+| Unit tests | `./gradlew --no-daemon :app:testDebugUnitTest` |
+| Debug APK | `./gradlew --no-daemon :app:assembleDebug` |
+| Signed release APK | `./gradlew --no-daemon :app:testDebugUnitTest :app:assembleRelease` |
+
+For a signed local release, create an untracked `signing.properties` file in the repository root:
+
+```properties
+KEYSTORE_FILE=/absolute/path/to/release.jks
+KEYSTORE_PASSWORD=...
+KEYSTORE_ALIAS=...
+KEYSTORE_ALIAS_PASSWORD=...
 ```
 
-#### `UnlockPlusPatch.kt`
-```kotlin
-package io.github.nexalloy.morphe.contoso.misc.unlock.plus
+Never commit the keystore, `signing.properties`, decoded signing material, or secret values. Confirm the resulting APK signature with Android build tools before distributing it.
 
-import static de.robv.android.xposed.XC_MethodReplacement.returnConstant
-import io.github.nexalloy.morphe.patch
+## Release workflow
 
-val UnlockPlus = patch(name = "Unlock Plus") {
-    ::isPlusUnlockedFingerprint.hookMethod(returnConstant(true))
-}
-```
+GitHub Actions restores signing material from encrypted repository secrets, runs the unit suite, builds the release APK, verifies signature and package metadata, creates a SHA-256 checksum, and publishes a prerelease for tags beginning with `v`.
 
-#### `ContosoHook.kt`
-```kotlin
-package io.github.nexalloy.morphe.contoso
+Before creating a tag, ensure that the intended commit is on `main`, the version properties are incremented, and the tests pass. The full release procedure and required secret names are documented in [Release Guide](docs/RELEASING.md).
 
-import io.github.nexalloy.morphe.contoso.misc.unlock.plus.UnlockPlus
+## Pull requests and issue reports
 
-val ContosoPatches = arrayOf(UnlockPlus)
-```
-
-#### `AppPatchInfo.kt`
-```kotlin
-import io.github.nexalloy.morphe.contoso.ContosoPatches
-
-val appPatchConfigurations = listOf(
-    // ...
-    AppPatchInfo("Contoso", "com.contoso.app", ContosoPatches)
-)
-
-```
-
-### Porting Upstream Patches
-
-The [FingerprintCompat.kt](app/src/main/java/io/github/nexalloy/morphe/FingerprintCompat.kt) utility assists in translating ReVanced Patcher API calls to DexKit Matchers. While simple fingerprints can often be directly copied, consider the following translation patterns for complex cases:
-
-1.  **Literal Mapping:**
-    If an upstream patch defines a literal within the patch file (e.g., `aLiteral = resourceMappings["id", "aLiteral"]`) for use in a fingerprint, convert it to a getter property in the corresponding `Fingerprints.kt` file.
-
-    *From (Upstream):*
-    ```kotlin
-    // In ***Patch.kt beside the Fingerprints.kt
-    // val aLiteral = resourceMappings["id", "aLiteral"]
-    fingerprint { literal { aLiteral } }
-    ```
-
-    *To (This Project's Fingerprints.kt):*
-    ```kotlin
-    val aLiteral get() = resourceMappings["id", "aLiteral"] // Defined in Fingerprints.kt
-    fingerprint { literal { aLiteral } }
-    ```
-
-2.  **Custom Class and Method Matchers:**
-
-    *From (Upstream):*
-    ```kotlin
-    fingerprint {
-        custom { method, classDef ->
-            method.name == "onCreate" && classDef.endsWith("/MusicActivity;")
-        }
-    }
-    ```
-
-    *To (This Project):*
-    ```kotlin
-    fingerprint {
-        methodMatcher { name = "onCreate" }
-        classMatcher { className(".MusicActivity", StringMatchType.EndsWith) }
-    }
-    ```
-
-3.  **Instruction-based Method Reference:**
-
-    *From (Upstream):*
-    ```kotlin
-    fun indexOfTranslationInstruction(method: Method) =
-        method.indexOfFirstInstructionReversed {
-            getReference<MethodReference>()?.name == "setTranslationY"
-        }
-
-    val motionEventFingerprint = fingerprint {
-        custom { method, _ ->
-            indexOfTranslationInstruction(method) >= 0
-        }
-    }
-    ```
-
-    *To (This Project):*
-    ```kotlin
-    val motionEventFingerprint = fingerprint {
-        methodMatcher { addInvoke { name = "setTranslationY" } }
-    }
-    ```
-
-4.  **Matching Specific Class Types or Defining Classes:**
-    When an upstream `custom` block primarily checks `classDef.type` (the type of the matched class) or `method.definingClass` (the class defining the matched method), this translates to a `classMatcher` in this project. The `classMatcher` directly specifies the target class descriptor.
-
-    *From (Upstream Example):*
-    ```kotlin
-    // Upstream: Using custom to check classDef.type
-    fingerprint {
-        custom { _, classDef ->
-            classDef.type == "Lcom/example/SomeClass;"
-        }
-        // other matchers...
-    }
-
-    // Upstream: Using custom to check method.definingClass
-    fingerprint {
-        custom { method, _ ->
-            method.definingClass == "Lcom/example/AnotherClass;"
-        }
-        // other method matchers...
-    }
-    ```
-    *To (This Project's Fingerprints.kt Example):*
-    ```kotlin
-    // This Project: Using classMatcher for classDef.type
-    fingerprint {
-        classMatcher { descriptor = "Lcom/example/SomeClass;" }
-        // methodMatcher { ... } // if needed for method properties
-    }
-
-    // This Project: Using classMatcher for method.definingClass
-    fingerprint {
-        // Targets methods within Lcom/example/AnotherClass;
-        classMatcher { descriptor = "Lcom/example/AnotherClass;" }
-        methodMatcher {
-            // specific method properties, e.g., name = "targetMethod"
-        }
-    }
-    ```
-5.  **Porting Complex `custom` Logic or Chained Lookups with Direct Finders:**
-    For intricate upstream fingerprints with complex `custom` logic or chained lookups not easily mapped to standard matchers, this project uses direct finder functions (e.g., `findMethodDirect`, `findClassDirect`) from `FingerprintCompat.kt`. This approach combines DexKit's efficient initial filtering with the power of Kotlin's collection processing for subsequent, more granular refinement.
-
-    *From (Upstream Example with complex `custom` logic):*
-    ```kotlin
-    internal val complexCustomFingerprint = fingerprint {
-        returns("Lcom/example/ReturnType;")
-        custom { method, _ ->
-            method.name.startsWith("get") &&
-            method.parameterTypes.size == 1 &&
-            method.parameterTypes.first() == "Lcom/example/ParameterType;" &&
-            method.definingClass == "Lcom/example/HostClass;"
-            // ... potentially more complex conditions
-        }
-    }
-    ```
-    *To (This Project using `findMethodDirect`):*
-    ```kotlin
-    val complexCustomFingerprint = findMethodDirect {
-        // Initial, broader filtering with DexKit matchers
-        findMethod {
-            matcher {
-                returns("Lcom/example/ReturnType;")
-                declaredClass { descriptor = "Lcom/example/HostClass;" }
-                // Other simple matchers convertible from the original custom block
-            }
-        }
-        // Refine results using Kotlin's collection functions for complex logic
-        .filter { methodData -> methodData.name.startsWith("get") }
-        .single { methodData -> // Assuming a unique result after all filters
-            methodData.paramTypes.size == 1 &&
-            methodData.paramTypes.firstOrNull()?.descriptor == "Lcom/example/ParameterType;"
-            // ... other Kotlin-based checks
-        }
-    }
-    ```
-    This allows leveraging DexKit for initial efficient filtering, then applying precise Kotlin logic to the narrowed-down candidates.
-
-### Extension Modules
-
-As per ReVanced Patcher documentation:
-> Instead of involving many abstract changes in one patch or writing entire methods or classes in a patch, you can write code in extensions.
-
-This project shares extension code with the upstream project, located at `./revanced-patches/extensions`. Upstream organizes extensions into separate modules (e.g., `./revanced-patches/extensions/<appAlias>/src/main/java/app/revanced/extension/<appAlias>`). Modifications to shared extensions and other code under `revanced-patches` are minimized.
-
-## Unit Testing
-
-Refer to [FingerprintsKtTest.kt](app/src/test/java/io/github/nexalloy/morphe/FingerprintsKtTest.kt) for testing examples.
-
-For running tests, place necessary APKs into the `./app/binaries/` directory. APK filenames should be prefixed with their respective package names (e.g., `com.example.app-1.0.0.apk`).
+Keep changes narrow and explain the target application, tested version, fingerprint strategy, enabled-state behavior, and known limitations. For issues, include a redacted LSPosed log, target package/version, Morphe LSPosed version, enabled switches, and deterministic reproduction steps.

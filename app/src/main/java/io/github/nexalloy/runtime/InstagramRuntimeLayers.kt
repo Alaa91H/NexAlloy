@@ -3,7 +3,7 @@ package io.github.nexalloy.runtime
 /**
  * Runtime adapters for community patches targeting Instagram.
  *
- * The adapter definition is compiled into NexAlloy. Community .mpp archives are never
+ * The adapter definition is compiled into Morphe LSPosed. Community .mpp archives are never
  * downloaded, loaded, or interpreted by this module.
  */
 object InstagramRuntimeLayers {

@@ -1,5 +1,5 @@
 name: Bug report
-description: File a bug/issue
+description: Report a reproducible Morphe LSPosed problem
 title: "[Bug] "
 body:
   - type: markdown
@@ -39,11 +39,10 @@ body:
     attributes:
       label: Error logs
       description: |
-        - If You are reporting a YouTube bug, enable Debug Logging in YouTube Settings -> ReVanced Settings -> Miscellaneous -> Debugging.
-        - Reproduce the bug
-        - Open LSPosed Manager -> Logs
-        - Save logs
-        - Upload the saved zip file
+        - Reproduce the problem with the same Morphe LSPosed switches enabled.
+        - Open LSPosed Manager -> Logs.
+        - Save the relevant entries, redact personal data, and upload the exported archive or excerpt.
+        - Include the target application package and version in the report.
     validations:
       required: true
   - type: checkboxes

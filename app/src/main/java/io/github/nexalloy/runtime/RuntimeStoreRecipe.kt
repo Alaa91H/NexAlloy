@@ -3,7 +3,7 @@ package io.github.nexalloy.runtime
 /**
  * A reviewed, data-only conversion recipe for a community catalog patch.
  *
- * Recipes are shipped with NexAlloy and use only the constrained runtime operation
+ * Recipes are shipped with Morphe LSPosed and use only the constrained runtime operation
  * schema. They are not remote code and never contain a .mpp archive or bytecode.
  */
 data class RuntimeStoreRecipe(

@@ -6,9 +6,9 @@ import io.github.nexalloy.morphe.FingerprintDsl
 import io.github.nexalloy.patch
 
 /**
- * A compiled NexAlloy runtime layer.
+ * A compiled Morphe LSPosed runtime layer.
  *
- * The [patch] is authored and packaged with NexAlloy. Metadata is retained only to
+ * The [patch] is authored and packaged with Morphe LSPosed. Metadata is retained only to
  * credit and trace the community source that inspired the adapter. This type must
  * never contain a class name, bytecode, or executable payload downloaded from a
  * community bundle.
@@ -25,13 +25,13 @@ data class RuntimeLayer(
  * Registry of runtime layers compiled into this module.
  *
  * A layer is discoverable from catalog metadata by [sourceRepository] and
- * [sourcePatchName], but executes exclusively through NexAlloy's existing
+ * [sourcePatchName], but executes exclusively through Morphe LSPosed's existing
  * PatchExecutor and Xposed/DexKit APIs.
  */
 /**
  * Declarative, compile-time safe definition for the narrow class of layers that only
  * replace a uniquely matched Boolean method result. The definition is still packaged
- * with NexAlloy; it is never parsed from a remote bundle.
+ * with Morphe LSPosed; it is never parsed from a remote bundle.
  */
 data class BooleanReturnOverrideLayerDefinition(
     val id: String,

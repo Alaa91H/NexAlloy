@@ -16,7 +16,7 @@ import java.security.MessageDigest
 /**
  * Read-only bridge for Morphe community bundle metadata.
  *
- * Community .mpp archives are intentionally never loaded or executed by NexAlloy.
+ * Community .mpp archives are intentionally never loaded or executed by Morphe LSPosed.
  * Morphe applies those archives during APK patching; this bridge only indexes metadata,
  * stores profiles, and generates a handoff URI for the Morphe source flow.
  */
@@ -162,7 +162,7 @@ object MorpheProfileValidator {
 
 /**
  * A community GitHub source is readable but requires an explicit local approval before
- * NexAlloy can save a profile or hand it to Morphe. Non-GitHub and malformed sources
+ * Morphe LSPosed can save a profile or hand it to Morphe. Non-GitHub and malformed sources
  * remain blocked because the bridge has no verified handoff route for them.
  */
 object MorpheSourceTrustPolicy {
@@ -384,7 +384,7 @@ class MorpheCatalogClient(
             headers = mapOf(
                 "Accept" to "application/json, text/plain, */*",
                 "Referer" to MorpheBridgeConfig.CATALOG_PAGE_URL,
-                "User-Agent" to "NexAlloy-MorpheBundleBridge/1.0",
+                "User-Agent" to "Morphe-LSPosed-MorpheBundleBridge/1.0",
             )
         )
         if (response.statusCode !in 200..299) {

@@ -1,91 +1,82 @@
-<div align="center">
-  <h1>Morphe LSPosed</h1>
-  <a href="https://discord.gg/QWUrAA2mKq"><img alt="Discord Server" src="https://img.shields.io/badge/Discord%20Server-5865F2.svg?logo=discord&logoColor=white"></a>
-  <a href="https://t.me/revancedxposed"><img alt="Telegram Channel" src="https://img.shields.io/badge/Telegram_Channel-blue.svg?logo=telegram&logoColor=white"></a>
-  <a href="https://github.com/Alaa91H/Morphe-LSPosed/releases/latest"><img alt="GitHub Downloads" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fshields.chsbuffer.workers.dev%2F%3Frepos%3DAlaa91H%2FMorphe-LSPosed%26cacheSeconds%3D3600"></a>
-  <a href="https://github.com/Alaa91H/Morphe-LSPosed"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/Alaa91H/Morphe-LSPosed"></a>
-  <br>
-</div>
+# Morphe LSPosed
 
-**Morphe LSPosed is an independent LSPosed runtime layer module for supported Android apps.**
-> [!CAUTION]
-> **Migration Notice:** This project has evolved from **ReVancedXposed** to **Morphe LSPosed**.
->
-> **Upgrading:** Morphe LSPosed uses the new Android package ID `app.morphe.lsposed`. Android treats it as a separate application, so enable the newly installed module in LSPosed and reconfigure any settings required for the new installation.
+**Morphe LSPosed** is an Android module for [LSPosed](https://github.com/LSPosed/LSPosed). It applies reviewed, local hooks to supported applications at runtime through DexKit and the Xposed API. The Android application ID is `app.morphe.lsposed`.
 
->[!IMPORTANT]  
-> - This is **NOT an official Morphe or ReVanced project**, do not ask their developers for help.  
-> - **Root access** is strictly **required** to use this module!
-> - **Having issues?** Check the **[FAQ](https://github.com/Alaa91H/Morphe-LSPosed/wiki/Frequently-Asked-Questions)** before reporting.
+> **Independent project.** Morphe LSPosed is not an official Morphe product and is not affiliated with Morphe, ReVanced, or the developers of the applications listed below. Do not request support from those projects for this module.
 
-## Downloads
-- **Release build**: [Download](https://github.com/Alaa91H/Morphe-LSPosed/releases/latest)
-- **Nightly build**: [Download](https://nightly.link/Alaa91H/Morphe-LSPosed/workflows/android/main)
+## What it does
 
-<sub>If you've joined the YouTube beta program, please try the nightly build before reporting an issue.</sub>
+Morphe LSPosed runs inside the selected target application's process after LSPosed loads the module. Supported changes are implemented as local Kotlin hooks and can be enabled from the module settings. The module does **not** rebuild target APKs.
 
-## Patches
+| Capability | Behavior |
+| --- | --- |
+| Built-in hooks | Applies reviewed DexKit/Xposed hooks bundled with the installed module. |
+| Runtime Store | Reads Morphe community-catalog metadata and classifies entries by runtime compatibility. |
+| Compiled runtime layers | Lets the user enable reviewed adapters that are already compiled into Morphe LSPosed. |
+| Restricted import | Accepts only the documented data-only runtime specification for registered targets. |
+| Safe failure mode | Does not apply a layer when its fingerprint resolves to zero or more than one target. |
 
-### YouTube
-- Remove ads
-- SponsorBlock
-- Remove background playback restrictions
-- Remove share links tracking query parameter
-- Hide and change navigation buttons
-- Swipe controls
-- Remember video quality changes
-- Show video quality button
-- Show advanced video quality menu
-- Copy video url video player button
-- Open external downloader app
-- Custom playback speed
-- Remember playback speed
-- Playback speed dialog button
-- Hide layout components
-- Hide video action buttons
-- Disable Shorts resuming on startup
-- Disable video codecs
-- Disable auto captions
-- Alternative thumbnails
-- Bypass image region restrictions
+The Runtime Store is **not** a `.mpp` interpreter. It never downloads, loads, or executes community patch archives, Smali, bytecode payloads, or arbitrary callbacks inside an application process. A catalog entry becomes usable only after it has been translated into a reviewed runtime adapter and included in a Morphe LSPosed release. See [Runtime Layers](docs/RUNTIME_LAYERS.md) for the complete trust model.
 
-### YouTube Music
-- Remove music video ads
-- Remove background playback restrictions
-- Hide upgrade button
-- Hide 'Get Music Premium' label
-- Enable exclusive audio playback
+## Requirements
 
-### Reddit
-- Hide ads
-- Sanitize sharing links
+Morphe LSPosed requires a rooted Android device with a working LSPosed installation. Install the module APK, enable the module in LSPosed, select only the intended target applications, and restart each target application after changing its patch or runtime-layer settings.
 
-### Google Photos
-- Spoof Pixel XL
+Because Morphe LSPosed uses the distinct application ID `app.morphe.lsposed`, Android treats it as a separate installation from earlier modules. Reconfigure its LSPosed scope and settings after installation.
 
-### Photomath
-- Unlock plus
+## Installation
 
-### Instagram
-- Hide ads
+1. Download the current APK from the [GitHub releases page](https://github.com/Alaa91H/Morphe-LSPosed/releases).
+2. Install the APK on the rooted device.
+3. Open LSPosed Manager, enable **Morphe LSPosed**, and select the target applications that you intend to modify.
+4. Open Morphe LSPosed and enable only the desired built-in patches or Runtime Store layers.
+5. Force-stop and reopen each affected target application.
 
-### Threads
-- Hide ads
+> **Compatibility note:** Application updates can change DEX structure and invalidate a fingerprint. A patch that is listed for a host application is not a guarantee that every version of that host application is supported. If a fingerprint is ambiguous or missing, Morphe LSPosed fails closed instead of applying a broad hook.
 
-### Strava
-- Unlock subscription features
-- Disable subscription suggestions
+## Supported host applications
 
-### AllTrails
-- Enable Peak membership
+The current application registry includes the following hosts. Available switches depend on the installed host version and the hook set included in the module build.
 
-## Supports
-[![Discord Server](https://img.shields.io/badge/Join-Discord-5865F2.svg?logo=discord)](https://discord.gg/QWUrAA2mKq)  
-[![FAQ](https://img.shields.io/badge/Read-FAQ-orange.svg?logo=github)](https://github.com/Alaa91H/Morphe-LSPosed/wiki/Frequently-Asked-Questions)
-or [Create an issue](https://github.com/Alaa91H/Morphe-LSPosed/issues/new/choose)
+| Host application | Android package |
+| --- | --- |
+| YouTube | `com.google.android.youtube` |
+| YouTube Music | `com.google.android.apps.youtube.music` |
+| Reddit | `com.reddit.frontpage` |
+| Google Photos | `com.google.android.apps.photos` |
+| Photomath | `com.microblink.photomath` |
+| Instagram | `com.instagram.android` |
+| Threads | `com.instagram.barcelona` |
+| Strava | `com.strava` |
+| AllTrails | `com.alltrails.alltrails` |
 
-## ⭐ Credits
+## Built-in Runtime Store adapters
 
-[DexKit](https://luckypray.org/DexKit/en/): a high-performance dex runtime parsing library.  
-[Morphe](https://morphe.software): Transform Your Android Apps  
-[ReVanced](https://revanced.app): Continuing the legacy of Vanced at [revanced.app](https://revanced.app)
+| Runtime layer | Host | Default state | Runtime behavior |
+| --- | --- | --- | --- |
+| `piko.instagram.disable-video-autoplay.runtime` | Instagram | Disabled | Overrides the uniquely matched Boolean video-autoplay setting when enabled. |
+| `piko.instagram.disable-story-flipping.runtime` | Instagram | Disabled | Skips the uniquely matched story-navigation method when enabled. |
+
+These layers are independent local hooks. They use public compatibility signals from the cited community source but do not execute the source archive.
+
+## Building from source
+
+Use Android SDK API 37 and JDK 17. The standard verification command is:
+
+```bash
+./gradlew --no-daemon :app:testDebugUnitTest :app:assembleDebug
+```
+
+A signed release build requires a local `signing.properties` file or the GitHub Actions signing secrets. The repository release workflow builds, verifies, checksums, and publishes tag-based prereleases. See [Development Guide](DEVELOPMENT.md) and [Release Guide](docs/RELEASING.md).
+
+## Reporting issues
+
+Report reproducible problems through the [issue tracker](https://github.com/Alaa91H/Morphe-LSPosed/issues/new/choose). Include the Morphe LSPosed version, Android version, LSPosed version, target application package and version, enabled layers, reproduction steps, and a redacted LSPosed log when available.
+
+## Credits and source attribution
+
+Morphe LSPosed uses [DexKit](https://luckypray.org/DexKit/en/) for DEX inspection and depends on community-maintained patch sources as compatibility and attribution references. Source attribution for Runtime Store adapters is kept in the adapter registry and in [Runtime Layers](docs/RUNTIME_LAYERS.md). Rights in third-party applications, names, and source projects remain with their respective owners.
+
+## License
+
+See the repository license and the license notices of bundled dependencies before redistributing modified builds.

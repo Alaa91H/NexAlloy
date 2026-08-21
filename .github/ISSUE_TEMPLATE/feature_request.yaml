@@ -1,12 +1,14 @@
 name: Feature request
-description: Suggest an idea for this project
+description: Propose a reviewed Morphe LSPosed improvement
 title: "[Feature request] "
 body:
 - type: markdown
   attributes:
     value: |
-      **PLEASE READ BEFORE SUBMITTING**
-      This project is an Xposed port of Morphe ([morphe.software](https://morphe.software/)). Features that do not exist in the official project will not be accepted. Some apps are not patchable on their latest versions due to technical limitations.
+      **Please read before submitting.**
+      Morphe LSPosed applies reviewed local hooks to selected target applications. Requests should describe a reproducible runtime behavior, the target package and version, and why the change can be implemented safely through an LSPosed hook.
+
+      The project does not rebuild target APKs and does not execute community `.mpp` archives, Smali, bytecode payloads, or arbitrary remote code. A catalog entry may be useful as attribution or compatibility evidence, but it is not automatically executable.
 - type: textarea
   attributes:
     label: Describe the feature you'd like

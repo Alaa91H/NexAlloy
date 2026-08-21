@@ -37,7 +37,7 @@ class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit {
         inContext(lpparam) { app ->
             this.app = app
             if (isReVancedPatched(lpparam)) {
-                Utils.showToastLong("NexAlloy module does not work with patched app")
+                Utils.showToastLong("Morphe LSPosed does not work with a patched app")
                 return@inContext
             }
 

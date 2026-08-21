@@ -198,7 +198,7 @@ class PatchExecutor(val appContext: Application, val lpparam: LoadPackageParam) 
         if (!isCached) {
             cache.clearAll()
             cache.putString("id", id)
-            Utils.showToastLong("NexAlloy is initializing, please wait...")
+            Utils.showToastLong("Morphe LSPosed is initializing, please wait...")
         }
     }
 

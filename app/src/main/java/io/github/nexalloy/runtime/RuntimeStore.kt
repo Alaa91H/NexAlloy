@@ -27,7 +27,7 @@ data class RuntimeStoreItem(
  * Converts community catalog metadata into an LSPosed-oriented store index.
  *
  * This classifier does not inspect or execute .mpp files. A catalog patch is READY
- * only if NexAlloy already has a compiled runtime adapter for the same source patch
+ * only if Morphe LSPosed already has a compiled runtime adapter for the same source patch
  * and target package. All other records stay visible with an explicit limitation.
  */
 class RuntimeStoreClassifier(
