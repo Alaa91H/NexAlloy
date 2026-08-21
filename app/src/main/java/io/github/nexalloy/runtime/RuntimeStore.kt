@@ -11,6 +11,7 @@ enum class RuntimeStoreAvailability {
 }
 
 data class RuntimeStoreItem(
+    val sourceHost: String,
     val sourceRepository: String,
     val sourcePatchName: String,
     val description: String?,
@@ -40,14 +41,18 @@ class RuntimeStoreClassifier(
 ) {
     fun classify(catalog: CommunityCatalog): List<RuntimeStoreItem> = catalog.bundles
         .flatMap { bundle ->
-            bundle.patches.map { patch -> classifyPatch(bundle.repository, patch) }
+            bundle.patches.map { patch -> classifyPatch(bundle.source, bundle.repository, patch) }
         }
         .sortedWith(
             compareBy<RuntimeStoreItem> { it.availability.ordinal }
                 .thenBy { it.sourcePatchName.lowercase() }
         )
 
-    private fun classifyPatch(sourceRepository: String, patch: CommunityPatch): RuntimeStoreItem {
+    private fun classifyPatch(
+        sourceHost: String,
+        sourceRepository: String,
+        patch: CommunityPatch,
+    ): RuntimeStoreItem {
         val supportedPackages = patch.compatiblePackages.intersect(targetPackages)
         val layer = supportedPackages.asSequence().mapNotNull { packageName ->
             runtimeLayers.firstOrNull {
@@ -70,6 +75,7 @@ class RuntimeStoreClassifier(
             else -> RuntimeStoreAvailability.UNSUPPORTED_TARGET
         }
         return RuntimeStoreItem(
+            sourceHost = sourceHost,
             sourceRepository = sourceRepository,
             sourcePatchName = patch.name,
             description = patch.description,

@@ -239,6 +239,68 @@ data class MultiKotlinUnitReturnOverrideLayerDefinition(
     }
 }
 
+/**
+ * A target whose reviewed bytecode replacement returns DEX register p0. At runtime p0 is
+ * the receiver for an instance method and the first argument for a static method.
+ */
+data class DexP0ObjectReturnTarget(
+    val definingClass: String,
+    val methodName: String,
+    val parameterTypes: List<String> = emptyList(),
+)
+
+/**
+ * Replaces selected Object-returning methods with their DEX p0 value. This narrowly mirrors
+ * reviewed local adapters that use `return-object p0` and is never imported from a bundle.
+ */
+data class MultiDexP0ObjectReturnOverrideLayerDefinition(
+    val id: String,
+    val sourceRepository: String,
+    val sourcePatchName: String,
+    val packageNames: Set<String>,
+    val patchName: String,
+    val description: String,
+    val targets: List<DexP0ObjectReturnTarget>,
+    val voidTargets: List<VoidMethodTarget> = emptyList(),
+    val enabledByDefault: Boolean = false,
+) {
+    fun compile(): RuntimeLayer {
+        val compiledPatch = patch(
+            name = patchName,
+            description = description,
+            use = enabledByDefault,
+        ) {
+            targets.forEach { target ->
+                FingerprintDsl {
+                    definingClass(target.definingClass)
+                    name(target.methodName)
+                    parameters(*target.parameterTypes.toTypedArray())
+                    returns("Ljava/lang/Object;")
+                }.build().hookMethod {
+                    before { hook ->
+                        hook.result = hook.thisObject ?: hook.args.firstOrNull()
+                    }
+                }
+            }
+            voidTargets.forEach { target ->
+                FingerprintDsl {
+                    definingClass(target.definingClass)
+                    name(target.methodName)
+                    parameters(*target.parameterTypes.toTypedArray())
+                    returns("V")
+                }.build().hookMethod(XC_MethodReplacement.DO_NOTHING)
+            }
+        }
+        return RuntimeLayer(
+            id = id,
+            sourceRepository = sourceRepository,
+            sourcePatchName = sourcePatchName,
+            packageNames = packageNames,
+            patch = compiledPatch,
+        )
+    }
+}
+
 data class VoidMethodSkipLayerDefinition(
     val id: String,
     val sourceRepository: String,

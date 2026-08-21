@@ -68,6 +68,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "kveld.gboard.disable-diagnostics.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "kveld9/kveld-morphe-patches",
+                sourcePatchName = "Disable Diagnostics",
+                packageName = "com.google.android.inputmethod.latin",
+            )?.id,
+        )
+        assertEquals(
             "paresh.truecaller.disable-telemetry.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "Paresh-Maheshwari/paresh-patches",

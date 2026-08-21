@@ -55,20 +55,20 @@
     <string name="navigation_settings">الإعدادات</string>
 
     <string name="patches_page_intro_title">عناصر التحكم بالباتشات</string>
-    <string name="patches_page_intro_summary">تحتوي %1$d من التطبيقات المدعومة على %2$d من الباتشات المحلية. لكل تطبيق بطاقة واحدة تتضمن جميع عناصر التحكم المتاحة له.</string>
+    <string name="patches_page_intro_summary">تحتوي %1$d من التطبيقات على %2$d من طبقات Runtime المفعّلة من متجر Runtime. لكل تطبيق بطاقة واحدة تتضمن عناصر التحكم النشطة فقط.</string>
     <string name="patches_app_summary">الحزمة: %1$s · %2$d باتش\n%3$s</string>
     <string name="patches_expand_hint">اضغط لإظهار باتشات هذا التطبيق</string>
     <string name="patches_collapse_hint">اضغط لإخفاء باتشات هذا التطبيق</string>
     <string name="patches_app_status">مفعّل %1$d من %2$d</string>
-    <string name="patches_page_intro_status">عناصر تحكم محلية</string>
+    <string name="patches_page_intro_status">عناصر تحكم Runtime المفعّلة</string>
     <string name="patches_empty_title">لا توجد باتشات محلية مسجّلة</string>
-    <string name="patches_empty_summary">ثبّت إصدارًا يتضمن خطافات مراجَعة ثم عُد إلى هذه الصفحة.</string>
+    <string name="patches_empty_summary">فعّل طبقة Runtime محلية مراجَعة من متجر Runtime، وستظهر هنا بعد ذلك للتحكم بها.</string>
     <string name="patch_description_unavailable">لا يتوفر وصف إضافي لهذا الخطاف.</string>
     <string name="patch_switch_label">تفعيل هذا الباتش</string>
     <string name="patch_state_saved">تم حفظ حالة الباتش. أوقف التطبيق المستهدف إجباريًا ثم افتحه مجددًا.</string>
 
     <string name="store_page_intro_title">متجر Runtime</string>
-    <string name="store_page_intro_summary">تظهر هنا فقط الباتشات التي تملك محوّل Runtime محليًا ومراجَعًا. يمكن تفعيل كل عنصر معروض مباشرة في هذا الإصدار.</string>
+    <string name="store_page_intro_summary">تظهر هنا جميع عناصر الكتالوج العام. لا يمكن تفعيل العناصر التي تملك محوّل Runtime محليًا ومراجَعًا إلا مباشرةً؛ أما البقية فتظهر حالتها الحالية بوضوح.</string>
     <string name="store_catalog_loaded">تم تصنيف %1$d من باتشات الكتالوج</string>
     <string name="store_catalog_loading">سيُحدّث الكتالوج تلقائيًا</string>
     <string name="store_refresh_action">تحديث الكتالوج</string>
@@ -90,14 +90,17 @@
     <string name="store_layers_empty_title">لا توجد طبقات Runtime مضمنة</string>
     <string name="store_layers_empty_summary">لا يتضمن هذا الإصدار محوّلًا محليًا مدمجًا بعد، لكن عناصر الكتالوج ستظهر أدناه.</string>
     <string name="store_catalogue_title">كتالوج الباتشات الكامل</string>
-    <string name="store_catalogue_summary">يتوفر %1$d من عناصر Runtime الجاهزة للتفعيل في هذا الإصدار.</string>
-    <string name="store_catalogue_status">العناصر الجاهزة فقط</string>
+    <string name="store_catalogue_summary">%1$d عنصرًا في الكتالوج: %2$d جاهز، و%3$d يحتاج إلى محوّل محلي، و%4$d يستهدف تطبيقات أخرى.</string>
+    <string name="store_catalogue_status">تظهر جميع عناصر الكتالوج</string>
     <string name="store_catalog_empty_title">لا يحتوي الكتالوج على عناصر ظاهرة</string>
     <string name="store_catalog_empty_summary">حدّث الكتالوج أو افتحه في المتصفح للتحقق من المصادر المنشورة.</string>
     <string name="store_catalog_item_summary">المصدر: %1$s\nالتطبيق المستهدف: %2$s\n%3$s</string>
     <string name="store_target_unknown">لا توجد بيانات عن الحزمة</string>
     <string name="store_needs_adapter_status">يحتاج إلى محوّل محلي</string>
-    <string name="store_unsupported_status">تطبيق مستهدف آخر</string>
+    <string name="store_unsupported_status">بانتظار دعم التطبيق المستهدف</string>
+    <string name="app_not_installed_status">التطبيق غير مثبت</string>
+    <string name="app_not_installed_summary">ثبّت التطبيق المستهدف أولًا. يبقى تفعيل Runtime مقفلًا إلى أن يصبح التطبيق متوفرًا على هذا الجهاز.</string>
+    <string name="app_not_installed_message">التطبيق المستهدف غير مثبت.</string>
 
     <string name="settings_page_intro_title">إعداد الوحدة</string>
     <string name="settings_page_intro_summary">فعّل Morphe LSPosed في إدارة وحدات LSPosed، واختر التطبيقات المستهدفة التي تريد تعديلها فقط.</string>

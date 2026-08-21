@@ -56,21 +56,21 @@
 
     <!-- Patches page -->
     <string name="patches_page_intro_title">Your patch controls</string>
-    <string name="patches_page_intro_summary">%1$d supported applications contain %2$d local patches. Each application has one card with all of its available controls.</string>
+    <string name="patches_page_intro_summary">%1$d application(s) contain %2$d Runtime layer(s) enabled from the Runtime Store. Each application has one card with its active controls.</string>
     <string name="patches_app_summary">Package: %1$s · %2$d patch(es)\n%3$s</string>
     <string name="patches_expand_hint">Tap to show this application’s patches</string>
     <string name="patches_collapse_hint">Tap to hide this application’s patches</string>
     <string name="patches_app_status">%1$d of %2$d enabled</string>
-    <string name="patches_page_intro_status">Local controls</string>
+    <string name="patches_page_intro_status">Enabled Runtime controls</string>
     <string name="patches_empty_title">No local patches are registered</string>
-    <string name="patches_empty_summary">Install a build that includes reviewed hooks, then return to this page.</string>
+    <string name="patches_empty_summary">Enable a reviewed local Runtime layer from the Runtime Store. Enabled items will then appear here for control.</string>
     <string name="patch_description_unavailable">No additional description is available for this hook.</string>
     <string name="patch_switch_label">Enable this patch</string>
     <string name="patch_state_saved">Patch state saved. Force-stop and reopen the target app.</string>
 
     <!-- Runtime Store page -->
     <string name="store_page_intro_title">Runtime Store</string>
-    <string name="store_page_intro_summary">Only patches with a reviewed local Runtime adapter are shown here. Each listed item can be enabled directly in this build.</string>
+    <string name="store_page_intro_summary">All public catalog entries are shown here. Only entries with a reviewed local Runtime adapter can be enabled directly; every other entry displays its current eligibility.</string>
     <string name="store_catalog_loaded">%1$d catalog patches classified</string>
     <string name="store_catalog_loading">Catalog will refresh automatically</string>
     <string name="store_refresh_action">Refresh catalog</string>
@@ -92,14 +92,17 @@
     <string name="store_layers_empty_title">No compiled Runtime layers</string>
     <string name="store_layers_empty_summary">This build does not include a compiled local adapter yet. Catalog entries are still listed below.</string>
     <string name="store_catalogue_title">Full patch catalog</string>
-    <string name="store_catalogue_summary">%1$d ready Runtime item(s) are available to activate in this build.</string>
-    <string name="store_catalogue_status">Ready items only</string>
+    <string name="store_catalogue_summary">%1$d catalog item(s): %2$d ready, %3$d need a local adapter, and %4$d target other apps.</string>
+    <string name="store_catalogue_status">All catalog items shown</string>
     <string name="store_catalog_empty_title">The catalog has no visible entries</string>
     <string name="store_catalog_empty_summary">Refresh the catalog or open it in the browser to confirm the published sources.</string>
     <string name="store_catalog_item_summary">Source: %1$s\nTarget: %2$s\n%3$s</string>
     <string name="store_target_unknown">No package metadata</string>
     <string name="store_needs_adapter_status">Needs local adapter</string>
-    <string name="store_unsupported_status">Other target app</string>
+    <string name="store_unsupported_status">Awaiting target support</string>
+    <string name="app_not_installed_status">App not installed</string>
+    <string name="app_not_installed_summary">Install the target application first. Runtime activation is locked until it is available on this device.</string>
+    <string name="app_not_installed_message">The target application is not installed.</string>
 
     <!-- Module settings page -->
     <string name="settings_page_intro_title">Module setup</string>

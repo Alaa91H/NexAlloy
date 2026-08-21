@@ -21,10 +21,8 @@ import android.widget.Toast
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.materialswitch.MaterialSwitch
-import io.github.nexalloy.AppPatchInfo
 import io.github.nexalloy.BuildConfig
 import io.github.nexalloy.R
-import io.github.nexalloy.appPatchConfigurations
 import io.github.nexalloy.bridge.CommunityCatalog
 import io.github.nexalloy.bridge.RuntimeCatalogClient
 import io.github.nexalloy.bridge.RuntimeCatalogConfig
@@ -214,6 +212,10 @@ abstract class MorpheCardFragment : Fragment() {
     protected fun color(resource: Int): Int = requireContext().getColor(resource)
     protected fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
+    protected fun isPackageInstalled(packageName: String): Boolean = runCatching {
+        requireContext().packageManager.getApplicationInfo(packageName, 0)
+    }.isSuccess
+
     private fun addCardTitle(container: LinearLayout, value: String, applicationPackage: String?) {
         if (applicationPackage.isNullOrBlank()) {
             titleView(value).also(container::addView)
@@ -264,30 +266,26 @@ abstract class MorpheCardFragment : Fragment() {
     }
 }
 
-private data class PatchToggle(
+private data class RuntimePatchToggle(
+    val id: String,
     val name: String,
     val description: String,
-    val defaultEnabled: Boolean,
+    val setEnabled: (Context, Boolean) -> Boolean,
 )
 
 private data class AppPatchGroup(
     val appName: String,
     val packageName: String,
-    val patches: List<PatchToggle>,
+    val patches: List<RuntimePatchToggle>,
 )
 
-/** Displays all local patches grouped into one controllable Material card per target app. */
+/** Displays only Runtime layers explicitly enabled from the Runtime Store. */
 class ActivePatchesFragment : MorpheCardFragment() {
     private var expandedPackageName: String? = null
 
-    @SuppressLint("WorldReadableFiles")
     override fun renderCards() {
         val context = requireContext()
-        val groups = appPatchConfigurations.mapNotNull { it.toPatchGroupOrNull() }
-            .sortedWith(
-                compareByDescending<AppPatchGroup> { it.enabledPatchCount(context) }
-                    .thenBy { it.appName.lowercase() },
-            )
+        val groups = enabledRuntimeGroups(context)
         val patchCount = groups.sumOf { it.patches.size }
 
         addCard(
@@ -305,7 +303,7 @@ class ActivePatchesFragment : MorpheCardFragment() {
         }
 
         groups.forEach { group ->
-            val enabledCount = group.enabledPatchCount(context)
+            val installed = isPackageInstalled(group.packageName)
             val expanded = expandedPackageName == group.packageName
             addCard(
                 title = group.appName,
@@ -318,7 +316,11 @@ class ActivePatchesFragment : MorpheCardFragment() {
                         else R.string.patches_expand_hint,
                     ),
                 ),
-                status = getString(R.string.patches_app_status, enabledCount, group.patches.size),
+                status = if (installed) {
+                    getString(R.string.patches_app_status, group.patches.size, group.patches.size)
+                } else {
+                    getString(R.string.app_not_installed_status)
+                },
                 applicationPackage = group.packageName,
                 onClick = {
                     expandedPackageName = if (expanded) null else group.packageName
@@ -327,48 +329,97 @@ class ActivePatchesFragment : MorpheCardFragment() {
             ) {
                 if (!expanded) return@addCard
                 group.patches.sortedBy { it.name.lowercase() }.forEach { patch ->
-                    val enabled = context.getSharedPreferences(group.packageName, Context.MODE_PRIVATE)
-                        .getBoolean(patch.name, patch.defaultEnabled)
+                    val description = buildString {
+                        append(
+                            patch.description.ifBlank {
+                                getString(R.string.patch_description_unavailable)
+                            },
+                        )
+                        if (!installed) {
+                            append("\n")
+                            append(getString(R.string.app_not_installed_summary))
+                        }
+                    }
                     addSwitch(
                         container = this,
                         label = patch.name,
-                        summary = patch.description.ifBlank {
-                            getString(R.string.patch_description_unavailable)
-                        },
-                        checked = enabled,
+                        summary = description,
+                        checked = true,
+                        enabled = installed,
                     ) { shouldEnable ->
-                        context.getSharedPreferences(
-                            group.packageName,
-                            Context.MODE_WORLD_READABLE,
-                        ).edit().putBoolean(patch.name, shouldEnable).commit()
-                        Toast.makeText(context, R.string.patch_state_saved, Toast.LENGTH_SHORT).show()
-                        rebuildCards()
+                        if (!installed) {
+                            Toast.makeText(context, R.string.app_not_installed_message, Toast.LENGTH_SHORT).show()
+                            return@addSwitch
+                        }
+                        if (patch.setEnabled(context, shouldEnable)) {
+                            Toast.makeText(context, R.string.patch_state_saved, Toast.LENGTH_SHORT).show()
+                            rebuildCards()
+                        } else {
+                            Toast.makeText(context, R.string.runtime_activation_failed, Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun AppPatchInfo.toPatchGroupOrNull(): AppPatchGroup? {
-        val visiblePatches = patches.asSequence()
-            .filter { it.name.isNotBlank() && !it.name.startsWith("<") }
-            .map {
-                PatchToggle(
-                    name = it.name,
-                    description = it.description.orEmpty(),
-                    defaultEnabled = it.use,
+    private fun enabledRuntimeGroups(context: Context): List<AppPatchGroup> {
+        val grouped = linkedMapOf<String, MutableList<RuntimePatchToggle>>()
+
+        fun add(packageName: String, patch: RuntimePatchToggle) {
+            grouped.getOrPut(packageName) { mutableListOf() }.add(patch)
+        }
+
+        RuntimeLayerRegistry.all()
+            .filter { BuiltInRuntimeLayerState.isEnabled(context, it) }
+            .forEach { layer ->
+                layer.packageNames.forEach { packageName ->
+                    add(
+                        packageName = packageName,
+                        patch = RuntimePatchToggle(
+                            id = layer.id,
+                            name = layer.patch.name,
+                            description = layer.patch.description.orEmpty(),
+                            setEnabled = { runtimeContext, enabled ->
+                                BuiltInRuntimeLayerState.setEnabled(runtimeContext, layer, enabled)
+                            },
+                        ),
+                    )
+                }
+            }
+
+        ImportedRuntimeLayerStore.loadFromContext(context)
+            .filter { it.enabled }
+            .forEach { spec ->
+                add(
+                    packageName = spec.packageName,
+                    patch = RuntimePatchToggle(
+                        id = spec.id,
+                        name = spec.sourcePatchName,
+                        description = spec.description,
+                        setEnabled = { runtimeContext, enabled ->
+                            ImportedRuntimeLayerStore.setEnabled(runtimeContext, spec.id, enabled)
+                        },
+                    ),
                 )
             }
-            .toList()
-        return visiblePatches.takeIf { it.isNotEmpty() }?.let {
-            AppPatchGroup(appName, packageName, it)
-        }
+
+        return grouped
+            .map { (packageName, patches) ->
+                AppPatchGroup(
+                    appName = appLabel(packageName),
+                    packageName = packageName,
+                    patches = patches.distinctBy { it.id },
+                )
+            }
+            .sortedBy { it.appName.lowercase() }
     }
 
-    private fun AppPatchGroup.enabledPatchCount(context: Context): Int {
-        val preferences = context.getSharedPreferences(packageName, Context.MODE_PRIVATE)
-        return patches.count { preferences.getBoolean(it.name, it.defaultEnabled) }
-    }
+    private fun appLabel(packageName: String): String = runCatching {
+        requireContext().packageManager.getApplicationLabel(
+            requireContext().packageManager.getApplicationInfo(packageName, 0),
+        ).toString()
+    }.getOrDefault(packageName)
 }
 
 /** Runtime catalog, all compatible metadata, and compiled local layers in one visible store. */
@@ -426,21 +477,33 @@ class RuntimeStoreFragment : MorpheCardFragment() {
             return
         }
 
-        val installable = items.filter { it.availability == RuntimeStoreAvailability.READY }
+        val readyItems = items.filter { it.availability == RuntimeStoreAvailability.READY }
+        val adapterItems = items.filter { it.availability == RuntimeStoreAvailability.NEEDS_RUNTIME_ADAPTER }
+        val otherTargetItems = items.filter { it.availability == RuntimeStoreAvailability.UNSUPPORTED_TARGET }
 
         addCard(
             title = getString(R.string.store_catalogue_title),
-            summary = getString(R.string.store_catalogue_summary, installable.size),
+            summary = getString(
+                R.string.store_catalogue_summary,
+                items.size,
+                readyItems.size,
+                adapterItems.size,
+                otherTargetItems.size,
+            ),
             status = getString(R.string.store_catalogue_status),
         )
 
-        installable.forEach { item ->
-            when {
-                item.runtimeLayer != null -> addBuiltInLayerCard(item.runtimeLayer, item)
-                item.recipe != null -> addInstallableRecipeCard(item)
+        items.forEach { item ->
+            when (item.availability) {
+                RuntimeStoreAvailability.READY -> when {
+                    item.runtimeLayer != null -> addBuiltInLayerCard(item.runtimeLayer, item)
+                    item.recipe != null -> addInstallableRecipeCard(item)
+                }
+                RuntimeStoreAvailability.NEEDS_RUNTIME_ADAPTER,
+                RuntimeStoreAvailability.UNSUPPORTED_TARGET -> addMetadataCard(item, item.availability)
             }
         }
-        val catalogLayerIds = installable.mapNotNull { it.runtimeLayer?.id }.toSet()
+        val catalogLayerIds = readyItems.mapNotNull { it.runtimeLayer?.id }.toSet()
         layers.filterNot { it.id in catalogLayerIds }.forEach(::addBuiltInLayerCard)
     }
 
@@ -450,6 +513,7 @@ class RuntimeStoreFragment : MorpheCardFragment() {
         val installed = ImportedRuntimeLayerStore.loadFromContext(context)
             .firstOrNull { it.id == recipe.spec.id }
         val enabled = installed?.enabled ?: false
+        val targetInstalled = item.primaryPackageName?.let(::isPackageInstalled) == true
         addCard(
             title = item.sourcePatchName,
             summary = getString(
@@ -457,15 +521,19 @@ class RuntimeStoreFragment : MorpheCardFragment() {
                 item.sourceRepository,
                 item.primaryPackageName.orEmpty(),
             ),
-            status = if (installed == null) getString(R.string.store_recipe_status)
+            status = if (!targetInstalled) getString(R.string.app_not_installed_status)
+            else if (installed == null) getString(R.string.store_recipe_status)
             else if (enabled) getString(R.string.status_enabled) else getString(R.string.status_disabled),
             applicationPackage = item.primaryPackageName,
         ) {
             addSwitch(
                 container = this,
                 label = getString(R.string.store_recipe_switch_label),
-                summary = item.description.orEmpty(),
+                summary = if (targetInstalled) item.description.orEmpty() else {
+                    "${item.description.orEmpty()}\n${getString(R.string.app_not_installed_summary)}"
+                },
                 checked = enabled,
+                enabled = targetInstalled,
             ) { shouldEnable ->
                 val saved = if (installed == null) {
                     ImportedRuntimeLayerStore.save(context, recipe.spec.copy(enabled = shouldEnable))
@@ -476,7 +544,7 @@ class RuntimeStoreFragment : MorpheCardFragment() {
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                 if (saved) rebuildCards()
             }
-            addSourceButton(this, item.sourceRepository)
+            addSourceButton(this, item.sourceRepository, item.sourceHost)
         }
     }
 
@@ -500,16 +568,24 @@ class RuntimeStoreFragment : MorpheCardFragment() {
             status = status,
             applicationPackage = item.catalogPackageNames.firstOrNull(),
         ) {
-            addSourceButton(this, item.sourceRepository)
+            addSourceButton(this, item.sourceRepository, item.sourceHost)
         }
     }
 
-    private fun addSourceButton(container: LinearLayout, sourceRepository: String) {
+    private fun addSourceButton(
+        container: LinearLayout,
+        sourceRepository: String,
+        sourceHost: String = "github",
+    ) {
+        val baseUrl = when (sourceHost.lowercase()) {
+            "gitlab" -> "https://gitlab.com"
+            else -> "https://github.com"
+        }
         addButton(container, getString(R.string.store_view_source_action)) {
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://github.com/$sourceRepository"),
+                    Uri.parse("$baseUrl/$sourceRepository"),
                 ),
             )
         }
@@ -518,6 +594,8 @@ class RuntimeStoreFragment : MorpheCardFragment() {
     private fun addBuiltInLayerCard(layer: RuntimeLayer, catalogItem: RuntimeStoreItem? = null) {
         val context = requireContext()
         val enabled = BuiltInRuntimeLayerState.isEnabled(context, layer)
+        val targetPackage = catalogItem?.primaryPackageName ?: layer.packageNames.singleOrNull()
+        val targetInstalled = targetPackage?.let(::isPackageInstalled) == true
         val targetPackages = catalogItem?.catalogPackageNames
             ?.ifEmpty { layer.packageNames }
             ?.joinToString()
@@ -530,13 +608,16 @@ class RuntimeStoreFragment : MorpheCardFragment() {
                 layer.sourcePatchName,
                 targetPackages,
             ),
-            status = if (enabled) getString(R.string.status_enabled) else getString(R.string.status_disabled),
-            applicationPackage = layer.packageNames.singleOrNull(),
+            status = if (!targetInstalled) getString(R.string.app_not_installed_status)
+            else if (enabled) getString(R.string.status_enabled) else getString(R.string.status_disabled),
+            applicationPackage = targetPackage,
         ) {
             addSwitch(
                 container = this,
                 label = getString(R.string.store_layer_switch_label),
+                summary = if (targetInstalled) null else getString(R.string.app_not_installed_summary),
                 checked = enabled,
+                enabled = targetInstalled,
             ) { isEnabled ->
                 val saved = BuiltInRuntimeLayerState.setEnabled(context, layer, isEnabled)
                 val message = if (saved) R.string.runtime_restart_required else R.string.runtime_activation_failed

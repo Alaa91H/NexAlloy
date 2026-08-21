@@ -47,6 +47,29 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val disableGboardDiagnosticsDefinition = MultiDexP0ObjectReturnOverrideLayerDefinition(
+        id = "kveld.gboard.disable-diagnostics.runtime",
+        sourceRepository = "kveld9/kveld-morphe-patches",
+        sourcePatchName = "Disable Diagnostics",
+        packageNames = setOf("com.google.android.inputmethod.latin"),
+        patchName = "Runtime · Disable Diagnostics",
+        description = "Disables reviewed Gboard diagnostics initialization and recovery telemetry receiving paths.",
+        targets = listOf(
+            DexP0ObjectReturnTarget(
+                definingClass = "Lcom/google/android/libraries/inputmethod/appdoctor/initializer/AppDoctorInitializer;",
+                methodName = "a",
+                parameterTypes = listOf("Landroid/content/Context;"),
+            ),
+        ),
+        voidTargets = listOf(
+            VoidMethodTarget(
+                definingClass = "Lcom/google/android/libraries/appdoctor/AppDoctorReceiver;",
+                methodName = "onReceive",
+                parameterTypes = listOf("Landroid/content/Context;", "Landroid/content/Intent;"),
+            ),
+        ),
+    )
+
     private val openMessengerLinksExternallyDefinition = BooleanReturnOverrideLayerDefinition(
         id = "morphe.messenger.open-links-externally.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -159,6 +182,7 @@ object CommunityRuntimeLayers {
         hideRedditAdsDefinition.compile(),
         sanitizeRedditSharingDefinition.compile(),
         blockGboardTelemetryDefinition.compile(),
+        disableGboardDiagnosticsDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),
         removeTelegramSponsoredMessagesDefinition.compile(),
         disableProtonVpnTelemetryDefinition.compile(),
