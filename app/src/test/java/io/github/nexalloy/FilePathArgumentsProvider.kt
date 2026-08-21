@@ -20,11 +20,19 @@ class FilePathArgumentsProvider : ArgumentsProvider {
         val testInputPath = projectDir.resolve("binaries")
 
         if (!Files.exists(testInputPath)) {
-            throw IllegalStateException("APKs folder not found: $testInputPath")
+            // ParameterizedClass requires one invocation. The placeholder produces no
+            // dynamic fingerprint tests because it does not identify a supported app.
+            return Stream.of(Arguments.of(Path("__no_apk_fixture__")))
         }
 
-        return Files.walk(testInputPath).filter { path ->
+        val fixtures = Files.walk(testInputPath).use { paths ->
+            paths.filter { path ->
                 Files.isRegularFile(path) && path.normalize().none { it.name.startsWith(".") }
-            }.map { Arguments.of(it) }
+            }.toList()
+        }
+        if (fixtures.isEmpty()) {
+            return Stream.of(Arguments.of(Path("__no_apk_fixture__")))
+        }
+        return fixtures.stream().map { Arguments.of(it) }
     }
 }

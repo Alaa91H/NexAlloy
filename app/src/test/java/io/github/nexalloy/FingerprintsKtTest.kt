@@ -19,9 +19,11 @@ import kotlin.system.measureTimeMillis
 @ParameterizedClass
 @ArgumentsSource(FilePathArgumentsProvider::class)
 class FingerprintsKtTest(val apkPath: Path) {
-    val context = ApkContext(apkPath.toString())
-    val dexkit: DexKitBridge = context.dexkit
-    val appVersion: AppVersion = context.appVersion
+    private val context by lazy { ApkContext(apkPath.toString()) }
+    private val dexkit: DexKitBridge
+        get() = context.dexkit
+    private val appVersion: AppVersion
+        get() = context.appVersion
 
     // region Test runner
 

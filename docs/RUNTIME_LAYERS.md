@@ -11,13 +11,14 @@ A runtime layer is not a Morphe `.mpp` interpreter. Community bundles contain pa
 3. The adapter is registered in `RuntimeLayerRegistry` with its source repository, source patch name, and compatible package names.
 4. The compiled adapter is included in the ordinary app patch array and can be enabled from the NexAlloy settings screen.
 
-## First adapter
+## Built-in adapters
 
 | Runtime layer | Host app | Community source | Runtime behavior |
 |---|---|---|---|
-| `piko.instagram.disable-video-autoplay.runtime` | Instagram | [`crimera/piko`](https://github.com/crimera/piko), “Disable video autoplay” | Hooks the matched boolean setting method and returns `true` when the NexAlloy layer is enabled. |
+| `piko.instagram.disable-video-autoplay.runtime` | Instagram | [`crimera/piko`](https://github.com/crimera/piko), “Disable video autoplay” | Hooks the matched Boolean setting method and returns `true` when the NexAlloy layer is enabled. |
+| `piko.instagram.disable-story-flipping.runtime` | Instagram | [`crimera/piko`](https://github.com/crimera/piko), “Disable story flipping” | Skips the uniquely matched `ReelViewerFragment` Void method when the layer is enabled, preventing automatic move-to-next-story behavior. |
 
-The first adapter uses Piko's public fingerprint strings as compatibility signals. It is a new NexAlloy runtime hook and does not load, copy, or execute a Piko `.mpp` archive.
+These adapters use Piko's public fingerprint strings as compatibility signals. They are new NexAlloy runtime hooks and do not load, copy, or execute a Piko `.mpp` archive.
 
 ## Compatibility policy
 
@@ -57,3 +58,7 @@ When a catalog is refreshed, the store separates records into three states:
 | **Other catalog patches** | The target application is not registered by NexAlloy and cannot be imported into the LSPosed Runtime store. |
 
 This classification makes the supported subset explicit rather than pretending every community patch is automatically compatible with runtime hooking.
+
+## Verification and fixtures
+
+`./gradlew :app:testDebugUnitTest :app:assembleDebug` validates the runtime store and produces a debug APK. The fingerprint suite detects APK files under `binaries/` when they are supplied and tests their DexKit matches dynamically. When that directory is absent or empty, the fixture-dependent test invocation produces no dynamic tests, allowing the ordinary unit suite to remain reproducible in a clean checkout. Runtime behavior against a particular app release still requires on-device validation with LSPosed before enabling the corresponding adapter by default.
