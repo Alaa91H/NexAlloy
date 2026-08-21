@@ -17,7 +17,9 @@ class AppPatchInfo(
 ) {
     /** Built-in patches plus compiled runtime layers for this host package. */
     val patches: Array<Patch>
-        get() = builtInPatches + RuntimeLayerRegistry.layersFor(packageName)
+        get() = (builtInPatches.asList() + RuntimeLayerRegistry.layersFor(packageName).asList())
+            .distinct()
+            .toTypedArray()
 }
 
 val appPatchConfigurations = listOf(

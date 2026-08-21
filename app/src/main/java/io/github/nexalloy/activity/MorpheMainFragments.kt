@@ -14,6 +14,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -85,6 +86,7 @@ abstract class MorpheCardFragment : Fragment() {
         title: String,
         summary: String? = null,
         status: String? = null,
+        applicationPackage: String? = null,
         onClick: (() -> Unit)? = null,
         block: LinearLayout.() -> Unit = {},
     ): LinearLayout {
@@ -111,7 +113,7 @@ abstract class MorpheCardFragment : Fragment() {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20), dp(18), dp(20), dp(18))
         }
-        titleView(title).also(content::addView)
+        addCardTitle(content, title, applicationPackage)
         if (!summary.isNullOrBlank()) {
             summaryView(summary).also {
                 it.layoutParams = LinearLayout.LayoutParams(
@@ -212,6 +214,34 @@ abstract class MorpheCardFragment : Fragment() {
     protected fun color(resource: Int): Int = requireContext().getColor(resource)
     protected fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
+    private fun addCardTitle(container: LinearLayout, value: String, applicationPackage: String?) {
+        if (applicationPackage.isNullOrBlank()) {
+            titleView(value).also(container::addView)
+            return
+        }
+        val context = requireContext()
+        val header = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        val icon = ImageView(context).apply {
+            val size = dp(40)
+            layoutParams = LinearLayout.LayoutParams(size, size).apply { marginEnd = dp(12) }
+            scaleType = ImageView.ScaleType.CENTER_INSIDE
+            contentDescription = value
+            val applicationIcon = runCatching {
+                context.packageManager.getApplicationIcon(applicationPackage)
+            }.getOrNull()
+            if (applicationIcon == null) setImageResource(R.drawable.ic_morphe_patches)
+            else setImageDrawable(applicationIcon)
+        }
+        header.addView(icon)
+        header.addView(titleView(value).apply {
+            layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+        })
+        container.addView(header)
+    }
+
     private fun titleView(value: String) = TextView(requireContext()).apply {
         text = value
         setTextColor(color(R.color.morphe_on_surface))
@@ -289,6 +319,7 @@ class ActivePatchesFragment : MorpheCardFragment() {
                     ),
                 ),
                 status = getString(R.string.patches_app_status, enabledCount, group.patches.size),
+                applicationPackage = group.packageName,
                 onClick = {
                     expandedPackageName = if (expanded) null else group.packageName
                     rebuildCards()
@@ -396,17 +427,10 @@ class RuntimeStoreFragment : MorpheCardFragment() {
         }
 
         val installable = items.filter { it.availability == RuntimeStoreAvailability.READY }
-        val needsAdapter = items.filter { it.availability == RuntimeStoreAvailability.NEEDS_RUNTIME_ADAPTER }
-        val unsupported = items.filter { it.availability == RuntimeStoreAvailability.UNSUPPORTED_TARGET }
 
         addCard(
             title = getString(R.string.store_catalogue_title),
-            summary = getString(
-                R.string.store_catalogue_summary,
-                installable.size,
-                needsAdapter.size,
-                unsupported.size,
-            ),
+            summary = getString(R.string.store_catalogue_summary, installable.size),
             status = getString(R.string.store_catalogue_status),
         )
 
@@ -418,8 +442,6 @@ class RuntimeStoreFragment : MorpheCardFragment() {
         }
         val catalogLayerIds = installable.mapNotNull { it.runtimeLayer?.id }.toSet()
         layers.filterNot { it.id in catalogLayerIds }.forEach(::addBuiltInLayerCard)
-        needsAdapter.forEach { item -> addMetadataCard(item, RuntimeStoreAvailability.NEEDS_RUNTIME_ADAPTER) }
-        unsupported.forEach { item -> addMetadataCard(item, RuntimeStoreAvailability.UNSUPPORTED_TARGET) }
     }
 
     private fun addInstallableRecipeCard(item: RuntimeStoreItem) {
@@ -437,6 +459,7 @@ class RuntimeStoreFragment : MorpheCardFragment() {
             ),
             status = if (installed == null) getString(R.string.store_recipe_status)
             else if (enabled) getString(R.string.status_enabled) else getString(R.string.status_disabled),
+            applicationPackage = item.primaryPackageName,
         ) {
             addSwitch(
                 container = this,
@@ -475,6 +498,7 @@ class RuntimeStoreFragment : MorpheCardFragment() {
                 item.description.orEmpty(),
             ),
             status = status,
+            applicationPackage = item.catalogPackageNames.firstOrNull(),
         ) {
             addSourceButton(this, item.sourceRepository)
         }
@@ -507,6 +531,7 @@ class RuntimeStoreFragment : MorpheCardFragment() {
                 targetPackages,
             ),
             status = if (enabled) getString(R.string.status_enabled) else getString(R.string.status_disabled),
+            applicationPackage = layer.packageNames.singleOrNull(),
         ) {
             addSwitch(
                 container = this,

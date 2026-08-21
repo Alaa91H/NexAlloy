@@ -42,11 +42,15 @@ data class BooleanReturnOverrideLayerDefinition(
     val description: String,
     val fingerprintStrings: List<String>,
     val replacementValue: Boolean,
+    val definingClass: String? = null,
+    val parameterTypes: List<String> = emptyList(),
     val enabledByDefault: Boolean = false,
 ) {
     fun compile(): RuntimeLayer {
         val fingerprint = FingerprintDsl {
-            strings(*fingerprintStrings.toTypedArray())
+            definingClass?.let(::definingClass)
+            if (fingerprintStrings.isNotEmpty()) strings(*fingerprintStrings.toTypedArray())
+            if (parameterTypes.isNotEmpty()) parameters(*parameterTypes.toTypedArray())
             returns("Z")
         }.build()
         val compiledPatch = patch(
@@ -64,6 +68,26 @@ data class BooleanReturnOverrideLayerDefinition(
             patch = compiledPatch,
         )
     }
+}
+
+/**
+ * Maps a reviewed local LSPosed patch to a community catalog item. The patch is already
+ * compiled into this module; this definition only supplies store attribution and discovery.
+ */
+data class ExistingPatchRuntimeLayerDefinition(
+    val id: String,
+    val sourceRepository: String,
+    val sourcePatchName: String,
+    val packageNames: Set<String>,
+    val patch: Patch,
+) {
+    fun compile(): RuntimeLayer = RuntimeLayer(
+        id = id,
+        sourceRepository = sourceRepository,
+        sourcePatchName = sourcePatchName,
+        packageNames = packageNames,
+        patch = patch,
+    )
 }
 
 /**
@@ -122,7 +146,7 @@ object RuntimeLayerTargetRegistry {
 
 object RuntimeLayerRegistry {
     private val builtInLayers: List<RuntimeLayer> by lazy {
-        InstagramRuntimeLayers.layers
+        InstagramRuntimeLayers.layers + CommunityRuntimeLayers.layers
     }
 
     /** Layers permanently compiled into the module and visible in normal settings. */

@@ -34,7 +34,7 @@ class RuntimeCatalogBridgeTest {
     }
 
     @Test
-    fun `runtime layer registry exposes only compiled Instagram layer`() {
+    fun `runtime layer registry exposes reviewed compiled layers`() {
         val layer = RuntimeLayerRegistry.find(
             sourceRepository = "crimera/piko",
             sourcePatchName = "Disable video autoplay",
@@ -48,8 +48,16 @@ class RuntimeCatalogBridgeTest {
             packageName = "com.instagram.android",
         )
         assertEquals("piko.instagram.disable-story-flipping.runtime", storyLayer?.id)
-        assertEquals(2, RuntimeLayerRegistry.layersFor("com.instagram.android").size)
-        assertTrue(RuntimeLayerRegistry.layersFor("com.reddit.frontpage").isEmpty())
+        assertEquals(3, RuntimeLayerRegistry.layersFor("com.instagram.android").size)
+        assertEquals(2, RuntimeLayerRegistry.layersFor("com.reddit.frontpage").size)
+        assertEquals(
+            "morphe.reddit.hide-ads.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "rushiranpise/morphe-patches",
+                sourcePatchName = "Hide Ads",
+                packageName = "com.reddit.frontpage",
+            )?.id,
+        )
     }
 
     @Test

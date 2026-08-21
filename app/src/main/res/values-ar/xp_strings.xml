@@ -68,7 +68,7 @@
     <string name="patch_state_saved">تم حفظ حالة الباتش. أوقف التطبيق المستهدف إجباريًا ثم افتحه مجددًا.</string>
 
     <string name="store_page_intro_title">متجر Runtime</string>
-    <string name="store_page_intro_summary">تظهر هنا جميع عناصر الكتالوج. يمكن تفعيل المحوّلات المحلية المراجَعة، بينما تبقى العناصر الأخرى مرئية مع حالة التوافق ورابط المصدر.</string>
+    <string name="store_page_intro_summary">تظهر هنا فقط الباتشات التي تملك محوّل Runtime محليًا ومراجَعًا. يمكن تفعيل كل عنصر معروض مباشرة في هذا الإصدار.</string>
     <string name="store_catalog_loaded">تم تصنيف %1$d من باتشات الكتالوج</string>
     <string name="store_catalog_loading">سيُحدّث الكتالوج تلقائيًا</string>
     <string name="store_refresh_action">تحديث الكتالوج</string>
@@ -90,8 +90,8 @@
     <string name="store_layers_empty_title">لا توجد طبقات Runtime مضمنة</string>
     <string name="store_layers_empty_summary">لا يتضمن هذا الإصدار محوّلًا محليًا مدمجًا بعد، لكن عناصر الكتالوج ستظهر أدناه.</string>
     <string name="store_catalogue_title">كتالوج الباتشات الكامل</string>
-    <string name="store_catalogue_summary">%1$d جاهز للإضافة · %2$d يحتاج إلى محوّل · %3$d يستهدف تطبيقات أخرى</string>
-    <string name="store_catalogue_status">كل عناصر الكتالوج ظاهرة</string>
+    <string name="store_catalogue_summary">يتوفر %1$d من عناصر Runtime الجاهزة للتفعيل في هذا الإصدار.</string>
+    <string name="store_catalogue_status">العناصر الجاهزة فقط</string>
     <string name="store_catalog_empty_title">لا يحتوي الكتالوج على عناصر ظاهرة</string>
     <string name="store_catalog_empty_summary">حدّث الكتالوج أو افتحه في المتصفح للتحقق من المصادر المنشورة.</string>
     <string name="store_catalog_item_summary">المصدر: %1$s\nالتطبيق المستهدف: %2$s\n%3$s</string>

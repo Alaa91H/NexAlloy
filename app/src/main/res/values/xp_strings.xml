@@ -70,7 +70,7 @@
 
     <!-- Runtime Store page -->
     <string name="store_page_intro_title">Runtime Store</string>
-    <string name="store_page_intro_summary">Every catalog entry is shown here. Reviewed local adapters can be enabled; other entries remain visible with their compatibility status and source link.</string>
+    <string name="store_page_intro_summary">Only patches with a reviewed local Runtime adapter are shown here. Each listed item can be enabled directly in this build.</string>
     <string name="store_catalog_loaded">%1$d catalog patches classified</string>
     <string name="store_catalog_loading">Catalog will refresh automatically</string>
     <string name="store_refresh_action">Refresh catalog</string>
@@ -92,8 +92,8 @@
     <string name="store_layers_empty_title">No compiled Runtime layers</string>
     <string name="store_layers_empty_summary">This build does not include a compiled local adapter yet. Catalog entries are still listed below.</string>
     <string name="store_catalogue_title">Full patch catalog</string>
-    <string name="store_catalogue_summary">%1$d ready to add · %2$d need an adapter · %3$d target other apps</string>
-    <string name="store_catalogue_status">All catalog entries visible</string>
+    <string name="store_catalogue_summary">%1$d ready Runtime item(s) are available to activate in this build.</string>
+    <string name="store_catalogue_status">Ready items only</string>
     <string name="store_catalog_empty_title">The catalog has no visible entries</string>
     <string name="store_catalog_empty_summary">Refresh the catalog or open it in the browser to confirm the published sources.</string>
     <string name="store_catalog_item_summary">Source: %1$s\nTarget: %2$s\n%3$s</string>

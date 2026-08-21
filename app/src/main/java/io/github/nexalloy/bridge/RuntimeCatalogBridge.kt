@@ -384,7 +384,7 @@ class RuntimeCatalogClient(
             headers = mapOf(
                 "Accept" to "application/json, text/plain, */*",
                 "Referer" to RuntimeCatalogConfig.CATALOG_PAGE_URL,
-                "User-Agent" to "Morphe-LSPosed-RuntimeCatalog/1.0",
+                "User-Agent" to "Mozilla/5.0 (Android 15; Mobile) AppleWebKit/537.36 Chrome/130.0 Mobile Safari/537.36",
             )
         )
         if (response.statusCode !in 200..299) {
