@@ -60,4 +60,27 @@
     <string name="runtime_layer_dialog_summary">This is a NexAlloy-compiled runtime adapter for the community patch “%2$s” from %1$s. It runs through the ordinary Xposed/DexKit patch pipeline and does not build or modify an APK.</string>
     <string name="runtime_layer_open_settings">Open NexAlloy settings</string>
     <string name="runtime_layer_target_unavailable">No NexAlloy settings target is registered for this runtime layer.</string>
+    <string name="runtime_store_ready_title">Ready for LSPosed runtime</string>
+    <string name="runtime_store_ready_summary">%1$s · Target: %2$s · Open to enable in NexAlloy settings.</string>
+    <string name="runtime_store_needs_adapter_title">Needs a runtime adapter</string>
+    <string name="runtime_store_needs_adapter_summary">%1$s · Target: %2$s · This patch needs a reviewed runtime adapter before it can run in LSPosed.</string>
+    <string name="runtime_store_unsupported_title">Other catalog patches</string>
+    <string name="runtime_store_unsupported_summary">%1$d patch(es) target apps not registered by NexAlloy and cannot be added to the Runtime store.</string>
+    <string name="runtime_import_title">Import supported Runtime specification</string>
+    <string name="runtime_import_summary">Add a data-only Boolean override specification. Source code and .mpp archives are not accepted.</string>
+    <string name="runtime_import_hint">Paste Runtime specification JSON</string>
+    <string name="runtime_import_dialog_summary">Only supported, data-only Runtime specifications are accepted. The importer rejects source code, bytecode, URLs, invalid hosts, and unsupported operations.</string>
+    <string name="runtime_import_action">Import</string>
+    <string name="runtime_import_success">Runtime layer imported. Enable it explicitly before restarting the target app.</string>
+    <string name="runtime_import_failed">Could not import Runtime specification: %1$s</string>
+    <string name="runtime_imported_title">Imported Runtime layers</string>
+    <string name="runtime_imported_summary">%1$s · Target: %2$s · %3$s</string>
+    <string name="runtime_imported_dialog_summary">Source: %1$s\nPatch: %2$s\nTarget: %3$s\nThis layer is data-only and runs through the constrained Boolean hook operation.</string>
+    <string name="runtime_status_enabled">enabled</string>
+    <string name="runtime_status_disabled">disabled</string>
+    <string name="runtime_enable_action">Enable</string>
+    <string name="runtime_disable_action">Disable</string>
+    <string name="runtime_delete_action">Delete</string>
+    <string name="runtime_deleted">Runtime layer deleted.</string>
+    <string name="runtime_restart_required">Layer state updated. Force-stop and reopen the target app to apply it.</string>
 </resources>

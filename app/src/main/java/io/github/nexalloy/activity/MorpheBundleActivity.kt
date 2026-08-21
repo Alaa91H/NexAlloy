@@ -8,6 +8,8 @@ import android.preference.Preference
 import android.preference.PreferenceCategory
 import android.preference.PreferenceFragment
 import android.preference.PreferenceScreen
+import android.text.InputType
+import android.widget.EditText
 import android.widget.Toast
 import io.github.nexalloy.R
 import io.github.nexalloy.appPatchConfigurations
@@ -15,8 +17,14 @@ import io.github.nexalloy.bridge.CommunityCatalog
 import io.github.nexalloy.bridge.MorpheBridgeConfig
 import io.github.nexalloy.bridge.MorpheCatalogClient
 import io.github.nexalloy.bridge.MorpheCatalogStore
+import io.github.nexalloy.runtime.ImportedBooleanRuntimeLayerSpec
+import io.github.nexalloy.runtime.ImportedRuntimeLayerStore
 import io.github.nexalloy.runtime.RuntimeLayer
+import io.github.nexalloy.runtime.RuntimeLayerSpecCodec
 import io.github.nexalloy.runtime.RuntimeLayerRegistry
+import io.github.nexalloy.runtime.RuntimeStoreAvailability
+import io.github.nexalloy.runtime.RuntimeStoreClassifier
+import io.github.nexalloy.runtime.RuntimeStoreItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -108,7 +116,9 @@ class MorpheBundleActivity : Activity() {
             }
 
             addCatalogStatus(root)
+            addRuntimeStorePreferences(root)
             addRuntimeLayerPreferences(root)
+            addImportedRuntimeLayerPreferences(root)
         }
 
         private fun addCatalogStatus(root: PreferenceScreen) {
@@ -127,6 +137,64 @@ class MorpheBundleActivity : Activity() {
                 }
                 isEnabled = false
                 root.addPreference(this)
+            }
+        }
+
+        private fun addRuntimeStorePreferences(root: PreferenceScreen) {
+            val currentCatalog = catalog ?: return
+            val items = RuntimeStoreClassifier().classify(currentCatalog)
+            val ready = items.filter { it.availability == RuntimeStoreAvailability.READY }
+            val needsAdapter = items.filter { it.availability == RuntimeStoreAvailability.NEEDS_RUNTIME_ADAPTER }
+
+            if (ready.isNotEmpty()) {
+                val category = PreferenceCategory(context).apply {
+                    title = getString(R.string.runtime_store_ready_title)
+                    root.addPreference(this)
+                }
+                ready.forEach { item ->
+                    Preference(context).apply {
+                        title = item.sourcePatchName
+                        summary = getString(
+                            R.string.runtime_store_ready_summary,
+                            item.sourceRepository,
+                            item.primaryPackageName ?: "",
+                        )
+                        setOnPreferenceClickListener {
+                            item.runtimeLayer?.let(::showRuntimeLayerDialog)
+                            true
+                        }
+                        category.addPreference(this)
+                    }
+                }
+            }
+
+            if (needsAdapter.isNotEmpty()) {
+                val category = PreferenceCategory(context).apply {
+                    title = getString(R.string.runtime_store_needs_adapter_title)
+                    root.addPreference(this)
+                }
+                needsAdapter.forEach { item ->
+                    Preference(context).apply {
+                        title = item.sourcePatchName
+                        summary = getString(
+                            R.string.runtime_store_needs_adapter_summary,
+                            item.sourceRepository,
+                            item.primaryPackageName ?: "",
+                        )
+                        isEnabled = false
+                        category.addPreference(this)
+                    }
+                }
+            }
+
+            val unsupportedCount = items.count { it.availability == RuntimeStoreAvailability.UNSUPPORTED_TARGET }
+            if (unsupportedCount > 0) {
+                Preference(context).apply {
+                    title = getString(R.string.runtime_store_unsupported_title)
+                    summary = getString(R.string.runtime_store_unsupported_summary, unsupportedCount)
+                    isEnabled = false
+                    root.addPreference(this)
+                }
             }
         }
 
@@ -153,6 +221,99 @@ class MorpheBundleActivity : Activity() {
                     category.addPreference(this)
                 }
             }
+        }
+
+        private fun addImportedRuntimeLayerPreferences(root: PreferenceScreen) {
+            Preference(context).apply {
+                title = getString(R.string.runtime_import_title)
+                summary = getString(R.string.runtime_import_summary)
+                setOnPreferenceClickListener {
+                    showRuntimeSpecImportDialog()
+                    true
+                }
+                root.addPreference(this)
+            }
+
+            val importedSpecs = ImportedRuntimeLayerStore.loadFromContext(context)
+            if (importedSpecs.isEmpty()) return
+            val category = PreferenceCategory(context).apply {
+                title = getString(R.string.runtime_imported_title)
+                root.addPreference(this)
+            }
+            importedSpecs.forEach { spec ->
+                Preference(context).apply {
+                    title = spec.patchName
+                    summary = getString(
+                        R.string.runtime_imported_summary,
+                        spec.sourceRepository,
+                        spec.packageName,
+                        if (spec.enabled) getString(R.string.runtime_status_enabled) else getString(R.string.runtime_status_disabled),
+                    )
+                    setOnPreferenceClickListener {
+                        showImportedRuntimeLayerDialog(spec)
+                        true
+                    }
+                    category.addPreference(this)
+                }
+            }
+        }
+
+        private fun showRuntimeSpecImportDialog() {
+            val currentActivity = activity ?: return
+            val input = EditText(currentActivity).apply {
+                hint = getString(R.string.runtime_import_hint)
+                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                minLines = 8
+                maxLines = 12
+            }
+            AlertDialog.Builder(currentActivity)
+                .setTitle(R.string.runtime_import_title)
+                .setMessage(R.string.runtime_import_dialog_summary)
+                .setView(input)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.runtime_import_action) { _, _ ->
+                    val result = runCatching { RuntimeLayerSpecCodec.parse(input.text.toString()) }
+                    result.onSuccess { spec ->
+                        ImportedRuntimeLayerStore.save(context, spec)
+                        rebuildScreen()
+                        Toast.makeText(context, R.string.runtime_import_success, Toast.LENGTH_LONG).show()
+                    }.onFailure { error ->
+                        Toast.makeText(
+                            context,
+                            getString(R.string.runtime_import_failed, error.message ?: "unknown error"),
+                            Toast.LENGTH_LONG,
+                        ).show()
+                    }
+                }
+                .show()
+        }
+
+        private fun showImportedRuntimeLayerDialog(spec: ImportedBooleanRuntimeLayerSpec) {
+            val currentActivity = activity ?: return
+            AlertDialog.Builder(currentActivity)
+                .setTitle(spec.patchName)
+                .setMessage(
+                    getString(
+                        R.string.runtime_imported_dialog_summary,
+                        spec.sourceRepository,
+                        spec.sourcePatchName,
+                        spec.packageName,
+                    )
+                )
+                .setNegativeButton(android.R.string.cancel, null)
+                .setNeutralButton(R.string.runtime_delete_action) { _, _ ->
+                    ImportedRuntimeLayerStore.delete(context, spec.id)
+                    rebuildScreen()
+                    Toast.makeText(context, R.string.runtime_deleted, Toast.LENGTH_SHORT).show()
+                }
+                .setPositiveButton(
+                    if (spec.enabled) R.string.runtime_disable_action else R.string.runtime_enable_action
+                ) { _, _ ->
+                    ImportedRuntimeLayerStore.setEnabled(context, spec.id, !spec.enabled)
+                    rebuildScreen()
+                    Toast.makeText(context, R.string.runtime_restart_required, Toast.LENGTH_LONG).show()
+                }
+                .show()
         }
 
         private fun showRuntimeLayerDialog(layer: RuntimeLayer) {

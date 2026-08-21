@@ -66,12 +66,27 @@ data class BooleanReturnOverrideLayerDefinition(
     }
 }
 
+object RuntimeLayerTargetRegistry {
+    val packageNames = setOf(
+        "com.google.android.youtube",
+        "com.google.android.apps.youtube.music",
+        "com.reddit.frontpage",
+        "com.google.android.apps.photos",
+        "com.microblink.photomath",
+        "com.instagram.android",
+        "com.instagram.barcelona",
+        "com.strava",
+        "com.alltrails.alltrails",
+    )
+}
+
 object RuntimeLayerRegistry {
-    private val layers: List<RuntimeLayer> by lazy {
+    private val builtInLayers: List<RuntimeLayer> by lazy {
         InstagramRuntimeLayers.layers
     }
 
-    fun layersFor(packageName: String): Array<Patch> = layers
+    /** Layers permanently compiled into the module and visible in normal settings. */
+    fun layersFor(packageName: String): Array<Patch> = builtInLayers
         .asSequence()
         .filter { packageName in it.packageNames }
         .map { it.patch }
@@ -79,11 +94,21 @@ object RuntimeLayerRegistry {
         .toTypedArray()
 
     fun find(sourceRepository: String, sourcePatchName: String, packageName: String): RuntimeLayer? =
-        layers.firstOrNull {
+        builtInLayers.firstOrNull {
             it.sourceRepository == sourceRepository &&
                 it.sourcePatchName == sourcePatchName &&
                 packageName in it.packageNames
         }
 
-    fun all(): List<RuntimeLayer> = layers.toList()
+    /** Built-in layers are available even before an imported specification is added. */
+    fun all(): List<RuntimeLayer> = builtInLayers.toList()
+
+    /** Called only by the Xposed host process after it can read shared module state. */
+    fun importedLayersForHooking(packageName: String): Array<Patch> =
+        ImportedRuntimeLayerStore.loadForHooking()
+            .asSequence()
+            .filter { packageName in it.packageNames }
+            .map { it.patch }
+            .toList()
+            .toTypedArray()
 }

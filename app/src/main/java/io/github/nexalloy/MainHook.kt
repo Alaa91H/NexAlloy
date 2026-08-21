@@ -15,6 +15,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam
 import io.github.nexalloy.common.UpdateChecker
 import io.github.nexalloy.morphe.ResourceFinder
 import io.github.nexalloy.morphe.resourceMappings
+import io.github.nexalloy.runtime.RuntimeLayerRegistry
 
 class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit {
     lateinit var startupParam: StartupParam
@@ -49,7 +50,8 @@ class MainHook : IXposedHookLoadPackage, IXposedHookZygoteInit {
             }
 
             val patches = patchesByPackage[lpparam.packageName] ?: return@inContext
-            PatchExecutor(app, lpparam).applyPatches(patches)
+            val importedRuntimeLayers = RuntimeLayerRegistry.importedLayersForHooking(lpparam.packageName)
+            PatchExecutor(app, lpparam).applyPatches(patches + importedRuntimeLayers)
         }
     }
 

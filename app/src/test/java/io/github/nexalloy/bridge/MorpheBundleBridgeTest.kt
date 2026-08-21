@@ -1,6 +1,11 @@
 package io.github.nexalloy.bridge
 
+import io.github.nexalloy.runtime.ImportedBooleanRuntimeLayerSpec
+import io.github.nexalloy.runtime.RuntimeLayerImportException
 import io.github.nexalloy.runtime.RuntimeLayerRegistry
+import io.github.nexalloy.runtime.RuntimeLayerSpecCodec
+import io.github.nexalloy.runtime.RuntimeStoreAvailability
+import io.github.nexalloy.runtime.RuntimeStoreClassifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -38,6 +43,75 @@ class MorpheBundleBridgeTest {
         assertEquals("piko.instagram.disable-video-autoplay.runtime", layer?.id)
         assertTrue(RuntimeLayerRegistry.layersFor("com.instagram.android").isNotEmpty())
         assertTrue(RuntimeLayerRegistry.layersFor("com.reddit.frontpage").isEmpty())
+    }
+
+    @Test
+    fun `runtime specification codec accepts constrained Boolean override`() {
+        val spec = ImportedBooleanRuntimeLayerSpec(
+            id = "community.instagram.boolean-override",
+            sourceRepository = "community/example",
+            sourcePatchName = "Disable sample feature",
+            packageName = "com.instagram.android",
+            patchName = "Runtime · Disable sample feature",
+            description = "Safe Boolean override",
+            fingerprintStrings = listOf("sample_feature_flag"),
+            replacementValue = true,
+        )
+
+        val parsed = RuntimeLayerSpecCodec.parse(RuntimeLayerSpecCodec.encode(spec))
+
+        assertEquals(spec.id, parsed.id)
+        assertEquals(false, parsed.enabled)
+    }
+
+    @Test
+    fun `runtime specification codec rejects unregistered target`() {
+        val spec = ImportedBooleanRuntimeLayerSpec(
+            id = "community.unknown.boolean-override",
+            sourceRepository = "community/example",
+            sourcePatchName = "Unknown target",
+            packageName = "com.example.unregistered",
+            patchName = "Runtime · Unknown target",
+            description = "Safe Boolean override",
+            fingerprintStrings = listOf("sample_feature_flag"),
+            replacementValue = false,
+        )
+
+        val error = runCatching { RuntimeLayerSpecCodec.encode(spec) }.exceptionOrNull()
+
+        assertTrue(error is RuntimeLayerImportException)
+    }
+
+    @Test
+    fun `runtime store classifies compiled layer as ready`() {
+        val catalog = MorpheCatalogParser().parse(SAMPLE_CATALOG)
+
+        val item = RuntimeStoreClassifier().classify(catalog).single()
+
+        assertEquals(RuntimeStoreAvailability.READY, item.availability)
+        assertEquals("piko.instagram.disable-video-autoplay.runtime", item.runtimeLayer?.id)
+    }
+
+    @Test
+    fun `runtime store marks matching host patch without adapter`() {
+        val catalog = MorpheCatalogParser().parse(
+            SAMPLE_CATALOG.replace("Disable video autoplay", "Disable story autoplay")
+        )
+
+        val item = RuntimeStoreClassifier().classify(catalog).single()
+
+        assertEquals(RuntimeStoreAvailability.NEEDS_RUNTIME_ADAPTER, item.availability)
+    }
+
+    @Test
+    fun `runtime store marks unknown host package unsupported`() {
+        val catalog = MorpheCatalogParser().parse(
+            SAMPLE_CATALOG.replace("com.instagram.android", "com.example.notregistered")
+        )
+
+        val item = RuntimeStoreClassifier().classify(catalog).single()
+
+        assertEquals(RuntimeStoreAvailability.UNSUPPORTED_TARGET, item.availability)
     }
 
     @Test
