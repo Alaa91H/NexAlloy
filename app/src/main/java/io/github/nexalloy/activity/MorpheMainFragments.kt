@@ -85,6 +85,7 @@ abstract class MorpheCardFragment : Fragment() {
         title: String,
         summary: String? = null,
         status: String? = null,
+        onClick: (() -> Unit)? = null,
         block: LinearLayout.() -> Unit = {},
     ): LinearLayout {
         val context = requireContext()
@@ -100,6 +101,11 @@ abstract class MorpheCardFragment : Fragment() {
             setCardBackgroundColor(
                 color(if (cardIndex++ % 2 == 0) R.color.morphe_card_light else R.color.morphe_card_dark),
             )
+            if (onClick != null) {
+                isClickable = true
+                isFocusable = true
+                setOnClickListener { onClick() }
+            }
         }
         val content = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
@@ -242,6 +248,8 @@ private data class AppPatchGroup(
 
 /** Displays all local patches grouped into one controllable Material card per target app. */
 class ActivePatchesFragment : MorpheCardFragment() {
+    private var expandedPackageName: String? = null
+
     @SuppressLint("WorldReadableFiles")
     override fun renderCards() {
         val context = requireContext()
@@ -268,11 +276,25 @@ class ActivePatchesFragment : MorpheCardFragment() {
 
         groups.forEach { group ->
             val enabledCount = group.enabledPatchCount(context)
+            val expanded = expandedPackageName == group.packageName
             addCard(
                 title = group.appName,
-                summary = getString(R.string.patches_app_summary, group.packageName, group.patches.size),
+                summary = getString(
+                    R.string.patches_app_summary,
+                    group.packageName,
+                    group.patches.size,
+                    getString(
+                        if (expanded) R.string.patches_collapse_hint
+                        else R.string.patches_expand_hint,
+                    ),
+                ),
                 status = getString(R.string.patches_app_status, enabledCount, group.patches.size),
+                onClick = {
+                    expandedPackageName = if (expanded) null else group.packageName
+                    rebuildCards()
+                },
             ) {
+                if (!expanded) return@addCard
                 group.patches.sortedBy { it.name.lowercase() }.forEach { patch ->
                     val enabled = context.getSharedPreferences(group.packageName, Context.MODE_PRIVATE)
                         .getBoolean(patch.name, patch.defaultEnabled)
@@ -351,16 +373,19 @@ class RuntimeStoreFragment : MorpheCardFragment() {
         }
 
         val layers = RuntimeLayerRegistry.all()
-        if (layers.isEmpty()) {
-            addCard(
-                title = getString(R.string.store_layers_empty_title),
-                summary = getString(R.string.store_layers_empty_summary),
-            )
-        } else {
-            layers.forEach(::addBuiltInLayerCard)
+        val currentCatalog = catalog
+        if (currentCatalog == null) {
+            if (layers.isEmpty()) {
+                addCard(
+                    title = getString(R.string.store_layers_empty_title),
+                    summary = getString(R.string.store_layers_empty_summary),
+                )
+            } else {
+                layers.forEach(::addBuiltInLayerCard)
+            }
+            return
         }
 
-        val currentCatalog = catalog ?: return
         val items = RuntimeStoreClassifier().classify(currentCatalog)
         if (items.isEmpty()) {
             addCard(
@@ -370,9 +395,7 @@ class RuntimeStoreFragment : MorpheCardFragment() {
             return
         }
 
-        val installable = items.filter {
-            it.availability == RuntimeStoreAvailability.READY && it.runtimeLayer == null
-        }
+        val installable = items.filter { it.availability == RuntimeStoreAvailability.READY }
         val needsAdapter = items.filter { it.availability == RuntimeStoreAvailability.NEEDS_RUNTIME_ADAPTER }
         val unsupported = items.filter { it.availability == RuntimeStoreAvailability.UNSUPPORTED_TARGET }
 
@@ -387,7 +410,14 @@ class RuntimeStoreFragment : MorpheCardFragment() {
             status = getString(R.string.store_catalogue_status),
         )
 
-        installable.forEach { item -> addInstallableRecipeCard(item) }
+        installable.forEach { item ->
+            when {
+                item.runtimeLayer != null -> addBuiltInLayerCard(item.runtimeLayer, item)
+                item.recipe != null -> addInstallableRecipeCard(item)
+            }
+        }
+        val catalogLayerIds = installable.mapNotNull { it.runtimeLayer?.id }.toSet()
+        layers.filterNot { it.id in catalogLayerIds }.forEach(::addBuiltInLayerCard)
         needsAdapter.forEach { item -> addMetadataCard(item, RuntimeStoreAvailability.NEEDS_RUNTIME_ADAPTER) }
         unsupported.forEach { item -> addMetadataCard(item, RuntimeStoreAvailability.UNSUPPORTED_TARGET) }
     }
@@ -414,13 +444,14 @@ class RuntimeStoreFragment : MorpheCardFragment() {
                 summary = item.description.orEmpty(),
                 checked = enabled,
             ) { shouldEnable ->
-                if (installed == null) {
+                val saved = if (installed == null) {
                     ImportedRuntimeLayerStore.save(context, recipe.spec.copy(enabled = shouldEnable))
                 } else {
                     ImportedRuntimeLayerStore.setEnabled(context, installed.id, shouldEnable)
                 }
-                Toast.makeText(context, R.string.runtime_restart_required, Toast.LENGTH_LONG).show()
-                rebuildCards()
+                val message = if (saved) R.string.runtime_restart_required else R.string.runtime_activation_failed
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                if (saved) rebuildCards()
             }
             addSourceButton(this, item.sourceRepository)
         }
@@ -460,16 +491,20 @@ class RuntimeStoreFragment : MorpheCardFragment() {
         }
     }
 
-    private fun addBuiltInLayerCard(layer: RuntimeLayer) {
+    private fun addBuiltInLayerCard(layer: RuntimeLayer, catalogItem: RuntimeStoreItem? = null) {
         val context = requireContext()
         val enabled = BuiltInRuntimeLayerState.isEnabled(context, layer)
+        val targetPackages = catalogItem?.catalogPackageNames
+            ?.ifEmpty { layer.packageNames }
+            ?.joinToString()
+            ?: layer.packageNames.joinToString()
         addCard(
-            title = layer.patch.name,
+            title = catalogItem?.sourcePatchName ?: layer.patch.name,
             summary = getString(
                 R.string.store_layer_summary,
                 layer.sourceRepository,
                 layer.sourcePatchName,
-                layer.packageNames.joinToString(),
+                targetPackages,
             ),
             status = if (enabled) getString(R.string.status_enabled) else getString(R.string.status_disabled),
         ) {
@@ -478,9 +513,10 @@ class RuntimeStoreFragment : MorpheCardFragment() {
                 label = getString(R.string.store_layer_switch_label),
                 checked = enabled,
             ) { isEnabled ->
-                BuiltInRuntimeLayerState.setEnabled(context, layer, isEnabled)
-                Toast.makeText(context, R.string.runtime_restart_required, Toast.LENGTH_LONG).show()
-                rebuildCards()
+                val saved = BuiltInRuntimeLayerState.setEnabled(context, layer, isEnabled)
+                val message = if (saved) R.string.runtime_restart_required else R.string.runtime_activation_failed
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                if (saved) rebuildCards()
             }
             addSourceButton(this, layer.sourceRepository)
         }
@@ -508,14 +544,25 @@ class RuntimeStoreFragment : MorpheCardFragment() {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }.onFailure {
                 if (!isAdded) return@onFailure
+                val error = catalogErrorMessage(it)
                 val message = if (automatic) {
-                    getString(R.string.store_auto_refresh_failed, it.message ?: "unknown error")
+                    getString(R.string.store_auto_refresh_failed, error)
                 } else {
-                    getString(R.string.store_refresh_failed, it.message ?: "unknown error")
+                    getString(R.string.store_refresh_failed, error)
                 }
                 Toast.makeText(context, message, Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    private fun catalogErrorMessage(error: Throwable): String = when {
+        error.message?.startsWith("Morphe catalog request failed") == true ->
+            getString(R.string.store_error_network)
+        error.message?.contains("exceeds the local safety limit") == true ->
+            getString(R.string.store_error_size)
+        error.message?.contains("response is not JSON") == true ->
+            getString(R.string.store_error_response)
+        else -> getString(R.string.store_error_network)
     }
 }
 

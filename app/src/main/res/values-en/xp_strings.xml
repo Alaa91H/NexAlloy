@@ -10,26 +10,26 @@
     <string name="about_title">About</string>
     <string name="open_source_license">Open-source licenses</string>
     <string name="hide_icon_title">Hide icon from launcher</string>
-    <string name="hide_icon_summary">You must also disable \"Force apps to show launcher icons\" in LSPosed Manager.</string>
+    <string name="hide_icon_summary">You must also disable “Force apps to show launcher icons” in LSPosed Manager.</string>
     <string name="faq_title">Frequently Asked Questions</string>
-    <string name="disable_auto_check_update_title">Disable auto update check</string>
+    <string name="disable_auto_check_update_title">Disable automatic update checks</string>
     <string name="module_not_activated_summary">Activate Morphe LSPosed and select target applications in LSPosed Module Management before hooks can apply. You can still review and configure the listed settings.</string>
     <string name="slogan_summary">Morphe LSPosed is an independent LSPosed runtime layer module for supported Android apps.\n\nIt is not affiliated with Morphe or ReVanced; please do not request support from their developers.</string>
     <string name="runtime_catalog_summary">The catalog is metadata-only. Only reviewed Runtime Store layers already compiled into Morphe LSPosed can be added or enabled; no APK is built or modified.</string>
-    <string name="runtime_layers_title">Compiled runtime layers</string>
+    <string name="runtime_layers_title">Compiled Runtime layers</string>
     <string name="runtime_layer_summary">Source: %1$s · Adapter: %2$s</string>
-    <string name="runtime_layer_dialog_summary">This is a Morphe LSPosed-compiled runtime adapter for the community patch “%2$s” from %1$s. It runs through the ordinary Xposed/DexKit patch pipeline and does not build or modify an APK.</string>
+    <string name="runtime_layer_dialog_summary">This is a Morphe LSPosed-compiled Runtime adapter for the community patch “%2$s” from %1$s. It runs through the ordinary Xposed/DexKit patch pipeline and does not build or modify an APK.</string>
     <string name="runtime_layer_open_settings">Open Morphe LSPosed settings</string>
-    <string name="runtime_layer_target_unavailable">No Morphe LSPosed settings target is registered for this runtime layer.</string>
-    <string name="runtime_store_ready_title">Ready for LSPosed runtime</string>
+    <string name="runtime_layer_target_unavailable">No Morphe LSPosed settings target is registered for this Runtime layer.</string>
+    <string name="runtime_store_ready_title">Ready for LSPosed Runtime</string>
     <string name="runtime_store_ready_summary">%1$s · Target: %2$s · Open to add or enable this reviewed local Runtime layer.</string>
     <string name="runtime_store_recipe_dialog_summary">Source: %1$s\nTarget: %2$s\nThis reviewed recipe uses only a constrained Boolean Runtime hook. It does not download or execute a .mpp archive.</string>
-    <string name="runtime_store_built_in_dialog_summary">Source: %1$s\nTarget: %2$s\nThis is a reviewed Morphe LSPosed runtime layer. Enable it directly here; no APK build or archive download is involved.</string>
+    <string name="runtime_store_built_in_dialog_summary">Source: %1$s\nTarget: %2$s\nThis is a reviewed Morphe LSPosed Runtime layer. Enable it directly here; no APK build or archive download is involved.</string>
     <string name="runtime_store_add_action">Add local Runtime layer</string>
-    <string name="runtime_store_needs_adapter_title">Needs a runtime adapter</string>
+    <string name="runtime_store_needs_adapter_title">Needs a Runtime adapter</string>
     <string name="runtime_store_needs_adapter_summary">%1$s · Target: %2$s · This catalog entry needs a reviewed Runtime adapter before it can run in LSPosed.</string>
     <string name="runtime_store_unsupported_title">Other catalog patches</string>
-    <string name="runtime_store_unsupported_summary">%1$d patch(es) target apps not registered by Morphe LSPosed and cannot be added to the Runtime store.</string>
+    <string name="runtime_store_unsupported_summary">%1$d patch(es) target apps not registered by Morphe LSPosed and cannot be added to the Runtime Store.</string>
     <string name="runtime_import_title">Import supported Runtime specification</string>
     <string name="app_patch_settings_summary">%1$d available hook(s)</string>
     <string name="runtime_import_summary">Add a data-only Boolean override specification. Source code and .mpp archives are not accepted.</string>
@@ -49,12 +49,11 @@
     <string name="runtime_deleted">Runtime layer deleted.</string>
     <string name="runtime_restart_required">Layer state updated. Force-stop and reopen the target app to apply it.</string>
     <string name="runtime_activation_failed">Could not save the Runtime state. Confirm that this module is enabled in LSPosed, then reopen Morphe LSPosed.</string>
-    <!-- Material home navigation -->
+
     <string name="navigation_patches">Patches</string>
     <string name="navigation_store">Runtime Store</string>
     <string name="navigation_settings">Settings</string>
 
-    <!-- Patches page -->
     <string name="patches_page_intro_title">Your patch controls</string>
     <string name="patches_page_intro_summary">%1$d supported applications contain %2$d local patches. Each application has one card with all of its available controls.</string>
     <string name="patches_app_summary">Package: %1$s · %2$d patch(es)\n%3$s</string>
@@ -68,7 +67,6 @@
     <string name="patch_switch_label">Enable this patch</string>
     <string name="patch_state_saved">Patch state saved. Force-stop and reopen the target app.</string>
 
-    <!-- Runtime Store page -->
     <string name="store_page_intro_title">Runtime Store</string>
     <string name="store_page_intro_summary">Every catalog entry is shown here. Reviewed local adapters can be enabled; other entries remain visible with their compatibility status and source link.</string>
     <string name="store_catalog_loaded">%1$d catalog patches classified</string>
@@ -101,7 +99,6 @@
     <string name="store_needs_adapter_status">Needs local adapter</string>
     <string name="store_unsupported_status">Other target app</string>
 
-    <!-- Module settings page -->
     <string name="settings_page_intro_title">Module setup</string>
     <string name="settings_page_intro_summary">Enable Morphe LSPosed in LSPosed Module Management and select only the target applications you intend to modify.</string>
     <string name="settings_page_intro_status">Required before hooks apply</string>

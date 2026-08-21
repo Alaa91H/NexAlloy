@@ -16,11 +16,13 @@ object BuiltInRuntimeLayerState {
     }
 
     @SuppressLint("WorldReadableFiles")
-    fun setEnabled(context: Context, layer: RuntimeLayer, enabled: Boolean) {
-        val packageName = layer.packageNames.singleOrNull() ?: return
-        context.getSharedPreferences(packageName, Context.MODE_WORLD_READABLE)
-            .edit()
-            .putBoolean(layer.patch.name, enabled)
-            .commit()
+    fun setEnabled(context: Context, layer: RuntimeLayer, enabled: Boolean): Boolean {
+        val packageName = layer.packageNames.singleOrNull() ?: return false
+        return runCatching {
+            context.getSharedPreferences(packageName, Context.MODE_WORLD_READABLE)
+                .edit()
+                .putBoolean(layer.patch.name, enabled)
+                .commit()
+        }.getOrDefault(false)
     }
 }

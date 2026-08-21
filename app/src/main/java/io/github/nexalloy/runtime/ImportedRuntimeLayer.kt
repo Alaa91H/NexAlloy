@@ -116,31 +116,30 @@ object ImportedRuntimeLayerStore {
     private const val KEY_SPECS = "boolean_override_specs"
 
     @SuppressLint("WorldReadableFiles")
-    fun save(context: Context, spec: ImportedBooleanRuntimeLayerSpec) {
+    fun save(context: Context, spec: ImportedBooleanRuntimeLayerSpec): Boolean {
         val existing = loadFromContext(context).filterNot { it.id == spec.id } + spec
-        context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_WORLD_READABLE)
-            .edit()
-            .putString(KEY_SPECS, Gson().toJson(existing))
-            .commit()
+        return write(context, existing)
     }
 
-    fun setEnabled(context: Context, id: String, enabled: Boolean) {
+    fun setEnabled(context: Context, id: String, enabled: Boolean): Boolean {
         val updated = loadFromContext(context).map { spec ->
             if (spec.id == id) spec.copy(enabled = enabled) else spec
         }
-        context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_WORLD_READABLE)
-            .edit()
-            .putString(KEY_SPECS, Gson().toJson(updated))
-            .commit()
+        return write(context, updated)
     }
 
-    fun delete(context: Context, id: String) {
+    fun delete(context: Context, id: String): Boolean {
         val remaining = loadFromContext(context).filterNot { it.id == id }
+        return write(context, remaining)
+    }
+
+    @SuppressLint("WorldReadableFiles")
+    private fun write(context: Context, specs: List<ImportedBooleanRuntimeLayerSpec>): Boolean = runCatching {
         context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_WORLD_READABLE)
             .edit()
-            .putString(KEY_SPECS, Gson().toJson(remaining))
+            .putString(KEY_SPECS, Gson().toJson(specs))
             .commit()
-    }
+    }.getOrDefault(false)
 
     fun loadFromContext(context: Context): List<ImportedBooleanRuntimeLayerSpec> =
         parseList(context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)

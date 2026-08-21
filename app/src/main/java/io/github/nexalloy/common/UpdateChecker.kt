@@ -15,6 +15,7 @@ import com.google.gson.annotations.SerializedName
 import fuel.Fuel
 import fuel.get
 import io.github.nexalloy.BuildConfig
+import io.github.nexalloy.R as MorpheR
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -85,6 +86,7 @@ class UpdateChecker() : CoroutineScope {
                 )
                 if (response.statusCode != 200) {
                     Logger.printException { "Failed to fetch latest release: HTTP ${response.statusCode}" }
+                    if (!silent) showLocalizedToast(MorpheR.string.update_check_failed)
                     return@launch
                 }
 
@@ -95,7 +97,7 @@ class UpdateChecker() : CoroutineScope {
                     .orEmpty()
                 val latest = releases.maxByOrNull { VersionInfo.fromTagName(it.tagName).versionCode }
                     ?: run {
-                        if (!silent) Utils.showToastLong("No published Morphe LSPosed release was found.")
+                        if (!silent) showLocalizedToast(MorpheR.string.update_no_release_found)
                         return@launch
                     }
                 latestRelease = latest
@@ -106,10 +108,11 @@ class UpdateChecker() : CoroutineScope {
                     showUpdateDialog()
                 } else {
                     Logger.printInfo { "no update found for Morphe LSPosed" }
-                    if (!silent) Utils.showToastLong("Morphe LSPosed is up to date.")
+                    if (!silent) showLocalizedToast(MorpheR.string.update_up_to_date)
                 }
             } catch (e: Throwable) {
                 Logger.printException({ "checkUpdate error" }, e)
+                if (!silent) showLocalizedToast(MorpheR.string.update_check_failed)
             }
         }
     }
@@ -144,7 +147,7 @@ class UpdateChecker() : CoroutineScope {
                     if (Utils.isDarkModeEnabled()) R.style.Theme_DeviceDefault_Dialog_Alert
                     else R.style.Theme_DeviceDefault_Light_Dialog_Alert
                 val dialog = AlertDialog.Builder(requireActivity(), theme)
-                    .setTitle("Found new version of Morphe LSPosed ${latestVersionInfo.versionName}")
+                    .setTitle(requireActivity().getString(MorpheR.string.update_available_title, latestVersionInfo.versionName))
                     .setMessage(
                         Html.fromHtml(latestRelease.releaseNoteHtml, Html.FROM_HTML_MODE_LEGACY)
                     ).setPositiveButton(R.string.ok) { _, _ ->
@@ -160,6 +163,10 @@ class UpdateChecker() : CoroutineScope {
         }
     }
 
+    private fun showLocalizedToast(resource: Int) {
+        currentActivity.get()?.let { Utils.showToastLong(it.getString(resource)) }
+    }
+
     private fun openReleasePage() {
         try {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(latestRelease.releaseUrl))
@@ -167,7 +174,7 @@ class UpdateChecker() : CoroutineScope {
             requireActivity().startActivity(intent)
         } catch (e: Exception) {
             e.printStackTrace()
-            Utils.showToastLong(e.message.toString())
+            showLocalizedToast(MorpheR.string.update_open_release_failed)
         }
     }
 }
