@@ -27,12 +27,18 @@ class MorpheBundleBridgeTest {
     }
 
     @Test
-    fun `unknown source repositories are blocked rather than auto trusted`() {
+    fun `all valid github sources require review rather than auto trust`() {
         val catalog = MorpheCatalogParser().parse(
-            SAMPLE_CATALOG.replace("crimera/piko", "untrusted/unknown-bundle")
+            SAMPLE_CATALOG.replace("crimera/piko", "community/unknown-bundle")
         )
 
-        assertEquals(SourceTrust.BLOCKED, catalog.bundles.single().trust)
+        assertEquals(SourceTrust.REVIEW_REQUIRED, catalog.bundles.single().trust)
+    }
+
+    @Test
+    fun `non github and malformed repositories are blocked`() {
+        assertEquals(SourceTrust.BLOCKED, MorpheSourceTrustPolicy.evaluate("gitlab", "author/bundle"))
+        assertEquals(SourceTrust.BLOCKED, MorpheSourceTrustPolicy.evaluate("github", "not-a-repository"))
     }
 
     @Test

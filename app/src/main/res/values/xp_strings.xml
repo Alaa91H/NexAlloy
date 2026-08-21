@@ -36,4 +36,8 @@
     <string name="morphe_bundle_open_in_morphe">Open in Morphe</string>
     <string name="morphe_bundle_save_profile">Save selection</string>
     <string name="morphe_bundle_profile_saved">Patch selection saved locally.</string>
+    <string name="morphe_bundle_review_source">Review source</string>
+    <string name="morphe_bundle_review_source_summary">Review the repository, release, license, and app compatibility for %1$s. Trusting a source only enables saving a local profile and opening Morphe; NexAlloy does not execute the bundle.</string>
+    <string name="morphe_bundle_view_source">View source</string>
+    <string name="morphe_bundle_trust_source">Trust source</string>
 </resources>

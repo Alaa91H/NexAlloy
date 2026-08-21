@@ -18,6 +18,7 @@ import io.github.nexalloy.bridge.MorpheBridgeConfig
 import io.github.nexalloy.bridge.MorpheCatalogClient
 import io.github.nexalloy.bridge.MorpheCatalogStore
 import io.github.nexalloy.bridge.MorpheProfileStore
+import io.github.nexalloy.bridge.MorpheSourceReviewStore
 import io.github.nexalloy.bridge.PatchProfile
 import io.github.nexalloy.bridge.PatchSelection
 import io.github.nexalloy.bridge.SourceTrust
@@ -59,6 +60,7 @@ class MorpheBundleActivity : Activity() {
     class MorpheBundleFragment : PreferenceFragment() {
         private val catalogStore by lazy { MorpheCatalogStore(context) }
         private val profileStore by lazy { MorpheProfileStore(context) }
+        private val sourceReviewStore by lazy { MorpheSourceReviewStore(context) }
         private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
         private var catalog: CommunityCatalog? = null
 
@@ -153,7 +155,7 @@ class MorpheBundleActivity : Activity() {
 
         private fun bundleSummary(bundle: CommunityBundle): String {
             val appCount = bundle.packageNames.size
-            val trust = when (bundle.trust) {
+            val trust = when (sourceReviewStore.effectiveTrust(bundle)) {
                 SourceTrust.APPROVED -> getString(R.string.morphe_bundle_trust_approved)
                 SourceTrust.REVIEW_REQUIRED -> getString(R.string.morphe_bundle_trust_review_required)
                 SourceTrust.BLOCKED -> getString(R.string.morphe_bundle_trust_blocked)
@@ -213,14 +215,18 @@ class MorpheBundleActivity : Activity() {
                 }
                 .setNegativeButton(android.R.string.cancel, null)
 
-            if (bundle.trust == SourceTrust.BLOCKED) {
-                dialog.setPositiveButton(android.R.string.ok, null)
-            } else {
-                dialog.setNeutralButton(R.string.morphe_bundle_open_in_morphe) { _, _ ->
-                    openInMorphe(bundle)
+            when (sourceReviewStore.effectiveTrust(bundle)) {
+                SourceTrust.BLOCKED -> dialog.setPositiveButton(android.R.string.ok, null)
+                SourceTrust.REVIEW_REQUIRED -> dialog.setPositiveButton(R.string.morphe_bundle_review_source) { _, _ ->
+                    showSourceReviewDialog(bundle)
                 }
-                dialog.setPositiveButton(R.string.morphe_bundle_save_profile) { _, _ ->
-                    saveProfile(bundle, profileId, patches, selectedIds)
+                SourceTrust.APPROVED -> {
+                    dialog.setNeutralButton(R.string.morphe_bundle_open_in_morphe) { _, _ ->
+                        openInMorphe(bundle)
+                    }
+                    dialog.setPositiveButton(R.string.morphe_bundle_save_profile) { _, _ ->
+                        saveProfile(bundle, profileId, patches, selectedIds)
+                    }
                 }
             }
             dialog.show()
@@ -240,10 +246,35 @@ class MorpheBundleActivity : Activity() {
                     repository = bundle.repository,
                     packageName = bundle.packageNames.singleOrNull() ?: MULTI_APP_PROFILE,
                     catalogSha256 = currentCatalog.sha256,
-                    selections = patches.map { PatchSelection(it.id, it.id in selectedIds) },
+                    selections = patches.map { patch ->
+                        PatchSelection(
+                            patchId = patch.id,
+                            enabled = patch.id in selectedIds,
+                            options = patch.options.mapNotNull { option ->
+                                option.defaultValue?.let { option.key to it }
+                            }.toMap(),
+                        )
+                    },
                 )
             )
             Toast.makeText(context, R.string.morphe_bundle_profile_saved, Toast.LENGTH_SHORT).show()
+        }
+
+        private fun showSourceReviewDialog(bundle: CommunityBundle) {
+            val currentActivity = activity ?: return
+            AlertDialog.Builder(currentActivity)
+                .setTitle(R.string.morphe_bundle_review_source)
+                .setMessage(getString(R.string.morphe_bundle_review_source_summary, bundle.repository))
+                .setNegativeButton(android.R.string.cancel, null)
+                .setNeutralButton(R.string.morphe_bundle_view_source) { _, _ ->
+                    startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/${bundle.repository}")))
+                }
+                .setPositiveButton(R.string.morphe_bundle_trust_source) { _, _ ->
+                    sourceReviewStore.approve(bundle.repository)
+                    rebuildScreen()
+                    showBundleDialog(bundle)
+                }
+                .show()
         }
 
         private fun openInMorphe(bundle: CommunityBundle) {

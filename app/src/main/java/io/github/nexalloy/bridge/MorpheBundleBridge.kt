@@ -93,23 +93,55 @@ data class PatchProfile(
 )
 
 /**
- * Explicit allow-list. A known source is still marked [SourceTrust.REVIEW_REQUIRED]
- * until the user reviews its release, license, and compatibility in Morphe.
+ * A community GitHub source is readable but requires an explicit local approval before
+ * NexAlloy can save a profile or hand it to Morphe. Non-GitHub and malformed sources
+ * remain blocked because the bridge has no verified handoff route for them.
  */
 object MorpheSourceTrustPolicy {
-    private val approvedRepositories = setOf(
-        "crimera/piko",
-        "jkennethcarino/adobo",
-        "brosssh/morphe-patches",
-        "durgesh0505/chiggi_morphe_patches",
-        "RookieEnough/De-Vanced",
-        "hoo-dles/morphe-patches",
-    )
+    private val repositoryPattern = Regex("^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 
     fun evaluate(source: String, repository: String): SourceTrust {
         if (source.lowercase() != "github") return SourceTrust.BLOCKED
-        if (repository !in approvedRepositories) return SourceTrust.BLOCKED
+        if (!repository.matches(repositoryPattern)) return SourceTrust.BLOCKED
         return SourceTrust.REVIEW_REQUIRED
+    }
+}
+
+/** Stores explicit source approvals locally. Approval never executes a bundle. */
+class MorpheSourceReviewStore(context: Context) {
+    private val preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+
+    fun effectiveTrust(bundle: CommunityBundle): SourceTrust = when (bundle.trust) {
+        SourceTrust.REVIEW_REQUIRED -> if (isApproved(bundle.repository)) {
+            SourceTrust.APPROVED
+        } else {
+            SourceTrust.REVIEW_REQUIRED
+        }
+        else -> bundle.trust
+    }
+
+    fun approve(repository: String) {
+        val approved = loadApproved() + repository
+        preferences.edit().putStringSet(KEY_APPROVED_REPOSITORIES, approved).apply()
+    }
+
+    fun revoke(repository: String) {
+        preferences.edit().putStringSet(
+            KEY_APPROVED_REPOSITORIES,
+            loadApproved() - repository,
+        ).apply()
+    }
+
+    fun isApproved(repository: String): Boolean = repository in loadApproved()
+
+    private fun loadApproved(): Set<String> = preferences
+        .getStringSet(KEY_APPROVED_REPOSITORIES, emptySet())
+        ?.toSet()
+        .orEmpty()
+
+    companion object {
+        private const val PREFERENCES_NAME = "morphe_bundle_bridge"
+        private const val KEY_APPROVED_REPOSITORIES = "approved_source_repositories"
     }
 }
 
