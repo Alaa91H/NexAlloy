@@ -107,6 +107,10 @@ class SettingsActivity : Activity() {
         fun AppPatchInfo.getPreference(): Preference {
             val preference = Preference(context)
             preference.title = appName
+            preference.summary = context.getString(
+                R.string.app_patch_settings_summary,
+                patches.count { it.name.isNotBlank() && !it.name.startsWith("<") },
+            )
             preference.key = appName
             preference.intent = Intent(context, AppPatchSettingsActivity::class.java).apply {
                 putExtra(AppPatchSettingsActivity.ARGUMENT_APP_NAME, appName)
@@ -173,19 +177,10 @@ class SettingsActivity : Activity() {
                 autoCheckUpdate()
             }
 
-            val isModuleActivated: Boolean = try {
-                context.getSharedPreferences("prefs", MODE_WORLD_READABLE)
-                true
-            } catch (_: SecurityException) {
-                false
-            }
-
-            if (!isModuleActivated) {
-                rootScreen.addPreference(Preference(context).apply {
-                    setSummary(R.string.module_not_activated_summary)
-                    isEnabled = false
-                })
-                return
+            Preference(context).apply {
+                setSummary(R.string.module_not_activated_summary)
+                isEnabled = false
+                rootScreen.addPreference(this)
             }
 
             val patchSelectionCategory = PreferenceCategory(context).apply {

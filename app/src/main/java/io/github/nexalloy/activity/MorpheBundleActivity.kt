@@ -71,6 +71,7 @@ class MorpheBundleActivity : Activity() {
             super.onCreate(savedInstanceState)
             catalog = catalogStore.load()
             rebuildScreen()
+            if (catalog == null) refreshCatalog()
         }
 
         @Deprecated("Deprecated in Java")
