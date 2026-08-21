@@ -92,6 +92,74 @@ data class PatchProfile(
     val updatedAtMillis: Long = System.currentTimeMillis(),
 )
 
+const val MULTI_APP_PROFILE_PACKAGE = "multiple-apps"
+
+enum class ProfileValidationState {
+    CURRENT,
+    CATALOG_UPDATED,
+    SOURCE_NOT_AVAILABLE,
+    SOURCE_BLOCKED,
+    SOURCE_REVIEW_REQUIRED,
+    TARGET_APP_NOT_AVAILABLE,
+    PATCHES_NOT_AVAILABLE,
+}
+
+data class ProfileValidation(
+    val state: ProfileValidationState,
+    val bundle: CommunityBundle? = null,
+    val missingPatchIds: Set<String> = emptySet(),
+) {
+    val canHandoff: Boolean
+        get() = state == ProfileValidationState.CURRENT
+}
+
+/**
+ * Validates a saved selection against the catalog snapshot currently on the device.
+ * A changed catalog does not silently change a profile; it requires the user to review
+ * and save the profile again before handoff.
+ */
+object MorpheProfileValidator {
+    fun validate(
+        profile: PatchProfile,
+        catalog: CommunityCatalog,
+        isSourceApproved: (String) -> Boolean,
+    ): ProfileValidation {
+        val bundle = catalog.bundles.firstOrNull { it.repository == profile.repository }
+            ?: return ProfileValidation(ProfileValidationState.SOURCE_NOT_AVAILABLE)
+        if (bundle.trust == SourceTrust.BLOCKED) {
+            return ProfileValidation(ProfileValidationState.SOURCE_BLOCKED, bundle)
+        }
+        if (!isSourceApproved(bundle.repository)) {
+            return ProfileValidation(ProfileValidationState.SOURCE_REVIEW_REQUIRED, bundle)
+        }
+        if (
+            profile.packageName != MULTI_APP_PROFILE_PACKAGE &&
+            profile.packageName !in bundle.packageNames
+        ) {
+            return ProfileValidation(ProfileValidationState.TARGET_APP_NOT_AVAILABLE, bundle)
+        }
+
+        val availablePatchIds = bundle.patches.mapTo(linkedSetOf()) { it.id }
+        val missingPatchIds = profile.selections
+            .asSequence()
+            .filter { it.enabled }
+            .map { it.patchId }
+            .filterNot { it in availablePatchIds }
+            .toSet()
+        if (missingPatchIds.isNotEmpty()) {
+            return ProfileValidation(
+                state = ProfileValidationState.PATCHES_NOT_AVAILABLE,
+                bundle = bundle,
+                missingPatchIds = missingPatchIds,
+            )
+        }
+        if (profile.catalogSha256 != catalog.sha256) {
+            return ProfileValidation(ProfileValidationState.CATALOG_UPDATED, bundle)
+        }
+        return ProfileValidation(ProfileValidationState.CURRENT, bundle)
+    }
+}
+
 /**
  * A community GitHub source is readable but requires an explicit local approval before
  * NexAlloy can save a profile or hand it to Morphe. Non-GitHub and malformed sources

@@ -18,9 +18,13 @@ import io.github.nexalloy.bridge.MorpheBridgeConfig
 import io.github.nexalloy.bridge.MorpheCatalogClient
 import io.github.nexalloy.bridge.MorpheCatalogStore
 import io.github.nexalloy.bridge.MorpheProfileStore
+import io.github.nexalloy.bridge.MorpheProfileValidator
 import io.github.nexalloy.bridge.MorpheSourceReviewStore
+import io.github.nexalloy.bridge.MULTI_APP_PROFILE_PACKAGE
 import io.github.nexalloy.bridge.PatchProfile
 import io.github.nexalloy.bridge.PatchSelection
+import io.github.nexalloy.bridge.ProfileValidation
+import io.github.nexalloy.bridge.ProfileValidationState
 import io.github.nexalloy.bridge.SourceTrust
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -110,6 +114,7 @@ class MorpheBundleActivity : Activity() {
             }
 
             addCatalogStatus(root)
+            addProfilePreferences(root)
             addBundlePreferences(root)
         }
 
@@ -130,6 +135,52 @@ class MorpheBundleActivity : Activity() {
                 isEnabled = false
                 root.addPreference(this)
             }
+        }
+
+        private fun addProfilePreferences(root: PreferenceScreen) {
+            val profiles = profileStore.loadAll().sortedBy { it.name.lowercase() }
+            if (profiles.isEmpty()) return
+
+            val currentCatalog = catalog
+            val category = PreferenceCategory(context).apply {
+                title = getString(R.string.morphe_bundle_profiles_title)
+                root.addPreference(this)
+            }
+            profiles.forEach { profile ->
+                val validation = currentCatalog?.let {
+                    MorpheProfileValidator.validate(profile, it, sourceReviewStore::isApproved)
+                }
+                Preference(context).apply {
+                    title = profile.name
+                    summary = profileSummary(profile, validation)
+                    setOnPreferenceClickListener {
+                        showProfileDialog(profile, validation)
+                        true
+                    }
+                    category.addPreference(this)
+                }
+            }
+        }
+
+        private fun profileSummary(profile: PatchProfile, validation: ProfileValidation?): String {
+            val enabledCount = profile.selections.count { it.enabled }
+            val state = validation?.state ?: ProfileValidationState.SOURCE_NOT_AVAILABLE
+            return getString(
+                R.string.morphe_bundle_profile_summary,
+                profile.repository,
+                enabledCount,
+                profileValidationLabel(state),
+            )
+        }
+
+        private fun profileValidationLabel(state: ProfileValidationState): String = when (state) {
+            ProfileValidationState.CURRENT -> getString(R.string.morphe_bundle_profile_current)
+            ProfileValidationState.CATALOG_UPDATED -> getString(R.string.morphe_bundle_profile_catalog_updated)
+            ProfileValidationState.SOURCE_NOT_AVAILABLE -> getString(R.string.morphe_bundle_profile_source_unavailable)
+            ProfileValidationState.SOURCE_BLOCKED -> getString(R.string.morphe_bundle_profile_source_blocked)
+            ProfileValidationState.SOURCE_REVIEW_REQUIRED -> getString(R.string.morphe_bundle_profile_source_review_required)
+            ProfileValidationState.TARGET_APP_NOT_AVAILABLE -> getString(R.string.morphe_bundle_profile_target_unavailable)
+            ProfileValidationState.PATCHES_NOT_AVAILABLE -> getString(R.string.morphe_bundle_profile_patches_unavailable)
         }
 
         private fun addBundlePreferences(root: PreferenceScreen) {
@@ -193,6 +244,50 @@ class MorpheBundleActivity : Activity() {
             }
         }
 
+        private fun showProfileDialog(profile: PatchProfile, validation: ProfileValidation?) {
+            val currentActivity = activity ?: return
+            val resolvedValidation = validation ?: ProfileValidation(ProfileValidationState.SOURCE_NOT_AVAILABLE)
+            val builder = AlertDialog.Builder(currentActivity)
+                .setTitle(profile.name)
+                .setMessage(
+                    getString(
+                        R.string.morphe_bundle_profile_dialog_summary,
+                        profile.repository,
+                        profileValidationLabel(resolvedValidation.state),
+                        profile.selections.count { it.enabled },
+                    )
+                )
+                .setNegativeButton(android.R.string.cancel, null)
+                .setNeutralButton(R.string.morphe_bundle_delete_profile) { _, _ ->
+                    showDeleteProfileDialog(profile)
+                }
+
+            if (resolvedValidation.canHandoff) {
+                builder.setPositiveButton(R.string.morphe_bundle_open_in_morphe) { _, _ ->
+                    resolvedValidation.bundle?.let(::openInMorphe)
+                }
+            } else if (resolvedValidation.bundle != null) {
+                builder.setPositiveButton(R.string.morphe_bundle_update_profile) { _, _ ->
+                    showBundleDialog(resolvedValidation.bundle)
+                }
+            }
+            builder.show()
+        }
+
+        private fun showDeleteProfileDialog(profile: PatchProfile) {
+            val currentActivity = activity ?: return
+            AlertDialog.Builder(currentActivity)
+                .setTitle(R.string.morphe_bundle_delete_profile)
+                .setMessage(getString(R.string.morphe_bundle_delete_profile_summary, profile.name))
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    profileStore.delete(profile.id)
+                    rebuildScreen()
+                    Toast.makeText(context, R.string.morphe_bundle_profile_deleted, Toast.LENGTH_SHORT).show()
+                }
+                .show()
+        }
+
         private fun showBundleDialog(bundle: CommunityBundle) {
             val patches = bundle.patches.sortedBy { it.name.lowercase() }
             val profileId = "bundle:${bundle.id}"
@@ -244,7 +339,7 @@ class MorpheBundleActivity : Activity() {
                     id = profileId,
                     name = bundle.displayName,
                     repository = bundle.repository,
-                    packageName = bundle.packageNames.singleOrNull() ?: MULTI_APP_PROFILE,
+                    packageName = bundle.packageNames.singleOrNull() ?: MULTI_APP_PROFILE_PACKAGE,
                     catalogSha256 = currentCatalog.sha256,
                     selections = patches.map { patch ->
                         PatchSelection(
@@ -281,8 +376,5 @@ class MorpheBundleActivity : Activity() {
             startActivity(Intent(Intent.ACTION_VIEW, MorpheBridgeConfig.sourceHandoffUri(bundle.repository)))
         }
 
-        companion object {
-            private const val MULTI_APP_PROFILE = "multiple-apps"
-        }
     }
 }

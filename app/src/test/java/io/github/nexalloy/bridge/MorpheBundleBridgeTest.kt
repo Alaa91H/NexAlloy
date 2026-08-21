@@ -42,6 +42,50 @@ class MorpheBundleBridgeTest {
     }
 
     @Test
+    fun `current approved profile is eligible for Morphe handoff`() {
+        val catalog = MorpheCatalogParser().parse(SAMPLE_CATALOG)
+        val profile = profile(catalog, patchId = "disable-video-autoplay")
+
+        val validation = MorpheProfileValidator.validate(profile, catalog) { it == "crimera/piko" }
+
+        assertEquals(ProfileValidationState.CURRENT, validation.state)
+        assertTrue(validation.canHandoff)
+    }
+
+    @Test
+    fun `changed catalog requires profile review before handoff`() {
+        val catalog = MorpheCatalogParser().parse(SAMPLE_CATALOG)
+        val profile = profile(catalog, catalogHash = "previous-catalog")
+
+        val validation = MorpheProfileValidator.validate(profile, catalog) { true }
+
+        assertEquals(ProfileValidationState.CATALOG_UPDATED, validation.state)
+        assertTrue(!validation.canHandoff)
+    }
+
+    @Test
+    fun `unsupported target app blocks profile handoff`() {
+        val catalog = MorpheCatalogParser().parse(SAMPLE_CATALOG)
+        val profile = profile(catalog).copy(packageName = "com.reddit.frontpage")
+
+        val validation = MorpheProfileValidator.validate(profile, catalog) { true }
+
+        assertEquals(ProfileValidationState.TARGET_APP_NOT_AVAILABLE, validation.state)
+        assertTrue(!validation.canHandoff)
+    }
+
+    @Test
+    fun `missing enabled patch blocks profile handoff`() {
+        val catalog = MorpheCatalogParser().parse(SAMPLE_CATALOG)
+        val profile = profile(catalog, patchId = "retired-patch")
+
+        val validation = MorpheProfileValidator.validate(profile, catalog) { true }
+
+        assertEquals(ProfileValidationState.PATCHES_NOT_AVAILABLE, validation.state)
+        assertEquals(setOf("retired-patch"), validation.missingPatchIds)
+    }
+
+    @Test
     fun `catalog parser drops incomplete bundle records`() {
         val catalog = MorpheCatalogParser().parse(
             """
@@ -57,6 +101,19 @@ class MorpheBundleBridgeTest {
 
         assertTrue(catalog.bundles.isEmpty())
     }
+
+    private fun profile(
+        catalog: CommunityCatalog,
+        patchId: String = "disable-video-autoplay",
+        catalogHash: String = catalog.sha256,
+    ) = PatchProfile(
+        id = "test-profile",
+        name = "Piko profile",
+        repository = "crimera/piko",
+        packageName = "com.instagram.android",
+        catalogSha256 = catalogHash,
+        selections = listOf(PatchSelection(patchId, enabled = true)),
+    )
 
     private companion object {
         val SAMPLE_CATALOG =
