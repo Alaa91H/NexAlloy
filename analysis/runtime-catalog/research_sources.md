@@ -93,3 +93,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** a locally compiled `ExistingPatchRuntimeLayerDefinition` targets `com.facebook.orca` using the same reviewed anchors. The FAB renderer is matched by `fab_expanded` and `AiFabComponent` and returns null; the three visibility gates are constrained by their reviewed method calls, stable strings, return type, and access flags, then return false.
 - **Effect and failure mode:** any surface whose exact target is found is hidden. A missing, reorganized, or non-unique target produces no hook for that surface; no downloaded code or broad class-name scan is used.
 - **Scope:** the adapter only hides local Meta AI interface surfaces. It does not alter authentication, accounts, payments, subscriptions, model safety behavior, moderation, integrity, or content-access controls.
+
+### Messenger — Hide inbox subtabs
+
+- **Source review:** inspected `HideInboxSubtabsPatch.kt` and its shared Inbox fingerprint in `rushiranpise/morphe-patches`. The source targets `InboxSubtabsItemSupplierImplementation$onSubscribe$1`, verified as `LX/2Je;->run(): void` for Messenger 573.0.0.44.88, and changes the supplier's readiness signal from true to false.
+- **Runtime mapping:** local `MultiVoidMethodSkipLayerDefinition`, constrained to `com.facebook.orca`, class `LX/2Je;`, and method `run(): void`. Skipping the known one-shot Runnable leaves the supplier from signalling that its subtabs are ready.
+- **Effect and failure mode:** Home and Channels inbox subtabs remain absent when the exact reviewed Runnable exists. If the obfuscated target changes or disappears, no hook is installed.
+- **Scope:** this is a local interface-preference control only. It does not alter messages, accounts, authentication, subscriptions, payments, content-access controls, integrity, or safety protections.

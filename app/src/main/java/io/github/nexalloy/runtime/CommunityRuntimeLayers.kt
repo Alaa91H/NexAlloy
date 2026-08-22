@@ -211,6 +211,18 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val hideMessengerInboxSubtabsDefinition = MultiVoidMethodSkipLayerDefinition(
+        id = "morphe.messenger.hide-inbox-subtabs.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Hide inbox subtabs",
+        packageNames = setOf("com.facebook.orca"),
+        patchName = "Runtime · Hide inbox subtabs",
+        description = "Prevents the reviewed Messenger inbox-subtabs supplier Runnable from signalling that its tabs are ready.",
+        targets = listOf(
+            VoidMethodTarget("LX/2Je;", "run"),
+        ),
+    )
+
     private val disableMessengerTypingIndicatorDefinition = MultiVoidMethodSkipLayerDefinition(
         id = "morphe.messenger.disable-typing-indicator.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -452,6 +464,7 @@ object CommunityRuntimeLayers {
         disableGboardTenorShareTrackingDefinition.compile(),
         removeMessengerMetaAiDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),
+        hideMessengerInboxSubtabsDefinition.compile(),
         disableMessengerTypingIndicatorDefinition.compile(),
         hideMessengerInboxStoriesNotesTrayDefinition.compile(),
         removeTelegramSponsoredMessagesDefinition.compile(),
