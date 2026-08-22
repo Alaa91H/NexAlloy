@@ -926,6 +926,38 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val truecallerCleverTapPushFingerprints = listOf(
+        Fingerprint(
+            definingClass = "Lkr0/k;",
+            name = "push",
+            returnType = "V",
+            parameters = listOf("Ljava/lang/String;"),
+            accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+        ),
+        Fingerprint(
+            definingClass = "Lkr0/k;",
+            name = "push",
+            returnType = "V",
+            parameters = listOf("Ljava/lang/String;", "Ljava/util/Map;"),
+            accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+        ),
+    )
+
+    private val disableTruecallerCleverTapAnalyticsDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "bufferk.truecaller.disable-analytics.runtime",
+        sourceRepository = "bufferk/morphe-patches",
+        sourcePatchName = "Disable analytics",
+        packageNames = setOf("com.truecaller"),
+        patch = patch(
+            name = "Runtime · Disable analytics",
+            description = "Skips only the reviewed Truecaller CleverTap behavioural-event dispatch overloads.",
+        ) {
+            truecallerCleverTapPushFingerprints.forEach { fingerprint ->
+                fingerprint.memberOrNull?.hookMethod { before { param -> param.result = null } }
+            }
+        },
+    )
+
     private val enableDcimFoldersBackupControlDefinition = ExistingPatchRuntimeLayerDefinition(
         id = "devanced.google-photos.dcim-backup-control.runtime",
         sourceRepository = "RookieEnough/De-Vanced",
@@ -991,6 +1023,7 @@ object CommunityRuntimeLayers {
         hideTruecallerAssistantTabDefinition.compile(),
         disableTruecallerUpdateCheckDefinition.compile(),
         disableTruecallerTelemetryDefinition.compile(),
+        disableTruecallerCleverTapAnalyticsDefinition.compile(),
         enableDcimFoldersBackupControlDefinition.compile(),
         disableReelsScrollingDefinition.compile(),
     )

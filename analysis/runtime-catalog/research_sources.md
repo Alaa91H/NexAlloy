@@ -243,3 +243,9 @@ The Boolean dispatch target is constrained by its exact class descriptor, name, 
 The public `GboardForceIncognitoPatch.kt` in `kveld9/kveld-morphe-patches` was reviewed as text only. The local adapter enumerates only two exact Boolean targets: `Lsew;.H(EditorInfo): boolean` and `Lfoh;.F(): boolean`. Each resolved target returns `true`, mirroring the reviewed source's local incognito-state decision without any extension, resource transformation, or downloaded code.
 
 A target with a changed class descriptor, method name, return contract, or parameter list does not resolve and receives no hook. The adapter only controls these client-side incognito checks for `com.google.android.inputmethod.latin`; it does not unlock features, bypass authentication or integrity, change payments or subscriptions, access text content, or load external payloads.
+
+### Truecaller — Disable analytics
+
+The public `DisableAnalyticsPatch.kt` and `Fingerprints.kt` in `bufferk/morphe-patches` were reviewed as text only. The local adapter lists only the two reviewed public-final void methods on `Lkr0/k;`: `push(String)` and `push(String, Map)`. Each resolved target is skipped before it dispatches a CleverTap behavioural event.
+
+The adapter does not hook profile updates, push-notification registration, Firebase diagnostics, Adjust attribution, or arbitrary analytics classes. If the exact class descriptor, method name, void contract, parameter list, or public-final access flags change, no hook is installed. It only suppresses those local behavioural-event dispatches for `com.truecaller`; accounts, caller-ID service, authentication, payments, subscriptions, licensing, integrity, protection, and content access remain unchanged.

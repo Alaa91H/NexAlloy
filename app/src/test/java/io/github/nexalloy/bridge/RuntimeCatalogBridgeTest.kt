@@ -194,6 +194,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "bufferk.truecaller.disable-analytics.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "bufferk/morphe-patches",
+                sourcePatchName = "Disable analytics",
+                packageName = "com.truecaller",
+            )?.id,
+        )
+        assertEquals(
             "morphe.telegram.remove-sponsored-messages.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "rushiranpise/morphe-patches",
