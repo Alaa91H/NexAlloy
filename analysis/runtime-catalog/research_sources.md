@@ -267,3 +267,9 @@ Unlike the bytecode source patch, a missing or changed target simply receives no
 The public `BlockTrackersPatch.kt` and `Fingerprints.kt` in `totsiaw/proxma-patches` were reviewed as text only. The local adapter targets only three reviewed void initialization chokepoints: the Insider launcher anchored by the paired Kotlin parameter strings `partnerName` and `notificationCallback`; the TikTok Business worker anchored by its `TikTokBusinessSdk.initializeSdk` call; and the Mixpanel Session Replay launcher anchored by `Failed to initialize Mixpanel SDK`.
 
 Each resolved target is skipped before the associated tracking SDK starts. If any class, signature, access flags, invoked method, or string anchor changes, that target installs no hook. AWS Amplify, Firebase core, RemoteConfig, FCM, Google Mobile Ads, app data, push, accounts, authentication, payments, subscriptions, licensing, integrity, protection, and content access remain unchanged.
+
+### ZEE5 Android TV — Disable analytics
+
+The public `DisableAnalyticsPatch.kt` and `Fingerprints.kt` in `WZSE/aapam-patches` were reviewed as text only. The local adapter hooks only `Lcom/zee5/android/analytics/data/DefaultAnalytics;->trackEvent(Lcom/zee5/android/analytics/data/trackers/mixpanel/data/models/AnalyticEvent;)V`, the source's central analytics event dispatcher for the supported `com.graymatrix.did` target.
+
+The resolved void method is skipped before analytics dispatch. If its class, name, return type, or event parameter changes, no hook is installed. Playback, server-side ad insertion, accounts, authentication, payments, subscriptions, licensing, integrity, protection, and content access remain unchanged.

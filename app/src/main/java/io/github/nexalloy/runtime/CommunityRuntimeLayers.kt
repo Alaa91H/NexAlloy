@@ -864,6 +864,26 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val disableZee5AnalyticsDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "wzse.zee5.disable-analytics.runtime",
+        sourceRepository = "WZSE/aapam-patches",
+        sourcePatchName = "Disable analytics",
+        packageNames = setOf("com.graymatrix.did"),
+        patch = patch(
+            name = "Runtime · Disable analytics",
+            description = "Skips only the reviewed Zee5 central analytics event dispatcher.",
+        ) {
+            Fingerprint(
+                definingClass = "Lcom/zee5/android/analytics/data/DefaultAnalytics;",
+                name = "trackEvent",
+                returnType = "V",
+                parameters = listOf(
+                    "Lcom/zee5/android/analytics/data/trackers/mixpanel/data/models/AnalyticEvent;",
+                ),
+            ).memberOrNull?.hookMethod { before { param -> param.result = null } }
+        },
+    )
+
     private val myTelenorTrackerInitFingerprints = listOf(
         Fingerprint(
             returnType = "V",
@@ -1149,6 +1169,7 @@ object CommunityRuntimeLayers {
         clearXTrackingParamsDefinition.compile(),
         removeXSearchSuggestionsDefinition.compile(),
         sanitizeTikTokSharingLinksDefinition.compile(),
+        disableZee5AnalyticsDefinition.compile(),
         blockMyTelenorTrackersDefinition.compile(),
         disableAvitoTelemetryDefinition.compile(),
         hideTruecallerScamsTabDefinition.compile(),

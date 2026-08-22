@@ -162,6 +162,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "wzse.zee5.disable-analytics.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "WZSE/aapam-patches",
+                sourcePatchName = "Disable analytics",
+                packageName = "com.graymatrix.did",
+            )?.id,
+        )
+        assertEquals(
             "totsiaw.mytelenor.block-trackers.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "totsiaw/proxma-patches",

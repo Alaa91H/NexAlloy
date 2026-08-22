@@ -23,6 +23,7 @@
         <package android:name="in.amazon.mShop.android.shopping" />
         <package android:name="com.avito.android" />
         <package android:name="com.telenor.pakistan.mytelenor" />
+        <package android:name="com.graymatrix.did" />
         <package android:name="com.truecaller" />
         <package android:name="org.telegram.messenger" />
         <package android:name="org.telegram.plus" />
