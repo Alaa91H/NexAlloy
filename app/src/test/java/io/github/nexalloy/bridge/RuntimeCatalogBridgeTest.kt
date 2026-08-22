@@ -100,6 +100,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "paresh.truecaller.hide-assistant-tab.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "Paresh-Maheshwari/paresh-patches",
+                sourcePatchName = "Hide Assistant tab",
+                packageName = "com.truecaller",
+            )?.id,
+        )
+        assertEquals(
             "paresh.truecaller.disable-update-check.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "Paresh-Maheshwari/paresh-patches",

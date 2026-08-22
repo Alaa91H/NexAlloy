@@ -268,6 +268,18 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val hideTruecallerAssistantTabDefinition = BooleanReturnOverrideLayerDefinition(
+        id = "paresh.truecaller.hide-assistant-tab.runtime",
+        sourceRepository = "Paresh-Maheshwari/paresh-patches",
+        sourcePatchName = "Hide Assistant tab",
+        packageNames = setOf("com.truecaller"),
+        patchName = "Runtime · Hide Assistant tab",
+        description = "Hides the reviewed Truecaller Assistant tab from the bottom navigation.",
+        fingerprintStrings = listOf("featureCallAssistant"),
+        replacementValue = false,
+        parameterTypes = emptyList(),
+    )
+
     private val disableTruecallerUpdateCheckDefinition = BooleanReturnOverrideLayerDefinition(
         id = "paresh.truecaller.disable-update-check.runtime",
         sourceRepository = "Paresh-Maheshwari/paresh-patches",
@@ -334,6 +346,7 @@ object CommunityRuntimeLayers {
         disableTelegramAutoUpdateDefinition.compile(),
         disableTelegramChannelSwitchingDefinition.compile(),
         disableProtonVpnTelemetryDefinition.compile(),
+        hideTruecallerAssistantTabDefinition.compile(),
         disableTruecallerUpdateCheckDefinition.compile(),
         disableTruecallerTelemetryDefinition.compile(),
         enableDcimFoldersBackupControlDefinition.compile(),
