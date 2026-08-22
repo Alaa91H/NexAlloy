@@ -322,6 +322,29 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val hideSonyLivPromoBannersDefinition = CompositeRuntimeLayerDefinition(
+        id = "chiggi.sonyliv.hide-promo-banners.runtime",
+        sourceRepository = "durgesh0505/chiggi_morphe_patches",
+        sourcePatchName = "Hide promo banners",
+        packageNames = setOf("com.sonyliv"),
+        patchName = "Runtime · Hide promo banners",
+        description = "Returns null only for the reviewed SonyLIV CleverTap home promo models.",
+        objectNullTargets = listOf(
+            ObjectNullMethodTarget(
+                definingClass = "Lcom/sonyliv/data/clevertap/CtNativeDisplayRepositoryImpl;",
+                methodName = "getCTListRowData",
+                returnType = "Lcom/sonyliv/domain/clevertap/model/CTListRowModel;",
+                parameterTypes = listOf("Ljava/lang/String;"),
+            ),
+            ObjectNullMethodTarget(
+                definingClass = "Lcom/sonyliv/data/clevertap/CtNativeDisplayRepositoryImpl;",
+                methodName = "getCTRowData",
+                returnType = "Lcom/sonyliv/domain/clevertap/model/CTBannerCardRowModel;",
+                parameterTypes = listOf("Ljava/lang/String;"),
+            ),
+        ),
+    )
+
     private val sonyLivAppsFlyerSupportedFingerprint = Fingerprint(
         definingClass = "Lcom/sonyliv/Analytics/AppsFlyerManager;",
         name = "isAppsFlyerSupported",
@@ -1412,6 +1435,7 @@ object CommunityRuntimeLayers {
         disableStravaQuickEditDefinition.compile(),
         hidePixivAdsDefinition.compile(),
         removeViMoviesAdsDefinition.compile(),
+        hideSonyLivPromoBannersDefinition.compile(),
         disableSonyLivAppsFlyerTrackingDefinition.compile(),
         removeSonyLivVideoAdsDefinition.compile(),
         disableSofascoreAdsDefinition.compile(),
