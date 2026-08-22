@@ -38,6 +38,23 @@ object InstagramRuntimeLayers {
         replacementValue = true,
     )
 
+    /**
+     * This catalog source resolves the same reviewed story-timeout method as the existing Piko
+     * definition. A separate local definition preserves catalog attribution without importing
+     * source archives or expanding the target beyond the anchored ReelViewerFragment method.
+     */
+    private val disableStoryAutoFlippingFromBrossshDefinition = VoidMethodSkipLayerDefinition(
+        id = "morphe.instagram.disable-story-auto-flipping.runtime",
+        sourceRepository = "brosssh/morphe-patches",
+        sourcePatchName = "Disable story auto flipping",
+        packageNames = setOf("com.instagram.android"),
+        patchName = "Runtime · Disable story auto flipping",
+        description = "Skips the reviewed Instagram story timeout action.",
+        definingClass = "Linstagram/features/stories/fragment/ReelViewerFragment;",
+        fingerprintStrings = listOf("userSession"),
+        parameterTypes = listOf("Ljava/lang/Object;"),
+    )
+
     private val disableStoryFlippingDefinition = VoidMethodSkipLayerDefinition(
         id = "piko.instagram.disable-story-flipping.runtime",
         sourceRepository = "crimera/piko",
@@ -53,6 +70,7 @@ object InstagramRuntimeLayers {
     val layers: List<RuntimeLayer> = listOf(
         disableVideoAutoplayDefinition.compile(),
         disableVideoAutoplayFromBrossshDefinition.compile(),
+        disableStoryAutoFlippingFromBrossshDefinition.compile(),
         disableStoryFlippingDefinition.compile(),
     )
 }

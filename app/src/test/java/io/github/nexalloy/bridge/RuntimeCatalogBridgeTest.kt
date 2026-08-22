@@ -55,7 +55,13 @@ class RuntimeCatalogBridgeTest {
             packageName = "com.instagram.android",
         )
         assertEquals("piko.instagram.disable-story-flipping.runtime", storyLayer?.id)
-        assertEquals(4, RuntimeLayerRegistry.layersFor("com.instagram.android").size)
+        val autoFlippingLayer = RuntimeLayerRegistry.find(
+            sourceRepository = "brosssh/morphe-patches",
+            sourcePatchName = "Disable story auto flipping",
+            packageName = "com.instagram.android",
+        )
+        assertEquals("morphe.instagram.disable-story-auto-flipping.runtime", autoFlippingLayer?.id)
+        assertEquals(5, RuntimeLayerRegistry.layersFor("com.instagram.android").size)
         assertEquals(2, RuntimeLayerRegistry.layersFor("com.reddit.frontpage").size)
         assertEquals(
             "morphe.reddit.hide-ads.runtime",

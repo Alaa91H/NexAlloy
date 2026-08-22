@@ -279,3 +279,9 @@ The resolved void method is skipped before analytics dispatch. If its class, nam
 The public `DisableCleverTapPatch.kt` and its `CleverTapInitFingerprint` in `WZSE/aapam-patches` were reviewed as text only. The local adapter hooks only `Lcom/zee5/android/analytics/data/trackers/clevertap/DefaultCleverTapAnalytics;->initCleverTap(): void`, the source-reviewed CleverTap initialization chokepoint for the supported `com.graymatrix.did` target.
 
 The resolved void method is skipped before the CleverTap SDK initializes. If the class, method name, public access contract, return type, or no-argument signature changes, no hook is installed. The adapter does not download, interpret, or execute any upstream archive, extension, or payload. Playback, server-side ad insertion, accounts, authentication, payments, subscriptions, licensing, integrity, protection, and content access remain unchanged.
+
+### Instagram — Disable story auto flipping
+
+The public `DisableStoryAutoFlippingPatch.kt` in `brosssh/morphe-patches` was reviewed as text only. The source targets the story-timeout action with the `userSession` marker, a void return type, one object parameter, and a class descriptor ending in `ReelViewerFragment`. The local catalog-attribution adapter uses the exact reviewed `Linstagram/features/stories/fragment/ReelViewerFragment;` descriptor together with the same marker, return contract, and parameter constraint.
+
+When that exact timeout action resolves, it is skipped before the original body and the active story is not advanced by this client-side timeout path. A changed class, marker, return type, or parameter signature produces no hook. The adapter does not alter stories themselves, networking, accounts, authentication, subscriptions, payments, integrity, safety controls, content access, or any external archive, extension, or payload.
