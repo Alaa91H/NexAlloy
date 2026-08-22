@@ -204,6 +204,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "morphe.x.hide-navigation-badges.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "crimera/piko",
+                sourcePatchName = "Hide badges from navigation bar icons",
+                packageName = "com.twitter.android",
+            )?.id,
+        )
+        assertEquals(
             "piko.x.clear-tracking-params.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "crimera/piko",

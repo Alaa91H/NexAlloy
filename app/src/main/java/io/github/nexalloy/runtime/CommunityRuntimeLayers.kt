@@ -376,6 +376,30 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val xNavbarBadgeNumberFingerprint = Fingerprint(
+        definingClass = "/BadgeableTabView;",
+        name = "setBadgeNumber",
+    )
+
+    private val hideXNavigationBadgesDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "morphe.x.hide-navigation-badges.runtime",
+        sourceRepository = "crimera/piko",
+        sourcePatchName = "Hide badges from navigation bar icons",
+        packageNames = setOf("com.twitter.android"),
+        patch = patch(
+            name = "Runtime · Hide navigation badges",
+            description = "Replaces the reviewed X navigation badge number with zero before the tab view renders it.",
+        ) {
+            xNavbarBadgeNumberFingerprint.memberOrNull?.hookMethod {
+                before { param ->
+                    if (param.args.size == 1 && param.args[0] is Int) {
+                        param.args[0] = 0
+                    }
+                }
+            }
+        },
+    )
+
     private val clearXTrackingParamsDefinition = StaticFirstStringArgumentReturnLayerDefinition(
         id = "piko.x.clear-tracking-params.runtime",
         sourceRepository = "crimera/piko",
@@ -502,6 +526,7 @@ object CommunityRuntimeLayers {
         hideTelegramTypingIndicatorDefinition.compile(),
         disableTelegramChannelSwitchingDefinition.compile(),
         disableProtonVpnTelemetryDefinition.compile(),
+        hideXNavigationBadgesDefinition.compile(),
         clearXTrackingParamsDefinition.compile(),
         hideTruecallerAssistantTabDefinition.compile(),
         disableTruecallerUpdateCheckDefinition.compile(),

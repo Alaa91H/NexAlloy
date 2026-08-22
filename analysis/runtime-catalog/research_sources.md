@@ -107,3 +107,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** an `ExistingPatchRuntimeLayerDefinition` is constrained to `com.facebook.orca`, the exact `OperationResult` return type, one object parameter, public access, and all three reviewed strings. The local hook resolves the actual target method's return class and reads only its reviewed `A00` default-result field.
 - **Effect and failure mode:** when both the exact method and its expected result field exist, the client-side media-transcoding operation is skipped and Messenger continues with its normal fallback upload path. If either lookup fails, the original operation runs unchanged. Server upload limits remain unchanged.
 - **Scope:** this is a local media-quality preference; it does not alter authentication, accounts, subscriptions, payments, server limits, integrity, safety protections, or content-access controls.
+
+### X — Hide badges from navigation bar icons
+
+- **Source review:** inspected `HideNavBarBadges.kt` in `crimera/piko`. The source targets `setBadgeNumber` on the class whose descriptor ends in `BadgeableTabView` and rewrites its integer badge-count argument through a setting hook.
+- **Runtime mapping:** local `ExistingPatchRuntimeLayerDefinition`, constrained to `com.twitter.android`, the reviewed class suffix, and the `setBadgeNumber` method name. The local pre-hook replaces exactly one integer argument with `0`; any other shape proceeds unchanged.
+- **Effect and failure mode:** notification nudges and numeric badges are suppressed in X navigation tab views that expose the reviewed method. If the target does not resolve or its argument signature changes, no value is modified.
+- **Scope:** this is a local interface-preference control only. It does not alter notifications at the service level, accounts, authentication, subscriptions, payments, integrity, or safety protections.
