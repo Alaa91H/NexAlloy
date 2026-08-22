@@ -311,3 +311,17 @@ The active local `Unlock plus` path was audited and removed, including its appli
 The public `DisableTelemetryPatch.kt`, `HandleMessageFingerprint`, and compatibility constant in `hoo-dles/morphe-patches` were reviewed as text only. The local adapter considers only `TrackingHandler.handleMessage(): void` for `com.soundcloud.android`, as constrained by the source-defined `TrackingHandler` class suffix and method name.
 
 The resolved void method is skipped before the reviewed telemetry message is handled. A changed class suffix, method name, return type, or absent method produces no hook. Playback, accounts, authentication, subscriptions, licensing, purchases, integrity, content access, and application UI outside that telemetry handler remain unchanged. No external archive, extension, or payload is downloaded, interpreted, or executed.
+
+### NoMone — Disable telemetry (deferred)
+
+The candidate source was reviewed as text only and rejected. Although its final target is a telemetry event method, it explicitly depends on `disableAntiTamperPatch`. Protection and anti-tamper bypasses are outside the permitted local Runtime scope, so no adapter, package registration, or catalog entry was added.
+
+### SuperChinese — Disable telemetry (deferred)
+
+The candidate source was reviewed as text only and rejected. It explicitly depends on `spoofSignaturePatch` and replaces a constructor instruction. Signature spoofing and protection bypasses are outside the permitted local Runtime scope, so no adapter, package registration, or catalog entry was added.
+
+### Strava — Disable Quick Edit
+
+The public `DisableQuickEditPatch.kt` and `GetHasAccessToQuickEditFingerprint` in `RookieEnough/De-Vanced` were reviewed as text only. The local adapter targets only the boolean `getHasAccessToQuickEdit` method and returns `false`, matching the reviewed prompt-suppression behavior.
+
+This is limited to suppressing the Quick Edit prompt gate. It does not enable Quick Edit or other paid functionality, alter subscriptions or entitlement state, modify purchases, accounts, authentication, integrity, activity recording, routes, or social data. A changed method name or return type produces no hook, and no external archive, extension, or payload is downloaded, interpreted, or executed.

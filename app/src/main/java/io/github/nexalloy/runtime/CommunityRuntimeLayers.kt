@@ -256,6 +256,22 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val disableStravaQuickEditDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "devanced.strava.disable-quick-edit.runtime",
+        sourceRepository = "RookieEnough/De-Vanced",
+        sourcePatchName = "Disable Quick Edit",
+        packageNames = setOf("com.strava"),
+        patch = patch(
+            name = "Runtime · Disable Quick Edit",
+            description = "Prevents only the reviewed Strava Quick Edit prompt gate from reporting available.",
+        ) {
+            Fingerprint(
+                name = "getHasAccessToQuickEdit",
+                returnType = "Z",
+            ).memberOrNull?.hookMethod { before { param -> param.result = false } }
+        },
+    )
+
     private val disableSoundCloudTelemetryDefinition = ExistingPatchRuntimeLayerDefinition(
         id = "hoodles.soundcloud.disable-telemetry.runtime",
         sourceRepository = "hoo-dles/morphe-patches",
@@ -1229,6 +1245,7 @@ object CommunityRuntimeLayers {
         disableGboardTenorShareTrackingDefinition.compile(),
         disableCamScannerTelemetryDefinition.compile(),
         blockStravaSnowplowTrackingDefinition.compile(),
+        disableStravaQuickEditDefinition.compile(),
         disableSoundCloudTelemetryDefinition.compile(),
         disableEsExplorerTrackingDefinition.compile(),
         disableAmazonSearchSuggestionsTrackingDefinition.compile(),

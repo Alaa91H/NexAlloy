@@ -96,6 +96,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "devanced.strava.disable-quick-edit.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "RookieEnough/De-Vanced",
+                sourcePatchName = "Disable Quick Edit",
+                packageName = "com.strava",
+            )?.id,
+        )
+        assertEquals(
             "hoodles.soundcloud.disable-telemetry.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "hoo-dles/morphe-patches",
