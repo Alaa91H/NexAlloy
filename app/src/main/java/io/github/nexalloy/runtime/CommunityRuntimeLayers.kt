@@ -474,6 +474,30 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val truecallerScamFeedEnabledFingerprint = Fingerprint(
+        returnType = "Z",
+        parameters = emptyList(),
+        filters = listOf(
+            methodCall(definingClass = "Lhc2/a;", name = "a"),
+            methodCall(definingClass = "Lhc2/baz;", name = "a"),
+        ),
+    )
+
+    private val hideTruecallerScamsTabDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "paresh.truecaller.hide-scams-tab.runtime",
+        sourceRepository = "Paresh-Maheshwari/paresh-patches",
+        sourcePatchName = "Hide Scams tab",
+        packageNames = setOf("com.truecaller"),
+        patch = patch(
+            name = "Runtime · Hide Scams tab",
+            description = "Returns false from the reviewed scam-feed enablement gate before the navigation tab is added.",
+        ) {
+            truecallerScamFeedEnabledFingerprint.memberOrNull?.hookMethod {
+                before { param -> param.result = false }
+            }
+        },
+    )
+
     private val hideTruecallerAssistantTabDefinition = BooleanReturnOverrideLayerDefinition(
         id = "paresh.truecaller.hide-assistant-tab.runtime",
         sourceRepository = "Paresh-Maheshwari/paresh-patches",
@@ -560,6 +584,7 @@ object CommunityRuntimeLayers {
         hideXNavigationBadgesDefinition.compile(),
         clearXTrackingParamsDefinition.compile(),
         sanitizeTikTokSharingLinksDefinition.compile(),
+        hideTruecallerScamsTabDefinition.compile(),
         hideTruecallerAssistantTabDefinition.compile(),
         disableTruecallerUpdateCheckDefinition.compile(),
         disableTruecallerTelemetryDefinition.compile(),

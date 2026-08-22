@@ -121,3 +121,9 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** local `ExistingPatchRuntimeLayerDefinition`, constrained to `com.zhiliaoapp.musically`, static access, a String return type, and both reviewed tracking anchors. The pre-hook also verifies at least two String arguments and operates only on the first String URL argument.
 - **Effect and failure mode:** valid reviewed share URLs are returned without query parameters. If matching is ambiguous, the method signature changes, parsing fails, or the expected String argument is unavailable, the original method executes unchanged.
 - **Scope:** the adapter only removes client-side share-link query parameters. It does not alter authentication, accounts, subscriptions, payments, content-access controls, integrity, safety protections, or downloaded code.
+
+### Truecaller — Hide Scams tab
+
+- **Source review:** inspected `HideScamsTabPatch.kt` and `ScamFeedEnabledFingerprint` in `Paresh-Maheshwari/paresh-patches` on GitLab. The source identifies a no-argument Boolean scam-feed gate by the paired calls `hc2/a.a()` and `hc2/baz.a()`, then returns `false` so the tab is not added to the bottom navigation.
+- **Runtime mapping:** local `ExistingPatchRuntimeLayerDefinition`, constrained to `com.truecaller`, a Boolean return type, no arguments, and both reviewed call filters. The hook returns `false` only when that complete fingerprint resolves.
+- **Effect and failure mode:** the Scams tab is not added to Truecaller navigation when the reviewed gate is found. The adapter neither blocks scam detection services nor changes account, caller-ID, or protection behavior. If the fingerprint changes or is absent, no hook is installed.
