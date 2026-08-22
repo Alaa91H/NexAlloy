@@ -175,3 +175,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** the separately attributed local `BooleanReturnOverrideLayerDefinition` retains exactly those package, Boolean-return, parameter, and marker constraints. It is locally compiled and does not import an upstream archive or invoke an unreviewed external component.
 - **Effect and failure mode:** only the resolved in-app-browser decision returns `false`, handing an eligible link to Messenger's existing external-browser path. If the signature, anchors, or target resolution changes, no hook is installed and Messenger keeps its original behavior.
 - **Scope:** this is a local link-handling preference only. It does not alter accounts, authentication, subscriptions, payments, eligibility, integrity, safety protections, or content-access controls.
+
+### Messenger — Hide inbox subtabs (De-Vanced catalog source)
+
+- **Source review:** inspected `HideInboxSubtabsPatch.kt` and the shared `CreateInboxSubTabsFingerprint` in `RookieEnough/De-Vanced`. The source resolves the inbox-subtabs supplier through the retained Redex original name `InboxSubtabsItemSupplierImplementation$onSubscribe$1`, then changes the supplier's readiness result to false.
+- **Runtime mapping:** the separately attributed local `MultiVoidMethodSkipLayerDefinition` remains constrained to the already reviewed `com.facebook.orca` target `LX/2Je;->run(): void`. It does not enumerate arbitrary `run()` methods or interpret upstream metadata dynamically.
+- **Effect and failure mode:** the known supplier Runnable is skipped before it signals that subtabs are ready. If its concrete target is absent or changes after an app update, no hook is installed and Messenger continues unchanged.
+- **Scope:** this is a local inbox-interface control only. It does not alter messages, accounts, authentication, subscriptions, payments, eligibility, integrity, safety protections, or content-access controls.

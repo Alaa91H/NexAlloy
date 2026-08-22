@@ -218,6 +218,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "devanced.messenger.hide-inbox-subtabs.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "RookieEnough/De-Vanced",
+                sourcePatchName = "Hide inbox subtabs",
+                packageName = "com.facebook.orca",
+            )?.id,
+        )
+        assertEquals(
             "devanced.messenger.hide-inbox-ads.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "RookieEnough/De-Vanced",

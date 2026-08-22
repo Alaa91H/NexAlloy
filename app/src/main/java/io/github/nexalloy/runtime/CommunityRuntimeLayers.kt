@@ -272,6 +272,22 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    /**
+     * De-Vanced resolves the same InboxSubtabs supplier through a retained Redex original name.
+     * This alternate catalog attribution retains the existing concrete, fail-closed Runtime target.
+     */
+    private val hideMessengerInboxSubtabsFromDevancedDefinition = MultiVoidMethodSkipLayerDefinition(
+        id = "devanced.messenger.hide-inbox-subtabs.runtime",
+        sourceRepository = "RookieEnough/De-Vanced",
+        sourcePatchName = "Hide inbox subtabs",
+        packageNames = setOf("com.facebook.orca"),
+        patchName = "Runtime · Hide inbox subtabs",
+        description = "Prevents the reviewed Messenger inbox-subtabs supplier Runnable from signalling that its tabs are ready.",
+        targets = listOf(
+            VoidMethodTarget("LX/2Je;", "run"),
+        ),
+    )
+
     private val messengerInboxAdsLoadFingerprint = Fingerprint(
         definingClass = "Lcom/facebook/messaging/business/inboxads/plugins/inboxads/itemsupplier/InboxAdsItemSupplierImplementation;",
         returnType = "V",
@@ -707,6 +723,7 @@ object CommunityRuntimeLayers {
         openMessengerLinksExternallyDefinition.compile(),
         openMessengerLinksExternallyFromDevancedDefinition.compile(),
         hideMessengerInboxSubtabsDefinition.compile(),
+        hideMessengerInboxSubtabsFromDevancedDefinition.compile(),
         hideMessengerInboxAdsDefinition.compile(),
         disableMessengerTypingIndicatorDefinition.compile(),
         disableMessengerTypingIndicatorFromDevancedDefinition.compile(),
