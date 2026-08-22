@@ -253,6 +253,27 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val messengerInboxAdsLoadFingerprint = Fingerprint(
+        definingClass = "Lcom/facebook/messaging/business/inboxads/plugins/inboxads/itemsupplier/InboxAdsItemSupplierImplementation;",
+        returnType = "V",
+        strings = listOf("ads_load_begin", "inbox_ads_fetch_start"),
+    )
+
+    private val hideMessengerInboxAdsDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "devanced.messenger.hide-inbox-ads.runtime",
+        sourceRepository = "RookieEnough/De-Vanced",
+        sourcePatchName = "Hide inbox ads",
+        packageNames = setOf("com.facebook.orca"),
+        patch = patch(
+            name = "Runtime · Hide inbox ads",
+            description = "Skips the reviewed Messenger inbox-ad load method when the complete source fingerprint resolves.",
+        ) {
+            messengerInboxAdsLoadFingerprint.memberOrNull?.hookMethod {
+                before { param -> param.result = null }
+            }
+        },
+    )
+
     private val disableMessengerTypingIndicatorDefinition = MultiVoidMethodSkipLayerDefinition(
         id = "morphe.messenger.disable-typing-indicator.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -649,6 +670,7 @@ object CommunityRuntimeLayers {
         disableMessengerMediaTranscodingDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),
         hideMessengerInboxSubtabsDefinition.compile(),
+        hideMessengerInboxAdsDefinition.compile(),
         disableMessengerTypingIndicatorDefinition.compile(),
         disableMessengerTypingIndicatorFromDevancedDefinition.compile(),
         hideMessengerInboxStoriesNotesTrayDefinition.compile(),

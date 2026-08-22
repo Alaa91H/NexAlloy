@@ -210,6 +210,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "devanced.messenger.hide-inbox-ads.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "RookieEnough/De-Vanced",
+                sourcePatchName = "Hide inbox ads",
+                packageName = "com.facebook.orca",
+            )?.id,
+        )
+        assertEquals(
             "morphe.messenger.disable-typing-indicator.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "rushiranpise/morphe-patches",

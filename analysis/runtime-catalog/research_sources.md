@@ -154,3 +154,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** the separately attributed local `MultiVoidMethodSkipLayerDefinition` remains constrained to the already reviewed `com.facebook.orca` target `LX/Ay7;->run(): void`. It does not import the source archive, interpret a retained-name field at runtime, or perform a broad `run()` scan.
 - **Effect and failure mode:** the known composer Runnable is skipped before sending a typing-state event. If that concrete target is absent or changes in a Messenger build, no hook is installed. The source attribution does not widen the pre-existing method contract.
 - **Scope:** this is a local messaging-privacy control only. It does not alter accounts, authentication, subscriptions, payments, moderation, integrity, safety protections, or content-access controls.
+
+### Messenger — Hide inbox ads
+
+- **Source review:** inspected `HideInboxAdsPatch.kt` and `LoadInboxAdsFingerprint` in `RookieEnough/De-Vanced`. The source optionally resolves a void method on `InboxAdsItemSupplierImplementation` with both `ads_load_begin` and `inbox_ads_fetch_start` markers, then returns before the load body executes. Newer Messenger versions may omit the supplier entirely.
+- **Runtime mapping:** the local `ExistingPatchRuntimeLayerDefinition` is constrained to `com.facebook.orca`, the exact reviewed `InboxAdsItemSupplierImplementation` descriptor, a void return type, and both source markers. It returns before the body only when that complete target resolves; no downloaded code, source extension, or broad inbox scan is used.
+- **Effect and failure mode:** a resolved source-equivalent loader is skipped, preventing that local inbox-ad load path. If the supplier was removed, its descriptor or markers change, or the target fails to resolve, no hook is installed and Messenger continues unchanged.
+- **Scope:** this is a narrow local interface control. It does not alter messages, accounts, authentication, subscriptions, payments, eligibility, integrity, safety protections, or content-access controls.
