@@ -510,6 +510,7 @@ object RuntimeLayerTargetRegistry {
         "jp.pxv.android",
         "com.sonyliv",
         "com.vimtv",
+        "com.easybrain.arrow.puzzle.game",
         "com.sofascore.results",
         "com.amazon.mp3",
         "com.alltrails.alltrails",

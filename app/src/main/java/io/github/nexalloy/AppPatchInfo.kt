@@ -33,6 +33,7 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("Pixiv", "jp.pxv.android", emptyArray()),
     AppPatchInfo("SonyLIV", "com.sonyliv", emptyArray()),
     AppPatchInfo("Vi Movies and TV", "com.vimtv", emptyArray()),
+    AppPatchInfo("Arrow Puzzle", "com.easybrain.arrow.puzzle.game", emptyArray()),
     AppPatchInfo("Sofascore", "com.sofascore.results", emptyArray()),
     AppPatchInfo("AllTrails", "com.alltrails.alltrails", AllTrailsPatches),
     AppPatchInfo("Gboard", "com.google.android.inputmethod.latin", emptyArray()),

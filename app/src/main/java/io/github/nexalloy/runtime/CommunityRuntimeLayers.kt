@@ -296,6 +296,36 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val arrowPuzzleAnalyticsSendEventFingerprint = Fingerprint(
+        definingClass = "Lcom/easybrain/analytics/unity/AnalyticsPlugin;",
+        name = "AnalyticsSendEvent",
+        returnType = "V",
+        accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC, AccessFlags.FINAL),
+        parameters = listOf("Ljava/lang/String;", "Ljava/lang/String;"),
+    )
+
+    private val arrowPuzzleAnalyticsControllerFingerprint = Fingerprint(
+        definingClass = "Lxb/i;",
+        name = "j",
+        returnType = "V",
+        accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+        parameters = listOf("Lcom/easybrain/analytics/event/b;"),
+    )
+
+    private val disableArrowPuzzleAnalyticsDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "chiggi.arrowpuzzle.disable-analytics.runtime",
+        sourceRepository = "durgesh0505/chiggi_morphe_patches",
+        sourcePatchName = "Disable analytics",
+        packageNames = setOf("com.easybrain.arrow.puzzle.game"),
+        patch = patch(
+            name = "Runtime · Disable analytics",
+            description = "Skips only the reviewed Arrow Puzzle analytics transmit methods.",
+        ) {
+            arrowPuzzleAnalyticsSendEventFingerprint.memberOrNull?.hookMethod { before { param -> param.result = null } }
+            arrowPuzzleAnalyticsControllerFingerprint.memberOrNull?.hookMethod { before { param -> param.result = null } }
+        },
+    )
+
     private val vimTvAdUrlTypesFingerprint = Fingerprint(
         definingClass = "Lcom/yupptv/ottsdk/model/ads/AdUrlResponse;",
         name = "getAdUrlTypes",
@@ -1434,6 +1464,7 @@ object CommunityRuntimeLayers {
         blockStravaSnowplowTrackingDefinition.compile(),
         disableStravaQuickEditDefinition.compile(),
         hidePixivAdsDefinition.compile(),
+        disableArrowPuzzleAnalyticsDefinition.compile(),
         removeViMoviesAdsDefinition.compile(),
         hideSonyLivPromoBannersDefinition.compile(),
         disableSonyLivAppsFlyerTrackingDefinition.compile(),

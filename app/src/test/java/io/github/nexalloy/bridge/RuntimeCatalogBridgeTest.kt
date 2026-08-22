@@ -112,6 +112,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "chiggi.arrowpuzzle.disable-analytics.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "durgesh0505/chiggi_morphe_patches",
+                sourcePatchName = "Disable analytics",
+                packageName = "com.easybrain.arrow.puzzle.game",
+            )?.id,
+        )
+        assertEquals(
             "chiggi.vimtv.remove-ads.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "durgesh0505/chiggi_morphe_patches",
