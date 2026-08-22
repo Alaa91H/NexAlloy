@@ -296,6 +296,32 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val vimTvAdUrlTypesFingerprint = Fingerprint(
+        definingClass = "Lcom/yupptv/ottsdk/model/ads/AdUrlResponse;",
+        name = "getAdUrlTypes",
+        returnType = "Ljava/util/List;",
+    )
+
+    private val vimTvAdEnabledFingerprint = Fingerprint(
+        definingClass = "Lcom/yupptv/ottsdk/model/user/TorcAiAdConfig;",
+        name = "isAdEnabled",
+        returnType = "Z",
+    )
+
+    private val removeViMoviesAdsDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "chiggi.vimtv.remove-ads.runtime",
+        sourceRepository = "durgesh0505/chiggi_morphe_patches",
+        sourcePatchName = "Remove ads",
+        packageNames = setOf("com.vimtv"),
+        patch = patch(
+            name = "Runtime · Remove ads",
+            description = "Returns null or false only from the reviewed Vi Movies and TV client ad gates.",
+        ) {
+            vimTvAdUrlTypesFingerprint.memberOrNull?.hookMethod { before { param -> param.result = null } }
+            vimTvAdEnabledFingerprint.memberOrNull?.hookMethod { before { param -> param.result = false } }
+        },
+    )
+
     private val sonyLivAdGateFingerprints = listOf(
         Fingerprint(
             definingClass = "Lcom/sonyliv/mediaplayer/util/PlayerUtil;",
@@ -1364,6 +1390,7 @@ object CommunityRuntimeLayers {
         blockStravaSnowplowTrackingDefinition.compile(),
         disableStravaQuickEditDefinition.compile(),
         hidePixivAdsDefinition.compile(),
+        removeViMoviesAdsDefinition.compile(),
         removeSonyLivVideoAdsDefinition.compile(),
         disableSofascoreAdsDefinition.compile(),
         preventAmazonMusicLogUploadDefinition.compile(),

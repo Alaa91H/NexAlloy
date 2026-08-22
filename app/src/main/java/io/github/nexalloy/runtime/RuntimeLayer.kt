@@ -509,6 +509,7 @@ object RuntimeLayerTargetRegistry {
         "com.soundcloud.android",
         "jp.pxv.android",
         "com.sonyliv",
+        "com.vimtv",
         "com.sofascore.results",
         "com.amazon.mp3",
         "com.alltrails.alltrails",

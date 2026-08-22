@@ -32,6 +32,7 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("SoundCloud", "com.soundcloud.android", emptyArray()),
     AppPatchInfo("Pixiv", "jp.pxv.android", emptyArray()),
     AppPatchInfo("SonyLIV", "com.sonyliv", emptyArray()),
+    AppPatchInfo("Vi Movies and TV", "com.vimtv", emptyArray()),
     AppPatchInfo("Sofascore", "com.sofascore.results", emptyArray()),
     AppPatchInfo("AllTrails", "com.alltrails.alltrails", AllTrailsPatches),
     AppPatchInfo("Gboard", "com.google.android.inputmethod.latin", emptyArray()),

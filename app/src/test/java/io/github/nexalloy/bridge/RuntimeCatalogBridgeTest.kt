@@ -112,6 +112,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "chiggi.vimtv.remove-ads.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "durgesh0505/chiggi_morphe_patches",
+                sourcePatchName = "Remove ads",
+                packageName = "com.vimtv",
+            )?.id,
+        )
+        assertEquals(
             "chiggi.sonyliv.remove-video-ads.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "durgesh0505/chiggi_morphe_patches",
