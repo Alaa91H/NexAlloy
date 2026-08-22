@@ -219,6 +219,16 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val hideTelegramTypingIndicatorDefinition = AllMatchingVoidMethodSkipLayerDefinition(
+        id = "morphe.telegram.hide-typing-indicator.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Hide typing indicator",
+        packageNames = setOf("org.telegram.messenger"),
+        patchName = "Runtime · Hide typing indicator",
+        description = "Skips every reviewed Telegram needSendTyping delegate before a typing-state request is dispatched.",
+        methodName = "needSendTyping",
+    )
+
     private val disableTelegramChannelSwitchingDefinition = CompositeRuntimeLayerDefinition(
         id = "morphe.telegram.disable-channel-switching.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -368,6 +378,7 @@ object CommunityRuntimeLayers {
         hideMessengerInboxStoriesNotesTrayDefinition.compile(),
         removeTelegramSponsoredMessagesDefinition.compile(),
         disableTelegramAutoUpdateDefinition.compile(),
+        hideTelegramTypingIndicatorDefinition.compile(),
         disableTelegramChannelSwitchingDefinition.compile(),
         disableProtonVpnTelemetryDefinition.compile(),
         clearXTrackingParamsDefinition.compile(),

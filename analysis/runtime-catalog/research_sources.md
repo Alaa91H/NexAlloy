@@ -79,3 +79,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** local `StaticFirstStringArgumentReturnLayerDefinition`, constrained to `com.twitter.android`, return type `String`, exactly three parameters (`String`, object, `String`), and the anchors `<this>`, `shareParam`, and `sessionToken`.
 - **Effect and failure mode:** only a static target whose first argument is a String receives that string as its result. A target absent after an X update, a non-static match, or any mismatch in the first argument proceeds unchanged.
 - **Scope:** this is a share-link privacy control. It does not alter accounts, login, content visibility, subscriptions, payments, update enforcement, integrity, or safety protections.
+
+### Telegram — Hide typing indicator
+
+- **Source review:** inspected `TelegramHideTypingPatch.kt` in `rushiranpise/morphe-patches`. The source enumerates every no-argument `needSendTyping(): void` implementation and inserts an immediate `return-void`.
+- **Runtime mapping:** local `AllMatchingVoidMethodSkipLayerDefinition`, constrained to `org.telegram.messenger`, method name `needSendTyping`, void return type, and no parameters. Its multi-match semantics intentionally mirror the reviewed upstream source rather than choosing an obfuscated class name.
+- **Effect and failure mode:** every exact implementation found in the target process is skipped before it can dispatch a typing-state request. If a release has no such method, the matched set is empty and no hook is installed.
+- **Scope:** this is a user-controlled messaging privacy setting only. It does not change authentication, account behavior, subscriptions, payments, server-side content controls, integrity checks, or safety protections.

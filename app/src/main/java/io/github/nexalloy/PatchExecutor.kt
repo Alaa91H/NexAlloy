@@ -317,6 +317,15 @@ class PatchExecutor(val appContext: Application, val lpparam: LoadPackageParam) 
         getDexMethod(cacheKey) { this@hookMethod.run() }.hookMethod(callback)
     }
 
+    /** Hooks every result of a locally declared DexKit method-list query. */
+    fun hookMethodList(
+        cacheKey: String,
+        findMethods: FindMethodListFunc,
+        callback: XC_MethodHook,
+    ) {
+        getDexMethods(cacheKey, findMethods).forEach { it.hookMethod(callback) }
+    }
+
     val Fingerprint.dexMethod get() = getDexMethod(cacheKey) { this@dexMethod.run() }
 
     val Fingerprint.member get() = dexMethod.toMember()

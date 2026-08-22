@@ -415,6 +415,52 @@ data class MultiDexP0ObjectReturnOverrideLayerDefinition(
     }
 }
 
+/**
+ * Matches every reviewed Void method carrying one exact name and parameter signature.
+ * This supports sources that deliberately patch every implementation of a stable delegate
+ * method; missing results yield an empty list and therefore no hook.
+ */
+data class AllMatchingVoidMethodSkipLayerDefinition(
+    val id: String,
+    val sourceRepository: String,
+    val sourcePatchName: String,
+    val packageNames: Set<String>,
+    val patchName: String,
+    val description: String,
+    val methodName: String,
+    val parameterTypes: List<String> = emptyList(),
+    val enabledByDefault: Boolean = false,
+) {
+    fun compile(): RuntimeLayer {
+        val compiledPatch = patch(
+            name = patchName,
+            description = description,
+            use = enabledByDefault,
+        ) {
+            hookMethodList(
+                cacheKey = "$id|$methodName|${parameterTypes.joinToString(",")}",
+                findMethods = {
+                    findMethod {
+                        matcher {
+                            name = methodName
+                            returnType = "void"
+                            paramTypes(*parameterTypes.toTypedArray())
+                        }
+                    }.filter { it.isMethod }
+                },
+                callback = XC_MethodReplacement.DO_NOTHING,
+            )
+        }
+        return RuntimeLayer(
+            id = id,
+            sourceRepository = sourceRepository,
+            sourcePatchName = sourcePatchName,
+            packageNames = packageNames,
+            patch = compiledPatch,
+        )
+    }
+}
+
 data class VoidMethodSkipLayerDefinition(
     val id: String,
     val sourceRepository: String,
