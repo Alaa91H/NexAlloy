@@ -132,6 +132,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "morphe.messenger.hide-inbox-stories-notes-tray.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "rushiranpise/morphe-patches",
+                sourcePatchName = "Hide inbox stories and notes tray",
+                packageName = "com.facebook.orca",
+            )?.id,
+        )
+        assertEquals(
             "paresh.proton-vpn.disable-telemetry.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "Paresh-Maheshwari/paresh-patches",

@@ -134,6 +134,19 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val hideMessengerInboxStoriesNotesTrayDefinition = BooleanReturnOverrideLayerDefinition(
+        id = "morphe.messenger.hide-inbox-stories-notes-tray.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Hide inbox stories and notes tray",
+        packageNames = setOf("com.facebook.orca"),
+        patchName = "Runtime · Hide inbox stories and notes tray",
+        description = "Hides the reviewed Messenger inbox stories and notes tray visibility decision.",
+        fingerprintStrings = listOf(
+            "com.facebook.messaging.friendsinboxunit.plugins.inboxunit.FriendsInboxUnitKillSwitch",
+        ),
+        replacementValue = false,
+    )
+
     private val removeTelegramSponsoredMessagesDefinition = MultiBooleanReturnOverrideLayerDefinition(
         id = "morphe.telegram.remove-sponsored-messages.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -248,6 +261,7 @@ object CommunityRuntimeLayers {
         disableGboardSuperpacksEagerSyncDefinition.compile(),
         disableGboardTenorShareTrackingDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),
+        hideMessengerInboxStoriesNotesTrayDefinition.compile(),
         removeTelegramSponsoredMessagesDefinition.compile(),
         disableProtonVpnTelemetryDefinition.compile(),
         disableTruecallerUpdateCheckDefinition.compile(),
