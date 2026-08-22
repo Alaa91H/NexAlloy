@@ -22,6 +22,22 @@ object InstagramRuntimeLayers {
         replacementValue = true,
     )
 
+    /**
+     * The upstream source uses the same uniquely anchored Boolean feature gate as the
+     * already-reviewed Piko adapter. Keeping a distinct compiled definition preserves
+     * catalog attribution without parsing or loading the upstream patch archive.
+     */
+    private val disableVideoAutoplayFromBrossshDefinition = BooleanReturnOverrideLayerDefinition(
+        id = "morphe.instagram.disable-video-autoplay.runtime",
+        sourceRepository = "brosssh/morphe-patches",
+        sourcePatchName = "Disable video autoplay",
+        packageNames = setOf("com.instagram.android"),
+        patchName = "Runtime · Disable video autoplay",
+        description = "Disables the reviewed Instagram feed video autoplay feature gate.",
+        fingerprintStrings = listOf("ig_disable_video_autoplay"),
+        replacementValue = true,
+    )
+
     private val disableStoryFlippingDefinition = VoidMethodSkipLayerDefinition(
         id = "piko.instagram.disable-story-flipping.runtime",
         sourceRepository = "crimera/piko",
@@ -36,6 +52,7 @@ object InstagramRuntimeLayers {
 
     val layers: List<RuntimeLayer> = listOf(
         disableVideoAutoplayDefinition.compile(),
+        disableVideoAutoplayFromBrossshDefinition.compile(),
         disableStoryFlippingDefinition.compile(),
     )
 }

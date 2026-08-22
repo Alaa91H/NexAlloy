@@ -133,3 +133,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Source review:** inspected `RemoveDelayPatch.kt` and its two source fingerprints in `hoo-dles/morphe-patches`. The source returns zero from `getChangeServerLongDelayInSeconds` and `getChangeServerShortDelayInSeconds`.
 - **Runtime mapping:** local `ExistingPatchRuntimeLayerDefinition` is constrained to `ch.protonvpn.android` and those two reviewed accessor names. It acts only on no-argument methods whose reflected return type is a supported numeric primitive or wrapper, returning the correctly typed zero value.
 - **Effect and failure mode:** the known local server-change delay accessors resolve to zero when found. If an accessor is absent, takes arguments, or returns a nonnumeric type, its original implementation runs unchanged. This adapter does not modify server eligibility, account state, subscription, authentication, or network-security behavior.
+
+### Instagram — Disable video autoplay (alternate catalog source)
+
+- **Source review:** inspected `DisableVideoAutoplayPatch.kt` in `brosssh/morphe-patches`. The source constrains its target to a Boolean-returning method carrying the stable `ig_disable_video_autoplay` string and returns `true` before the host implementation runs.
+- **Runtime mapping:** a separately attributed, locally compiled `BooleanReturnOverrideLayerDefinition` targets only `com.instagram.android`, return type `Z`, and the exact reviewed anchor `ig_disable_video_autoplay`. It does not fetch, parse, or execute the upstream patch archive.
+- **Effect and failure mode:** when the uniquely anchored Boolean feature gate resolves, it returns `true`, preserving the upstream patch’s video-autoplay disabling outcome. If the string is absent, the method’s return type changes, or the target does not resolve, no hook is installed and Instagram retains its original behavior.
+- **Scope:** this bridges the catalog item from its alternate public source without widening hook behavior. It does not alter accounts, authentication, subscriptions, payments, eligibility, integrity, safety protections, or content-access controls.
