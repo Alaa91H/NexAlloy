@@ -168,3 +168,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** the separately attributed local `BooleanReturnOverrideLayerDefinition` remains constrained to `com.facebook.orca`, Boolean return type, and that exact reviewed marker. It does not import the source archive or add a broad Messenger UI hook.
 - **Effect and failure mode:** the exact gate returns `false`, so the reviewed inbox stories-and-notes tray is not displayed. If the marker, return type, or target changes, no hook is installed and Messenger keeps its original interface behavior.
 - **Scope:** this is a local interface-preference control only. It does not alter messages, accounts, authentication, subscriptions, payments, eligibility, integrity, safety protections, or content-access controls.
+
+### Messenger — Open links externally (De-Vanced catalog source)
+
+- **Source review:** inspected `OpenLinksExternallyPatch.kt` and `ShouldOpenInAppBrowserFingerprint` in `RookieEnough/De-Vanced`. The source identifies the Boolean in-app-browser decision through the exact `Uri` and `FbUserSession` parameters plus `iab_skipped_reason` and `user_prefers_external`, then returns `false` to select the normal external-browser route.
+- **Runtime mapping:** the separately attributed local `BooleanReturnOverrideLayerDefinition` retains exactly those package, Boolean-return, parameter, and marker constraints. It is locally compiled and does not import an upstream archive or invoke an unreviewed external component.
+- **Effect and failure mode:** only the resolved in-app-browser decision returns `false`, handing an eligible link to Messenger's existing external-browser path. If the signature, anchors, or target resolution changes, no hook is installed and Messenger keeps its original behavior.
+- **Scope:** this is a local link-handling preference only. It does not alter accounts, authentication, subscriptions, payments, eligibility, integrity, safety protections, or content-access controls.

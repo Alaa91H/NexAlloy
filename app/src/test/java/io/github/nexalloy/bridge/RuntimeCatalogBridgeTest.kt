@@ -202,6 +202,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "devanced.messenger.open-links-externally.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "RookieEnough/De-Vanced",
+                sourcePatchName = "Open links externally",
+                packageName = "com.facebook.orca",
+            )?.id,
+        )
+        assertEquals(
             "morphe.messenger.hide-inbox-subtabs.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "rushiranpise/morphe-patches",

@@ -241,6 +241,25 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    /**
+     * De-Vanced targets the same reviewed in-app-browser Boolean decision. Separate metadata
+     * keeps catalog attribution explicit while the compiled adapter remains unchanged in scope.
+     */
+    private val openMessengerLinksExternallyFromDevancedDefinition = BooleanReturnOverrideLayerDefinition(
+        id = "devanced.messenger.open-links-externally.runtime",
+        sourceRepository = "RookieEnough/De-Vanced",
+        sourcePatchName = "Open links externally",
+        packageNames = setOf("com.facebook.orca"),
+        patchName = "Runtime · Open links externally",
+        description = "Routes supported Messenger links to the system browser instead of the in-app browser.",
+        fingerprintStrings = listOf("iab_skipped_reason", "user_prefers_external"),
+        replacementValue = false,
+        parameterTypes = listOf(
+            "Landroid/net/Uri;",
+            "Lcom/facebook/auth/usersession/FbUserSession;",
+        ),
+    )
+
     private val hideMessengerInboxSubtabsDefinition = MultiVoidMethodSkipLayerDefinition(
         id = "morphe.messenger.hide-inbox-subtabs.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -686,6 +705,7 @@ object CommunityRuntimeLayers {
         removeMessengerMetaAiDefinition.compile(),
         disableMessengerMediaTranscodingDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),
+        openMessengerLinksExternallyFromDevancedDefinition.compile(),
         hideMessengerInboxSubtabsDefinition.compile(),
         hideMessengerInboxAdsDefinition.compile(),
         disableMessengerTypingIndicatorDefinition.compile(),
