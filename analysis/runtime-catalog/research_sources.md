@@ -291,3 +291,13 @@ When that exact timeout action resolves, it is skipped before the original body 
 The public `DisableAnalyticsPatch.kt` and its Plus Messenger compatibility constant in `Paresh-Maheshwari/paresh-patches` were reviewed as text only. The local adapter considers only `Lorg/telegram/plus/helpers/AnalyticsHelper;->start(): void`, `trackEvent(String): void`, and `trackEvent(String, HashMap): void` for the reviewed `org.telegram.plus` package.
 
 Each resolved void target is skipped before analytics startup or event dispatch. A changed class descriptor, method name, return type, or parameter signature produces no hook for that method. The adapter does not load, interpret, or execute an upstream archive, extension, or payload, and it does not modify messages, accounts, authentication, contacts, subscriptions, licensing, payments, integrity, safety controls, content restrictions, or content access.
+
+### Strava — Block Snowplow tracking
+
+The public `BlockSnowplowTrackingPatch.kt` and `InsertEventFingerprint` in `RookieEnough/De-Vanced` were reviewed as text only. The local adapter is limited to the unique void method anchored by `Added event to database: %s`, the source-reviewed Snowplow event-store insertion path for `com.strava`.
+
+When the exact method resolves, it is skipped before the event is persisted for later Snowplow upload. A changed anchor, return type, or target ambiguity yields no hook. Activity recording, routes, social data, accounts, authentication, subscriptions, payments, integrity, safety controls, and content access remain unchanged. No external archive, extension, or payload is downloaded, interpreted, or executed.
+
+### Strava — subscription bypass cleanup
+
+The previously registered local `Unlock subscription features` hook has been removed, along with its implementation files. Subscription and entitlement paths are outside this module's Runtime scope and are not converted or exposed.

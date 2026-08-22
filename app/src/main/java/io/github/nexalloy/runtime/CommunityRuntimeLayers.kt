@@ -240,6 +240,22 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val blockStravaSnowplowTrackingDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "devanced.strava.block-snowplow-tracking.runtime",
+        sourceRepository = "RookieEnough/De-Vanced",
+        sourcePatchName = "Block Snowplow tracking",
+        packageNames = setOf("com.strava"),
+        patch = patch(
+            name = "Runtime · Block Snowplow tracking",
+            description = "Skips only the reviewed Strava Snowplow event-store insertion method.",
+        ) {
+            Fingerprint(
+                returnType = "V",
+                strings = listOf("Added event to database: %s"),
+            ).memberOrNull?.hookMethod { before { param -> param.result = null } }
+        },
+    )
+
     private val esExplorerAnalyticsInitFingerprint = Fingerprint(
         definingClass = "Lcom/estrongs/android/pop/FexApplication;",
         name = "M",
@@ -1195,6 +1211,7 @@ object CommunityRuntimeLayers {
         disableGboardSuperpacksEagerSyncDefinition.compile(),
         disableGboardTenorShareTrackingDefinition.compile(),
         disableCamScannerTelemetryDefinition.compile(),
+        blockStravaSnowplowTrackingDefinition.compile(),
         disableEsExplorerTrackingDefinition.compile(),
         disableAmazonSearchSuggestionsTrackingDefinition.compile(),
         disableTelegramPlusAnalyticsDefinition.compile(),

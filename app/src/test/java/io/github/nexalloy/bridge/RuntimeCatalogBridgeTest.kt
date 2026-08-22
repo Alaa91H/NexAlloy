@@ -88,6 +88,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "devanced.strava.block-snowplow-tracking.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "RookieEnough/De-Vanced",
+                sourcePatchName = "Block Snowplow tracking",
+                packageName = "com.strava",
+            )?.id,
+        )
+        assertEquals(
             "morphe.esexplorer.disable-tracking.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "rushiranpise/morphe-patches",
