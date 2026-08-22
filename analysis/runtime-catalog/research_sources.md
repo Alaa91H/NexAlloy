@@ -189,3 +189,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** the local adapter enumerates only those three exact `Init` signatures on the exact LogAgent descriptor, and returns integer `0` before each resolved body. It does not hook arbitrary methods, scan unrelated classes, load upstream code, or block CamScanner's scanning, document, account, subscription, or payment logic.
 - **Effect and failure mode:** resolved LogAgent initializers do not create the custom telemetry, event-tracking, or remote-logging agent. If any descriptor, method name, return contract, or parameter signature changes, that overload is left unhooked and CamScanner retains its original behavior.
 - **Scope:** this is a narrow telemetry control only. It does not alter authentication, license or subscription state, paid features, integrity, safety protections, content access, or account behavior.
+
+### ES File Explorer — Disable Tracking
+
+- **Source review:** inspected `DisableTrackingPatch.kt` and `AnalyticsInitFingerprint` in `rushiranpise/morphe-patches`. The source targets the non-obfuscated `Lcom/estrongs/android/pop/FexApplication;->M(): void` method that contains the `China` UMeng analytics-channel anchor and initializes UMConfigure plus UMCrash.
+- **Runtime mapping:** the local adapter requires the exact FexApplication descriptor, method name `M`, void return type, no parameters, and `China` marker before skipping the body. It does not hook broader application initialization or unrelated analytics SDK methods.
+- **Effect and failure mode:** a resolved target skips the reviewed UMeng analytics and crash-report setup path. If the class, method name, marker, return contract, or signature changes, no hook is installed and ES File Explorer retains its original behavior.
+- **Scope:** this is a local telemetry and crash-reporting control only. It does not alter authentication, licensing or subscription state, paid features, integrity, safety protections, content access, or account behavior.

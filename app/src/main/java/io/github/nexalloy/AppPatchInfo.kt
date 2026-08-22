@@ -34,6 +34,7 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("AllTrails", "com.alltrails.alltrails", AllTrailsPatches),
     AppPatchInfo("Gboard", "com.google.android.inputmethod.latin", emptyArray()),
     AppPatchInfo("CamScanner", "com.intsig.camscanner", emptyArray()),
+    AppPatchInfo("ES File Explorer", "com.estrongs.android.pop", emptyArray()),
     AppPatchInfo("Truecaller", "com.truecaller", emptyArray()),
     AppPatchInfo("Telegram", "org.telegram.messenger", emptyArray()),
     AppPatchInfo("Messenger", "com.facebook.orca", emptyArray()),

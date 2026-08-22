@@ -18,6 +18,7 @@
         <package android:name="com.alltrails.alltrails" />
         <package android:name="com.google.android.inputmethod.latin" />
         <package android:name="com.intsig.camscanner" />
+        <package android:name="com.estrongs.android.pop" />
         <package android:name="com.truecaller" />
         <package android:name="org.telegram.messenger" />
         <package android:name="com.facebook.orca" />

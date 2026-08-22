@@ -82,6 +82,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "morphe.esexplorer.disable-tracking.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "rushiranpise/morphe-patches",
+                sourcePatchName = "Disable Tracking",
+                packageName = "com.estrongs.android.pop",
+            )?.id,
+        )
+        assertEquals(
             "kveld.gboard.disable-diagnostics.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "kveld9/kveld-morphe-patches",

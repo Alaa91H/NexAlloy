@@ -216,6 +216,27 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val esExplorerAnalyticsInitFingerprint = Fingerprint(
+        definingClass = "Lcom/estrongs/android/pop/FexApplication;",
+        name = "M",
+        returnType = "V",
+        parameters = emptyList(),
+        strings = listOf("China"),
+    )
+
+    private val disableEsExplorerTrackingDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "morphe.esexplorer.disable-tracking.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Disable Tracking",
+        packageNames = setOf("com.estrongs.android.pop"),
+        patch = patch(
+            name = "Runtime · Disable Tracking",
+            description = "Skips the reviewed ES File Explorer UMeng analytics and crash-report initialization method.",
+        ) {
+            esExplorerAnalyticsInitFingerprint.memberOrNull?.hookMethod { before { param -> param.result = null } }
+        },
+    )
+
     private val removeMessengerMetaAiDefinition = ExistingPatchRuntimeLayerDefinition(
         id = "morphe.messenger.remove-meta-ai.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -761,6 +782,7 @@ object CommunityRuntimeLayers {
         disableGboardSuperpacksEagerSyncDefinition.compile(),
         disableGboardTenorShareTrackingDefinition.compile(),
         disableCamScannerTelemetryDefinition.compile(),
+        disableEsExplorerTrackingDefinition.compile(),
         removeMessengerMetaAiDefinition.compile(),
         disableMessengerMediaTranscodingDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),
