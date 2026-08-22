@@ -112,6 +112,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "hoodles.sofascore.disable-ads.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "hoo-dles/morphe-patches",
+                sourcePatchName = "Disable ads",
+                packageName = "com.sofascore.results",
+            )?.id,
+        )
+        assertEquals(
             "devanced.amazon-music.prevent-log-upload.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "RookieEnough/De-Vanced",

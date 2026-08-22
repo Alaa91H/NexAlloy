@@ -296,6 +296,37 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val sofascoreAdsGateFingerprints = listOf(
+        "getForceAds" to false,
+        "getForceHideAds" to true,
+        "getHasServerAds" to false,
+    ).map { (methodName, replacementValue) ->
+        object : Fingerprint(
+            name = methodName,
+            returnType = "Z",
+            parameters = emptyList(),
+        ) {
+            init {
+                classMatcher { className("UserAccount;", StringMatchType.EndsWith) }
+            }
+        } to replacementValue
+    }
+
+    private val disableSofascoreAdsDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "hoodles.sofascore.disable-ads.runtime",
+        sourceRepository = "hoo-dles/morphe-patches",
+        sourcePatchName = "Disable ads",
+        packageNames = setOf("com.sofascore.results"),
+        patch = patch(
+            name = "Runtime · Disable ads",
+            description = "Overrides only the reviewed Sofascore UserAccount advertising visibility gates.",
+        ) {
+            sofascoreAdsGateFingerprints.forEach { (fingerprint, replacementValue) ->
+                fingerprint.memberOrNull?.hookMethod { before { param -> param.result = replacementValue } }
+            }
+        },
+    )
+
     private val amazonMusicCrashLogUploadFingerprints = listOf(
         Fingerprint(
             definingClass = "Lcom/amazon/mp3/det/PendingCrashLogs;",
@@ -1301,6 +1332,7 @@ object CommunityRuntimeLayers {
         blockStravaSnowplowTrackingDefinition.compile(),
         disableStravaQuickEditDefinition.compile(),
         hidePixivAdsDefinition.compile(),
+        disableSofascoreAdsDefinition.compile(),
         preventAmazonMusicLogUploadDefinition.compile(),
         disableSoundCloudTelemetryDefinition.compile(),
         disableEsExplorerTrackingDefinition.compile(),

@@ -31,6 +31,7 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("Strava", "com.strava", StravaPatches),
     AppPatchInfo("SoundCloud", "com.soundcloud.android", emptyArray()),
     AppPatchInfo("Pixiv", "jp.pxv.android", emptyArray()),
+    AppPatchInfo("Sofascore", "com.sofascore.results", emptyArray()),
     AppPatchInfo("AllTrails", "com.alltrails.alltrails", AllTrailsPatches),
     AppPatchInfo("Gboard", "com.google.android.inputmethod.latin", emptyArray()),
     AppPatchInfo("CamScanner", "com.intsig.camscanner", emptyArray()),

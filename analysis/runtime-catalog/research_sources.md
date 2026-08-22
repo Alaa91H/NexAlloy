@@ -378,3 +378,9 @@ The local adapter is constrained to `com.amazon.mp3`, that exact class descripto
 - **Messenger — Hide Facebook buttons** (`rushiranpise/morphe-patches`): deferred. The source combines signature handling with class-wide instruction inspection to discover plugin constructors. No broad scan, signature bypass, or partial UI hook was added.
 
 All candidates in this follow-up pass were read as text only; no archive, extension, native payload, executable code, or external patch artifact was downloaded, interpreted, or run.
+
+### Sofascore — Disable ads
+
+The public `DisableAdsPatch.kt` and `Fingerprints.kt` in `hoo-dles/morphe-patches` were reviewed as text only. The source declares compatibility with `com.sofascore.results` version `25.12.17` and changes exactly three `UserAccount` advertising decisions: `getForceAds` to `false`, `getForceHideAds` to `true`, and `getHasServerAds` to `false`.
+
+The local adapter narrows each method further to a Boolean return contract, no parameters, and a class descriptor ending in `UserAccount;`, then applies only the source-reviewed Boolean value. A changed class suffix, method name, return type, parameter list, or absent target installs no hook. This is a local advertising-visibility control only; it does not enable paid features, alter subscriptions, purchases, accounts, authentication, results data, live-score access, integrity, or protection behavior. No external archive, extension, or payload is downloaded, interpreted, or executed.
