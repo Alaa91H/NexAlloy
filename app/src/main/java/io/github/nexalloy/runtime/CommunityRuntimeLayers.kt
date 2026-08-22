@@ -237,6 +237,26 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val amazonSearchSuggestionsSetEventFingerprint = Fingerprint(
+        definingClass = "Lcom/amazon/search/resources/dependency/client/suggestions/SearchSuggestionsV2Request\$Builder;",
+        name = "setEvent",
+        returnType = "Lcom/amazon/search/resources/dependency/client/suggestions/SearchSuggestionsV2Request\$Builder;",
+        parameters = listOf("Lcom/amazon/search/resources/dependency/client/suggestions/Event;"),
+    )
+
+    private val disableAmazonSearchSuggestionsTrackingDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "morphe.amazon.disable-search-suggestions-tracking.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Disable search suggestions tracking",
+        packageNames = setOf("com.amazon.mShop.android.shopping", "in.amazon.mShop.android.shopping"),
+        patch = patch(
+            name = "Runtime · Disable search suggestions tracking",
+            description = "Prevents the reviewed Amazon search-suggestions builder from recording a keypress or focus event.",
+        ) {
+            amazonSearchSuggestionsSetEventFingerprint.memberOrNull?.hookMethod { before { param -> param.result = param.thisObject } }
+        },
+    )
+
     private val removeMessengerMetaAiDefinition = ExistingPatchRuntimeLayerDefinition(
         id = "morphe.messenger.remove-meta-ai.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -783,6 +803,7 @@ object CommunityRuntimeLayers {
         disableGboardTenorShareTrackingDefinition.compile(),
         disableCamScannerTelemetryDefinition.compile(),
         disableEsExplorerTrackingDefinition.compile(),
+        disableAmazonSearchSuggestionsTrackingDefinition.compile(),
         removeMessengerMetaAiDefinition.compile(),
         disableMessengerMediaTranscodingDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),

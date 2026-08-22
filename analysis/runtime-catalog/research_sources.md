@@ -196,3 +196,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** the local adapter requires the exact FexApplication descriptor, method name `M`, void return type, no parameters, and `China` marker before skipping the body. It does not hook broader application initialization or unrelated analytics SDK methods.
 - **Effect and failure mode:** a resolved target skips the reviewed UMeng analytics and crash-report setup path. If the class, method name, marker, return contract, or signature changes, no hook is installed and ES File Explorer retains its original behavior.
 - **Scope:** this is a local telemetry and crash-reporting control only. It does not alter authentication, licensing or subscription state, paid features, integrity, safety protections, content access, or account behavior.
+
+### Amazon Shopping / Amazon India — Disable search suggestions tracking
+
+- **Source review:** inspected `DisableSearchSuggestionsTrackingPatch.kt` and `SearchSuggestionsSetEventFingerprint` in `rushiranpise/morphe-patches`. The source targets exactly `SearchSuggestionsV2Request$Builder.setEvent(Event)`, returning the builder unchanged before a keypress or focus event is stored for a suggestions request.
+- **Runtime mapping:** the local adapter requires the exact nested Builder descriptor, `setEvent` method name, Builder return contract, and Event parameter, then returns the original builder object. The catalog mapping is limited to `com.amazon.mShop.android.shopping` and `in.amazon.mShop.android.shopping`.
+- **Effect and failure mode:** matching search-suggestion requests proceed without the reviewed event field, while the original builder and regular request flow remain intact. If the class, method, return type, or parameter changes, no hook is installed and the app keeps its original behavior.
+- **Scope:** this is a local search-event telemetry control only. It does not buy, sell, order, pay, alter product eligibility, modify accounts, authentication, subscriptions, integrity, safety protections, or content access.
