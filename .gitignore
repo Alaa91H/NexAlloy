@@ -20,3 +20,12 @@ local.properties
 *.jks
 *.keystore
 signing.properties
+
+# Local source reviews and generated catalog-fetch artifacts.
+/analysis/*-source/
+/analysis/kveld-gboard-source/
+/analysis/runtime-catalog/*.headers
+/analysis/runtime-catalog/*.payload
+/analysis/runtime-catalog/*.stdout
+/analysis/runtime-catalog/bundles.json
+/analysis/runtime-catalog/local_patch_names.txt

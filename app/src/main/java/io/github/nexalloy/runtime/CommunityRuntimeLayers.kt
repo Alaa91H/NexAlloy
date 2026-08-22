@@ -134,6 +134,18 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val disableMessengerTypingIndicatorDefinition = MultiVoidMethodSkipLayerDefinition(
+        id = "morphe.messenger.disable-typing-indicator.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Disable typing indicator",
+        packageNames = setOf("com.facebook.orca"),
+        patchName = "Runtime · Disable typing indicator",
+        description = "Prevents the reviewed Messenger composer Runnable from sending the typing state.",
+        targets = listOf(
+            VoidMethodTarget("LX/Ay7;", "run"),
+        ),
+    )
+
     private val hideMessengerInboxStoriesNotesTrayDefinition = BooleanReturnOverrideLayerDefinition(
         id = "morphe.messenger.hide-inbox-stories-notes-tray.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -341,6 +353,7 @@ object CommunityRuntimeLayers {
         disableGboardSuperpacksEagerSyncDefinition.compile(),
         disableGboardTenorShareTrackingDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),
+        disableMessengerTypingIndicatorDefinition.compile(),
         hideMessengerInboxStoriesNotesTrayDefinition.compile(),
         removeTelegramSponsoredMessagesDefinition.compile(),
         disableTelegramAutoUpdateDefinition.compile(),

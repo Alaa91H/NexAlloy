@@ -1,0 +1,448 @@
+# Runtime catalog compatibility analysis
+
+Total bundles: 104
+Patches targeting supported LSPosed apps: 135
+
+## YouTube (`com.google.android.youtube`)
+Matching catalog patches: 0
+
+
+## YouTube Music (`com.google.android.apps.youtube.music`)
+Matching catalog patches: 0
+
+
+## Reddit (`com.reddit.frontpage`)
+Matching catalog patches: 31
+
+- **Colorize comment indent lines** — `jkennethcarino/adobo` (github)
+  - Description: Replaces the default gray comment indent lines with color-coded lines.
+  - Options: 9; default: True
+- **Disable bottom navigation bar auto-hide** — `jkennethcarino/adobo` (github)
+  - Description: Prevents the bottom navigation bar from hiding when scrolling down.
+  - Options: 0; default: False
+- **Disable home feed auto-refresh** — `jkennethcarino/adobo` (github)
+  - Description: Disables the automatic refresh of the home feed after viewing a post or after being away from the app.
+  - Options: 0; default: False
+- **Disable home feed swipe** — `jkennethcarino/adobo` (github)
+  - Description: Disables the horizontal page swipe gesture used to switch feeds.
+  - Options: 0; default: False
+- **Disable home screen redirect** — `jkennethcarino/adobo` (github)
+  - Description: Disables the automatic redirect to the home screen after being away from the app or returning from the background.
+  - Options: 0; default: True
+- **Disable post detail swipe** — `jkennethcarino/adobo` (github)
+  - Description: Disables the horizontal swipe gesture used to navigate between posts.
+  - Options: 0; default: False
+- **Disable screenshot banner** — `jkennethcarino/adobo` (github)
+  - Description: Disables the banner that shows up after taking a screenshot.
+  - Options: 0; default: True
+- **Hide Ask button from search bar** — `jkennethcarino/adobo` (github)
+  - Description: Hides the Ask button (Reddit Answers) from the search bar.
+  - Options: 0; default: False
+- **Hide awards** — `jkennethcarino/adobo` (github)
+  - Description: Hides the awards on Reddit posts and comments.
+  - Options: 0; default: False
+- **Hide community highlights** — `jkennethcarino/adobo` (github)
+  - Description: Hides the community highlights section.
+  - Options: 0; default: False
+- **Hide community menu badge** — `jkennethcarino/adobo` (github)
+  - Description: Hides the red notification badge on the community menu (hamburger menu).
+  - Options: 0; default: True
+- **Hide post view counts** — `jkennethcarino/adobo` (github)
+  - Description: Removes the "views" indicator from the post metadata.
+  - Options: 0; default: True
+- **Hide prominent search bar** — `jkennethcarino/adobo` (github)
+  - Description: Hides the new prominent search bar on the main screen. Applicable only to version 2026.24.0 and earlier.
+  - Options: 0; default: False
+- **Hide share count** — `jkennethcarino/adobo` (github)
+  - Description: Hides the share count on Reddit posts.
+  - Options: 0; default: False
+- **Hide upvote scores** — `jkennethcarino/adobo` (github)
+  - Description: Hides the scores on Reddit posts and comments.
+  - Options: 2; default: False
+- **Hide user community badges** — `jkennethcarino/adobo` (github)
+  - Description: Hides the user community badges on Reddit comments.
+  - Options: 0; default: False
+- **Hide user flairs** — `jkennethcarino/adobo` (github)
+  - Description: Hides the user flairs on Reddit comments.
+  - Options: 0; default: False
+- **Open external links directly** — `jkennethcarino/adobo` (github)
+  - Description: Opens external links directly without going through out.reddit.com.
+  - Options: 0; default: True
+- **Remove ads and telemetry** — `jkennethcarino/adobo` (github)
+  - Description: Removes ads and telemetry everywhere.
+  - Options: 0; default: True
+- **Sanitize share links** — `jkennethcarino/adobo` (github)
+  - Description: Unshortens and removes the tracking query parameters from shared links.
+  - Options: 0; default: True
+- **Disable Screenshot Popup** — `rushiranpise/morphe-patches` (github)
+  - Description: Suppresses the share prompt that appears after taking a screenshot.
+  - Options: 0; default: True
+- **Hide Ads** — `rushiranpise/morphe-patches` (github)
+  - Description: Removes promoted posts and comment ads without requiring Reddit Premium unlock.
+  - Options: 0; default: True
+- **Hide Communities Shelf** — `rushiranpise/morphe-patches` (github)
+  - Description: Hides the related or suggested communities shelf in subreddits.
+  - Options: 0; default: True
+- **Hide Navigation Buttons** — `rushiranpise/morphe-patches` (github)
+  - Description: Removes the Create Post button from the bottom navigation bar.
+  - Options: 0; default: True
+- **Hide Promoted Posts** — `rushiranpise/morphe-patches` (github)
+  - Description: Blanks the promoted post render method and forces promoted/ad flags to false at the model layer.
+  - Options: 0; default: True
+- **Hide Sidebar Components** — `rushiranpise/morphe-patches` (github)
+  - Description: Hides About, Resources, and Reddit Pro sections from the community sidebar.
+  - Options: 0; default: True
+- **Hide Trending Shelves** — `rushiranpise/morphe-patches` (github)
+  - Description: Removes Trending Today from the feed and trending searches from the search screen.
+  - Options: 0; default: True
+- **Remove Subreddit Dialogs** — `rushiranpise/morphe-patches` (github)
+  - Description: Suppresses the notification re-enable prompt that appears on subreddit visits.
+  - Options: 0; default: True
+- **Sanitize Sharing Links** — `rushiranpise/morphe-patches` (github)
+  - Description: Returns the raw permalink before UTM tracking parameters are appended to shared Reddit URLs.
+  - Options: 0; default: True
+- **Unlock Premium** — `rushiranpise/morphe-patches` (github)
+  - Description: Unlocks Reddit Premium features and removes all ads client-side.
+  - Options: 0; default: True
+- **Fix RedGifs Audio** — `rushiranpise/morphe-patches` (github)
+  - Description: Routes RedGifs embeds through the WebView iframe path so videos play with audio instead of using the silent direct-stream URL.
+  - Options: 0; default: True
+
+## Google Photos (`com.google.android.apps.photos`)
+Matching catalog patches: 10
+
+- **Enable DCIM folders backup control** — `RookieEnough/De-Vanced` (github)
+  - Description: Disables always on backup for the Camera and other DCIM folders, allowing you to control backup for each folder individually. This will make the app default to having no folders backed up.
+  - Options: 0; default: False
+- **Fix selected account persistence** — `RookieEnough/De-Vanced` (github)
+  - Description: Prevents Google Photos from clearing the selected account after cold start when using MicroG.
+  - Options: 0; default: True
+- **GmsCore support** — `RookieEnough/De-Vanced` (github)
+  - Description: Allows the app to work without root by using a different package name when patched using a GmsCore instead of Google Play Services.
+  - Options: 0; default: True
+- **Spoof features** — `RookieEnough/De-Vanced` (github)
+  - Description: Spoofs the device to enable Google Pixel exclusive features, including unlimited storage.
+  - Options: 2; default: True
+- **AMOLED dark theme** — `rushiranpise/morphe-patches` (github)
+  - Description: Makes Google Photos dark surfaces true black.
+  - Options: 0; default: False
+- **Change package name** — `rushiranpise/morphe-patches` (github)
+  - Description: Installs Google Photos beside the system Photos app by changing package, permissions, providers, and app name.
+  - Options: 2; default: True
+- **Enable DCIM folders backup control** — `rushiranpise/morphe-patches` (github)
+  - Description: Allows controlling Camera and other DCIM folder backup individually.
+  - Options: 0; default: True
+- **Fix DCIM folder classification** — `rushiranpise/morphe-patches` (github)
+  - Description: Prevents non-Camera DCIM folders from being grouped as Camera.
+  - Options: 0; default: True
+- **GmsCore support** — `rushiranpise/morphe-patches` (github)
+  - Description: Adds MicroG/GmsCore support metadata for Google Photos.
+  - Options: 0; default: True
+- **Spoof features** — `rushiranpise/morphe-patches` (github)
+  - Description: Spoofs selectable Pixel Photos build and feature flags.
+  - Options: 3; default: True
+
+## Photomath (`com.microblink.photomath`)
+Matching catalog patches: 3
+
+- **Hide update popup** — `RookieEnough/De-Vanced` (github)
+  - Description: Prevents the update popup from showing up.
+  - Options: 0; default: True
+- **Spoof device ID** — `RookieEnough/De-Vanced` (github)
+  - Description: Spoofs device ID to mitigate manual bans by developers.
+  - Options: 0; default: True
+- **Unlock plus** — `RookieEnough/De-Vanced` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+
+## Instagram (`com.instagram.android`)
+Matching catalog patches: 77
+
+- **Bypass signature check** — `brosssh/morphe-patches` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **Clone** — `brosssh/morphe-patches` (github)
+  - Description: Changes the package name and the app name. This allows you to install the patched app alongside the original Instagram app.
+Caution: Do not select the official Morphe's "Change package name" universal patch.
+  - Options: 2; default: False
+- **Disable Reels scrolling** — `brosssh/morphe-patches` (github)
+  - Description: Disables the endless scrolling behavior in Instagram Reels, preventing swiping to the next Reel. Note: On a clean install, the 'Tip' animation may appear but will stop on its own after a few seconds.
+  - Options: 0; default: True
+- **Disable story auto flipping** — `brosssh/morphe-patches` (github)
+  - Description: Disable stories automatically flipping/skipping after some seconds.
+  - Options: 0; default: True
+- **Disable video autoplay** — `brosssh/morphe-patches` (github)
+  - Description: Disable video autoplay from feed
+  - Options: 0; default: False
+- **Hide Instants** — `brosssh/morphe-patches` (github)
+  - Description: Hides Instants from DMs page.
+  - Options: 0; default: False
+- **Hide Reels save button** — `brosssh/morphe-patches` (github)
+  - Description: Not provided
+  - Options: 0; default: False
+- **Hide Threads profile button** — `brosssh/morphe-patches` (github)
+  - Description: Hides the Threads button from the profile page action bar (top right of the profile page).
+  - Options: 0; default: False
+- **Hide ads** — `brosssh/morphe-patches` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **Hide all stories** — `brosssh/morphe-patches` (github)
+  - Description: Hides all stories from the tray in the feed page.
+You may need to clean app data after the initial use of this patch to see its effects.
+  - Options: 0; default: False
+- **Hide explore feed** — `brosssh/morphe-patches` (github)
+  - Description: Hides posts and reels from the explore/search page.
+  - Options: 0; default: True
+- **Hide feed content** — `brosssh/morphe-patches` (github)
+  - Description: Hide the feed content, leaving only stories in the home page.
+  - Options: 0; default: False
+- **Hide navigation buttons** — `brosssh/morphe-patches` (github)
+  - Description: Hides navigation bar buttons, such as the Reels and Create button. Choose what button to hide using the patch options.
+  - Options: 6; default: True
+- **Hide notes tray** — `brosssh/morphe-patches` (github)
+  - Description: Hides the notes tray from the direct tab.
+  - Options: 0; default: True
+- **Hide reshare button** — `brosssh/morphe-patches` (github)
+  - Description: Hides the reshare button from both posts and reels.
+  - Options: 0; default: True
+- **Hide suggested content** — `brosssh/morphe-patches` (github)
+  - Description: Choose the suggested content to hide using the patch options.
+  - Options: 4; default: True
+- **Limit feed to following profiles** — `brosssh/morphe-patches` (github)
+  - Description: Filters the home feed to display only content from profiles you follow.
+  - Options: 0; default: True
+- **Remove build expired popup** — `brosssh/morphe-patches` (github)
+  - Description: Removes the popup that appears after a while, when the app version ages.
+  - Options: 0; default: True
+- **Add settings** — `crimera/piko` (github)
+  - Description: Adds settings to control preferences are patching
+  - Options: 0; default: True
+- **Allow user network certificate** — `crimera/piko` (github)
+  - Description: Allows user network certificate for whitehat testing
+  - Options: 0; default: True
+- **Change like animation** — `crimera/piko` (github)
+  - Description: Change the animation to one from existing Rings like animations
+  - Options: 0; default: True
+- **Change version code** — `crimera/piko` (github)
+  - Description: Changes the version code of the app. This will turn off app store updates and allows downgrading an existing app install to an older app version.
+  - Options: 1; default: True
+- **Clone** — `crimera/piko` (github)
+  - Description: Changes the package name and the app name. This allows you to install the patched app alongside the original Instagram app.
+Caution: Do not select the official Morphe's "Change package name" universal patch.
+  - Options: 2; default: False
+- **Copy comment** — `crimera/piko` (github)
+  - Description: Adds a button to copy comments on posts and reels.
+  - Options: 0; default: True
+- **Customise story ring size** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **Customise story timestamp** — `crimera/piko` (github)
+  - Description: Customise the timestamp that shows when the story was posted
+  - Options: 0; default: True
+- **Disable Reels scrolling** — `crimera/piko` (github)
+  - Description: Disables the endless scrolling behavior in Instagram Reels, preventing swiping to the next Reel. Note: On a clean install, the 'Tip' animation may appear but will stop on its own after a few seconds.
+  - Options: 0; default: True
+- **Disable ads** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **Disable analytics** — `crimera/piko` (github)
+  - Description: Block analytics that are sent to Instagram/Facebook servers.
+  - Options: 0; default: True
+- **Disable comments** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **Disable discover people** — `crimera/piko` (github)
+  - Description: Disables discover people section on user profile
+  - Options: 0; default: True
+- **Disable double tap like** — `crimera/piko` (github)
+  - Description: Disable double tap like on post, reel, comment and message
+  - Options: 0; default: True
+- **Disable explore** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **Disable highlights** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **Disable screenshot detection** — `crimera/piko` (github)
+  - Description: Disables screenshots detection in DM
+  - Options: 0; default: True
+- **Disable stories** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **Disable story flipping** — `crimera/piko` (github)
+  - Description: Disable automatic flipping/moving to next story
+  - Options: 0; default: True
+- **Disable swipe to create** — `crimera/piko` (github)
+  - Description: Prevents opening the creation screen by swiping right on the home tab.
+  - Options: 0; default: True
+- **Disable typing status** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **Disable video autoplay** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **Download media** — `crimera/piko` (github)
+  - Description: Adds ability to download posts, reels, stories and highlights
+  - Options: 0; default: True
+- **Download voice message** — `crimera/piko` (github)
+  - Description: Enables ability to download voice messages
+  - Options: 0; default: True
+- **External downloader** — `crimera/piko` (github)
+  - Description: Adds support to share post links directly to external downloader
+  - Options: 0; default: True
+- **Filter stories** — `crimera/piko` (github)
+  - Description: Filter stories to hide based on different categories
+  - Options: 0; default: True
+- **Friendship status indicator** — `crimera/piko` (github)
+  - Description: Adds a follows you back status label on the profile page andshows a detailed friendship status breakdown on click
+  - Options: 0; default: True
+- **Hide group creation button on sharesheet** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **Hide navigation buttons** — `crimera/piko` (github)
+  - Description: Hides navigation bar buttons, such as the Reels and Create button.
+  - Options: 0; default: True
+- **Hide notes tray** — `crimera/piko` (github)
+  - Description: Hides notes tray in DM section
+  - Options: 0; default: True
+- **Hide reshare button** — `crimera/piko` (github)
+  - Description: Hides the reshare button from both posts and reels.
+  - Options: 0; default: True
+- **Hide stories tray** — `crimera/piko` (github)
+  - Description: Hides stories tray from main feed.
+  - Options: 0; default: True
+- **Hide suggested content** — `crimera/piko` (github)
+  - Description: Hides suggested stories, reels, threads (Suggested posts will still be shown).
+  - Options: 0; default: True
+- **Improve image viewing** — `crimera/piko` (github)
+  - Description: Fetches max resolution images from server.
+  - Options: 0; default: True
+- **Limit feed to following profiles** — `crimera/piko` (github)
+  - Description: Filters the home feed to display only content from profiles you follow.
+  - Options: 0; default: True
+- **Make ephemeral media permanent** — `crimera/piko` (github)
+  - Description: Changes unexpired view once, view twice media to permanent view.
+  - Options: 0; default: True
+- **Mark chat as read manually** — `crimera/piko` (github)
+  - Description: Adds option to mark a thread aka message as read manually
+  - Options: 0; default: True
+- **More options on post** — `crimera/piko` (github)
+  - Description: Adds an overflow menu button to get more options on post/reels, like copy description, copy username etc
+  - Options: 0; default: True
+- **More options on profile** — `crimera/piko` (github)
+  - Description: Adds a new button to handle user related data like copy handle, download profile picture etc
+  - Options: 0; default: True
+- **Open links externally** — `crimera/piko` (github)
+  - Description: Changes links to always open in your external browser, instead of the in-app browser.
+  - Options: 0; default: True
+- **Remove build expired popup** — `crimera/piko` (github)
+  - Description: Removes the popup that appears after a while, when the app version ages.
+  - Options: 0; default: True
+- **Remove empty bottom space** — `crimera/piko` (github)
+  - Description: Removes empty space below bottom navigation bar
+  - Options: 0; default: True
+- **Sanitize share links** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **Save media comment** — `crimera/piko` (github)
+  - Description: Adds a button to save media comments on posts and reels.
+  - Options: 0; default: True
+- **Stories audio autoplay** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **Theme** — `crimera/piko` (github)
+  - Description: Applies either amoled or material you theme for Instagram at patch time. [default = material you]
+  - Options: 1; default: False
+- **Unlock Plus benefits** — `crimera/piko` (github)
+  - Description: Unlocks 'Plus' subscription benefits that are checked locally. USE IT AT YOUR OWN RISK
+  - Options: 0; default: True
+- **Unlock developer options** — `crimera/piko` (github)
+  - Description: Unlocks developer option by long pressing home icon
+  - Options: 0; default: True
+- **Unlock employee options** — `crimera/piko` (github)
+  - Description: Unlocks all options using by employee for debugging
+  - Options: 0; default: True
+- **Validate links** — `crimera/piko` (github)
+  - Description: Fixes app crashing issue while opening links from a different app
+  - Options: 0; default: True
+- **View DMs anonymously** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **View live anonymously** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **View stories anonymously** — `crimera/piko` (github)
+  - Description: Not provided
+  - Options: 0; default: True
+- **View story mentions** — `crimera/piko` (github)
+  - Description: Add option to view visible and hidden story mentions.
+  - Options: 0; default: True
+- **Custom sharing domain** — `crimera/piko` (github)
+  - Description: Allows for using custom domains when sharing posts, reels and stories.
+  - Options: 0; default: True
+- **Disable onboarding permission prompts** — `crimera/piko` (github)
+  - Description: Prevents contacts and location permission onboarding prompts from appearing.
+  - Options: 0; default: True
+- **Loop story** — `crimera/piko` (github)
+  - Description: Replay the current story when it ends
+  - Options: 0; default: True
+- **Recommended flags** — `crimera/piko` (github)
+  - Description: Developer flags suggested by the community
+  - Options: 0; default: True
+- **Save deleted messages** — `crimera/piko` (github)
+  - Description: Captures incoming DMs locally as they arrive from the server and marks them when the sender deletes them.
+  - Options: 0; default: True
+
+## Threads (`com.instagram.barcelona`)
+Matching catalog patches: 4
+
+- **Change app name** — `durgesh0505/chiggi_morphe_patches` (github)
+  - Description: Changes the app name shown under the launcher icon. Set the desired name in the patch options.
+  - Options: 1; default: True
+- **Change package name** — `durgesh0505/chiggi_morphe_patches` (github)
+  - Description: Changes the app package name so the patched app installs alongside the original Threads. Set the desired package name in the patch options. WARNING: Meta apps hardcode many component/provider references — renaming the package can break Facebook login (SSO), content providers, or push. Disable this patch if you hit such issues.
+  - Options: 1; default: True
+- **Hide ads** — `durgesh0505/chiggi_morphe_patches` (github)
+  - Description: Hides sponsored posts and injected "suggested" netego units from the Threads feed. Marks every media as organic (Media.DED) and blocks the feed ad-injection scheduler (BarcelonaSpoolFeedCacheHandler). Client-side only.
+  - Options: 0; default: True
+- **Remove AD_ID permission** — `durgesh0505/chiggi_morphe_patches` (github)
+  - Description: Removes the advertising-id (AD_ID) permissions so the device advertising id cannot be read for ad tracking. Does not disable Meta's core analytics.
+  - Options: 0; default: True
+
+## Strava (`com.strava`)
+Matching catalog patches: 9
+
+- **Add 'Give Kudos' button to 'Group Activity'** — `RookieEnough/De-Vanced` (github)
+  - Description: Adds a button that triggers the same action as shaking your phone would.
+  - Options: 0; default: True
+- **Add media download** — `RookieEnough/De-Vanced` (github)
+  - Description: Extends the full-screen media viewer menu with items to copy or open their URLs or download them directly.
+  - Options: 0; default: True
+- **Block Snowplow tracking** — `RookieEnough/De-Vanced` (github)
+  - Description: Blocks Snowplow analytics. See https://snowplow.io for more information.
+  - Options: 0; default: True
+- **Disable Quick Edit** — `RookieEnough/De-Vanced` (github)
+  - Description: Prevents the Quick Edit prompt from popping up.
+  - Options: 0; default: True
+- **Enable password login** — `RookieEnough/De-Vanced` (github)
+  - Description: Re-enables password login after having used an OTP code.
+  - Options: 0; default: True
+- **Hide distractions** — `RookieEnough/De-Vanced` (github)
+  - Description: Hides elements that are not essential.
+  - Options: 7; default: True
+- **Overwrite media upload parameters** — `RookieEnough/De-Vanced` (github)
+  - Description: Overwrites the compression, resize and trim media (images and videos) parameters returned by Strava's server before upload.
+  - Options: 3; default: True
+- **Unlock subscription features** — `RookieEnough/De-Vanced` (github)
+  - Description: Unlocks "Routes", "Matched Runs" and "Segment Efforts".
+  - Options: 0; default: True
+- **Unlock Premium** — `rushiranpise/morphe-patches` (github)
+  - Description: Unlocks Strava Premium features. Also re-enables password login after OTP.
+  - Options: 0; default: True
+
+## AllTrails (`com.alltrails.alltrails`)
+Matching catalog patches: 1
+
+- **Enable Peak membership** — `hoo-dles/morphe-patches` (github)
+  - Description: Enables some app features locked behind the subscription paywall. Not all premium functionality is available.
+  - Options: 0; default: True
