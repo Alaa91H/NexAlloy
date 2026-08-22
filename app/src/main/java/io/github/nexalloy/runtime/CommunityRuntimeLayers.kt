@@ -5,6 +5,7 @@ import io.github.nexalloy.hookMethod
 import io.github.nexalloy.morphe.AccessFlags
 import io.github.nexalloy.morphe.Fingerprint
 import io.github.nexalloy.morphe.methodCall
+import io.github.nexalloy.morphe.string
 import io.github.nexalloy.patch
 import android.net.Uri
 import java.lang.reflect.Method
@@ -863,6 +864,76 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val avitoTelemetryFingerprints = listOf(
+        Fingerprint(
+            definingClass = "Lcom/avito/android/analytics/clickstream/",
+            returnType = "V",
+            parameters = listOf("Lcom/avito/android/analytics/"),
+            filters = listOf(
+                methodCall(definingClass = "Ljava/util/concurrent/Executor;", name = "execute"),
+            ),
+        ),
+        Fingerprint(
+            definingClass = "Lcom/avito/android/analytics/clickstream/",
+            returnType = "V",
+            filters = listOf(
+                string("Sending event on main thread. May cause ANR"),
+                methodCall(
+                    definingClass = "Lcom/avito/android/analytics/inhouse_transport/",
+                    name = "add",
+                ),
+            ),
+        ),
+        Fingerprint(
+            definingClass = "Lcom/avito/android/analytics_adjust/",
+            returnType = "V",
+            strings = listOf("Adjust initialized"),
+            filters = listOf(
+                methodCall(definingClass = "Lcom/adjust/sdk/Adjust;", name = "initSdk"),
+            ),
+        ),
+        Fingerprint(
+            definingClass = "Lcom/avito/android/analytics_adjust/",
+            returnType = "V",
+            parameters = listOf("Lcom/adjust/sdk/AdjustEvent;"),
+            filters = listOf(
+                methodCall(definingClass = "Lcom/adjust/sdk/Adjust;", name = "trackEvent"),
+            ),
+        ),
+        Fingerprint(
+            definingClass = "Lcom/avito/android/analytics_adjust/",
+            returnType = "V",
+            parameters = listOf("Ljava/lang/String;"),
+            filters = listOf(
+                methodCall(definingClass = "Lcom/adjust/sdk/Adjust;", name = "addGlobalPartnerParameter"),
+                methodCall(definingClass = "Lcom/adjust/sdk/Adjust;", name = "removeGlobalPartnerParameter"),
+            ),
+        ),
+        Fingerprint(
+            definingClass = "Lcom/avito/android/analytics_adjust/",
+            returnType = "V",
+            parameters = listOf("Ljava/lang/String;"),
+            filters = listOf(
+                methodCall(definingClass = "Lcom/adjust/sdk/Adjust;", name = "setPushToken"),
+            ),
+        ),
+    )
+
+    private val disableAvitoTelemetryDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "xob0t.avito.disable-telemetry.runtime",
+        sourceRepository = "xob0t/morphe-patches",
+        sourcePatchName = "Disable telemetry",
+        packageNames = setOf("com.avito.android"),
+        patch = patch(
+            name = "Runtime · Disable telemetry",
+            description = "Skips only the reviewed Avito clickstream and Adjust telemetry dispatch paths.",
+        ) {
+            avitoTelemetryFingerprints.forEach { fingerprint ->
+                fingerprint.memberOrNull?.hookMethod { before { param -> param.result = null } }
+            }
+        },
+    )
+
     private val truecallerScamFeedEnabledFingerprint = Fingerprint(
         returnType = "Z",
         parameters = emptyList(),
@@ -1040,6 +1111,7 @@ object CommunityRuntimeLayers {
         clearXTrackingParamsDefinition.compile(),
         removeXSearchSuggestionsDefinition.compile(),
         sanitizeTikTokSharingLinksDefinition.compile(),
+        disableAvitoTelemetryDefinition.compile(),
         hideTruecallerScamsTabDefinition.compile(),
         hideTruecallerAssistantTabDefinition.compile(),
         disableTruecallerUpdateCheckDefinition.compile(),

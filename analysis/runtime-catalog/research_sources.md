@@ -255,3 +255,9 @@ The adapter does not hook profile updates, push-notification registration, Fireb
 The public `HideAdsPatch.kt` and `Fingerprints.kt` in `bufferk/morphe-patches` were reviewed as text only. The local adapter skips only the two exact void after-call ad-update targets reviewed by the source: `Lcom/truecaller/acs/ui/baz;.Rh(boolean)` and `Ltw1/f;.Th(boolean)`.
 
 Both targets require the exact class descriptor, method name, void return contract, and Boolean parameter. If either path changes or is absent in a Truecaller release, no hook is installed for it. The adapter affects only the local after-call and Neo after-call advertising update paths; it does not modify caller-ID logic, spam detection, accounts, authentication, payments, subscriptions, licensing, integrity or protection checks, or content access.
+
+### Avito — Disable telemetry
+
+The public `DisableTelemetryPatch.kt` and `Fingerprints.kt` in `xob0t/morphe-patches` were reviewed as text only. The local adapter considers only six reviewed void telemetry paths: the primary clickstream tracker (or legacy clickstream enqueue path when independently resolved), Adjust initialization, Adjust event tracking, Adjust user-ID partner-parameter handling, and Adjust push-token handling. Each candidate is constrained by the source's Avito package-prefix, parameter, string, and/or invoked-method anchors before a no-op hook is installed.
+
+Unlike the bytecode source patch, a missing or changed target simply receives no hook; the module does not guess classes, scan arbitrary analytics methods, or load source extensions. The adapter does not modify Avito listings, messages, accounts, authentication, payments, subscriptions, licensing, integrity, or content access. It only suppresses the reviewed local clickstream and Adjust dispatch paths for `com.avito.android`.

@@ -162,6 +162,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "xob0t.avito.disable-telemetry.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "xob0t/morphe-patches",
+                sourcePatchName = "Disable telemetry",
+                packageName = "com.avito.android",
+            )?.id,
+        )
+        assertEquals(
             "paresh.truecaller.hide-scams-tab.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "Paresh-Maheshwari/paresh-patches",

@@ -37,6 +37,7 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("ES File Explorer", "com.estrongs.android.pop", emptyArray()),
     AppPatchInfo("Amazon Shopping", "com.amazon.mShop.android.shopping", emptyArray()),
     AppPatchInfo("Amazon India", "in.amazon.mShop.android.shopping", emptyArray()),
+    AppPatchInfo("Avito", "com.avito.android", emptyArray()),
     AppPatchInfo("Truecaller", "com.truecaller", emptyArray()),
     AppPatchInfo("Telegram", "org.telegram.messenger", emptyArray()),
     AppPatchInfo("Telegram Plus", "org.telegram.plus", emptyArray()),
