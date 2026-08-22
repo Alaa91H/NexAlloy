@@ -265,6 +265,22 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    /**
+     * The De-Vanced source resolves this logical Runnable through its retained Redex original
+     * name. The local adapter intentionally keeps the previously reviewed concrete target and
+     * exposes separate source attribution for catalog discovery.
+     */
+    private val disableMessengerTypingIndicatorFromDevancedDefinition = MultiVoidMethodSkipLayerDefinition(
+        id = "devanced.messenger.disable-typing-indicator.runtime",
+        sourceRepository = "RookieEnough/De-Vanced",
+        sourcePatchName = "Disable typing indicator",
+        packageNames = setOf("com.facebook.orca"),
+        patchName = "Runtime · Disable typing indicator",
+        description = "Prevents the reviewed Messenger composer Runnable from sending the typing state.",
+        targets = listOf(
+            VoidMethodTarget("LX/Ay7;", "run"),
+        ),
+    )
     private val hideMessengerInboxStoriesNotesTrayDefinition = BooleanReturnOverrideLayerDefinition(
         id = "morphe.messenger.hide-inbox-stories-notes-tray.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -634,6 +650,7 @@ object CommunityRuntimeLayers {
         openMessengerLinksExternallyDefinition.compile(),
         hideMessengerInboxSubtabsDefinition.compile(),
         disableMessengerTypingIndicatorDefinition.compile(),
+        disableMessengerTypingIndicatorFromDevancedDefinition.compile(),
         hideMessengerInboxStoriesNotesTrayDefinition.compile(),
         removeTelegramSponsoredMessagesDefinition.compile(),
         disableTelegramAutoUpdateDefinition.compile(),

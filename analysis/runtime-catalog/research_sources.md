@@ -147,3 +147,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** the local `ExistingPatchRuntimeLayerDefinition` is constrained to `com.twitter.android`, the same partial provider class path, the exact `java.util.Collection` return contract, and both reviewed strings. The hook returns `null` only after that complete target resolves; it does not load the source archive or its settings extension.
 - **Effect and failure mode:** matching X search-suggestion provider calls return no collection. If the class path, anchors, return type, or target resolution changes, no hook is installed and X retains its original search behavior.
 - **Scope:** this is a local search-interface preference only. It does not alter results access, accounts, authentication, subscriptions, payments, integrity, protection, safety controls, or downloaded code.
+
+### Messenger — Disable typing indicator (De-Vanced catalog source)
+
+- **Source review:** inspected `DisableTypingIndicatorPatch.kt` and `Fingerprints.kt` in `RookieEnough/De-Vanced`. The source resolves the composer `run(): void` Runnable through a retained Redex original-name field whose value is `ConversationTypingContext$sendActiveStateRunnable$1`, then replaces its first instruction with `return-void`.
+- **Runtime mapping:** the separately attributed local `MultiVoidMethodSkipLayerDefinition` remains constrained to the already reviewed `com.facebook.orca` target `LX/Ay7;->run(): void`. It does not import the source archive, interpret a retained-name field at runtime, or perform a broad `run()` scan.
+- **Effect and failure mode:** the known composer Runnable is skipped before sending a typing-state event. If that concrete target is absent or changes in a Messenger build, no hook is installed. The source attribution does not widen the pre-existing method contract.
+- **Scope:** this is a local messaging-privacy control only. It does not alter accounts, authentication, subscriptions, payments, moderation, integrity, safety protections, or content-access controls.
