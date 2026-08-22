@@ -112,6 +112,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "chiggi.zee5.remove-display-ads.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "durgesh0505/chiggi_morphe_patches",
+                sourcePatchName = "Remove display ads",
+                packageName = "com.graymatrix.did",
+            )?.id,
+        )
+        assertEquals(
             "chiggi.arrowpuzzle.disable-analytics.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "durgesh0505/chiggi_morphe_patches",

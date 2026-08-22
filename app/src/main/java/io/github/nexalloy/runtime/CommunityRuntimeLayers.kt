@@ -296,6 +296,29 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val removeZee5DisplayAdsDefinition = CompositeRuntimeLayerDefinition(
+        id = "chiggi.zee5.remove-display-ads.runtime",
+        sourceRepository = "durgesh0505/chiggi_morphe_patches",
+        sourcePatchName = "Remove display ads",
+        packageNames = setOf("com.graymatrix.did"),
+        patchName = "Runtime · Remove display ads",
+        description = "Returns false or null only for the reviewed ZEE5 display-ad UI gates.",
+        booleanTargets = listOf(
+            BooleanMethodTarget(
+                definingClass = "Lcom/zee5/android/home/presentation/HomeActivityViewModel;",
+                methodName = "getNeedToShowNativeMastheadAd",
+                replacementValue = false,
+            ),
+        ),
+        objectNullTargets = listOf(
+            ObjectNullMethodTarget(
+                definingClass = "Lcom/zee5/android/ui/player/domain/usecases/FetchPlaybackUrlUseCase;",
+                methodName = "toPauseAds",
+                returnType = "Lcom/zee5/android/ui/player/domain/models/PauseDisplayAds;",
+            ),
+        ),
+    )
+
     private val arrowPuzzleAnalyticsSendEventFingerprint = Fingerprint(
         definingClass = "Lcom/easybrain/analytics/unity/AnalyticsPlugin;",
         name = "AnalyticsSendEvent",
@@ -1464,6 +1487,7 @@ object CommunityRuntimeLayers {
         blockStravaSnowplowTrackingDefinition.compile(),
         disableStravaQuickEditDefinition.compile(),
         hidePixivAdsDefinition.compile(),
+        removeZee5DisplayAdsDefinition.compile(),
         disableArrowPuzzleAnalyticsDefinition.compile(),
         removeViMoviesAdsDefinition.compile(),
         hideSonyLivPromoBannersDefinition.compile(),
