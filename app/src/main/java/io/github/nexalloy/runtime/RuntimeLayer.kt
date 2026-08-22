@@ -503,7 +503,6 @@ object RuntimeLayerTargetRegistry {
         "com.google.android.apps.youtube.music",
         "com.reddit.frontpage",
         "com.google.android.apps.photos",
-        "com.microblink.photomath",
         "com.instagram.android",
         "com.instagram.barcelona",
         "com.strava",

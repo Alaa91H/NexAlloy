@@ -301,3 +301,7 @@ When the exact method resolves, it is skipped before the event is persisted for 
 ### Strava — subscription bypass cleanup
 
 The previously registered local `Unlock subscription features` hook has been removed, along with its implementation files. Subscription and entitlement paths are outside this module's Runtime scope and are not converted or exposed.
+
+### Photomath — entitlement cleanup
+
+The active local `Unlock plus` path was audited and removed, including its application registration, package visibility and LSPosed scope entries, Runtime target registration, and implementation files. It overrode a Plus-unlocked decision and therefore falls outside the local privacy and interface Runtime scope. Photomath is no longer displayed or classified as a supported local Runtime target.
