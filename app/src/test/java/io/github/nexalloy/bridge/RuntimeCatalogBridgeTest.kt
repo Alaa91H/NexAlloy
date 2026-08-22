@@ -242,6 +242,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "piko.x.remove-search-suggestions.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "crimera/piko",
+                sourcePatchName = "Remove search suggestions",
+                packageName = "com.twitter.android",
+            )?.id,
+        )
+        assertEquals(
             "morphe.proton-vpn.remove-server-change-delay.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "hoo-dles/morphe-patches",

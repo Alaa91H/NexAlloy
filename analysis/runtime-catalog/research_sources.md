@@ -140,3 +140,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** a separately attributed, locally compiled `BooleanReturnOverrideLayerDefinition` targets only `com.instagram.android`, return type `Z`, and the exact reviewed anchor `ig_disable_video_autoplay`. It does not fetch, parse, or execute the upstream patch archive.
 - **Effect and failure mode:** when the uniquely anchored Boolean feature gate resolves, it returns `true`, preserving the upstream patch’s video-autoplay disabling outcome. If the string is absent, the method’s return type changes, or the target does not resolve, no hook is installed and Instagram retains its original behavior.
 - **Scope:** this bridges the catalog item from its alternate public source without widening hook behavior. It does not alter accounts, authentication, subscriptions, payments, eligibility, integrity, safety protections, or content-access controls.
+
+### X — Remove search suggestions
+
+- **Source review:** inspected `RemoveSearchSuggestionsPatch.kt` in `crimera/piko`. The source identifies a Collection-returning search-provider method by its `/search/provider/` class-path constraint and the paired `type` and `query_id` anchors, then returns `null` before the original provider body runs.
+- **Runtime mapping:** the local `ExistingPatchRuntimeLayerDefinition` is constrained to `com.twitter.android`, the same partial provider class path, the exact `java.util.Collection` return contract, and both reviewed strings. The hook returns `null` only after that complete target resolves; it does not load the source archive or its settings extension.
+- **Effect and failure mode:** matching X search-suggestion provider calls return no collection. If the class path, anchors, return type, or target resolution changes, no hook is installed and X retains its original search behavior.
+- **Scope:** this is a local search-interface preference only. It does not alter results access, accounts, authentication, subscriptions, payments, integrity, protection, safety controls, or downloaded code.

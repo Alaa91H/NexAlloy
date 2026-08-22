@@ -482,6 +482,27 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val xSearchSuggestionFingerprint = Fingerprint(
+        definingClass = "/search/provider/",
+        returnType = "Ljava/util/Collection;",
+        strings = listOf("type", "query_id"),
+    )
+
+    private val removeXSearchSuggestionsDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "piko.x.remove-search-suggestions.runtime",
+        sourceRepository = "crimera/piko",
+        sourcePatchName = "Remove search suggestions",
+        packageNames = setOf("com.twitter.android"),
+        patch = patch(
+            name = "Runtime · Remove search suggestions",
+            description = "Returns no reviewed X search suggestions when the constrained provider target is present.",
+        ) {
+            xSearchSuggestionFingerprint.memberOrNull?.hookMethod {
+                before { param -> param.result = null }
+            }
+        },
+    )
+
     private val tiktokShareUrlTrackerFingerprint = Fingerprint(
         accessFlags = listOf(AccessFlags.STATIC),
         returnType = "Ljava/lang/String;",
@@ -622,6 +643,7 @@ object CommunityRuntimeLayers {
         disableProtonVpnTelemetryDefinition.compile(),
         hideXNavigationBadgesDefinition.compile(),
         clearXTrackingParamsDefinition.compile(),
+        removeXSearchSuggestionsDefinition.compile(),
         sanitizeTikTokSharingLinksDefinition.compile(),
         hideTruecallerScamsTabDefinition.compile(),
         hideTruecallerAssistantTabDefinition.compile(),
