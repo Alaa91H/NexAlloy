@@ -96,6 +96,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "hoodles.soundcloud.disable-telemetry.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "hoo-dles/morphe-patches",
+                sourcePatchName = "Disable telemetry",
+                packageName = "com.soundcloud.android",
+            )?.id,
+        )
+        assertEquals(
             "morphe.esexplorer.disable-tracking.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "rushiranpise/morphe-patches",

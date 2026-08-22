@@ -256,6 +256,23 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val disableSoundCloudTelemetryDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "hoodles.soundcloud.disable-telemetry.runtime",
+        sourceRepository = "hoo-dles/morphe-patches",
+        sourcePatchName = "Disable telemetry",
+        packageNames = setOf("com.soundcloud.android"),
+        patch = patch(
+            name = "Runtime · Disable telemetry",
+            description = "Skips only the reviewed SoundCloud TrackingHandler telemetry message path.",
+        ) {
+            Fingerprint(
+                definingClass = "/TrackingHandler;",
+                name = "handleMessage",
+                returnType = "V",
+            ).memberOrNull?.hookMethod { before { param -> param.result = null } }
+        },
+    )
+
     private val esExplorerAnalyticsInitFingerprint = Fingerprint(
         definingClass = "Lcom/estrongs/android/pop/FexApplication;",
         name = "M",
@@ -1212,6 +1229,7 @@ object CommunityRuntimeLayers {
         disableGboardTenorShareTrackingDefinition.compile(),
         disableCamScannerTelemetryDefinition.compile(),
         blockStravaSnowplowTrackingDefinition.compile(),
+        disableSoundCloudTelemetryDefinition.compile(),
         disableEsExplorerTrackingDefinition.compile(),
         disableAmazonSearchSuggestionsTrackingDefinition.compile(),
         disableTelegramPlusAnalyticsDefinition.compile(),

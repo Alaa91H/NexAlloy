@@ -305,3 +305,9 @@ The previously registered local `Unlock subscription features` hook has been rem
 ### Photomath — entitlement cleanup
 
 The active local `Unlock plus` path was audited and removed, including its application registration, package visibility and LSPosed scope entries, Runtime target registration, and implementation files. It overrode a Plus-unlocked decision and therefore falls outside the local privacy and interface Runtime scope. Photomath is no longer displayed or classified as a supported local Runtime target.
+
+### SoundCloud — Disable telemetry
+
+The public `DisableTelemetryPatch.kt`, `HandleMessageFingerprint`, and compatibility constant in `hoo-dles/morphe-patches` were reviewed as text only. The local adapter considers only `TrackingHandler.handleMessage(): void` for `com.soundcloud.android`, as constrained by the source-defined `TrackingHandler` class suffix and method name.
+
+The resolved void method is skipped before the reviewed telemetry message is handled. A changed class suffix, method name, return type, or absent method produces no hook. Playback, accounts, authentication, subscriptions, licensing, purchases, integrity, content access, and application UI outside that telemetry handler remain unchanged. No external archive, extension, or payload is downloaded, interpreted, or executed.

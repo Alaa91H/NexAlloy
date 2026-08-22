@@ -506,6 +506,7 @@ object RuntimeLayerTargetRegistry {
         "com.instagram.android",
         "com.instagram.barcelona",
         "com.strava",
+        "com.soundcloud.android",
         "com.alltrails.alltrails",
         "com.google.android.inputmethod.latin",
         "com.truecaller",
