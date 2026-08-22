@@ -143,6 +143,73 @@ data class VoidMethodTarget(
     val parameterTypes: List<String> = emptyList(),
 )
 
+/** A reviewed Object-returning target that must fail closed with a null result. */
+data class ObjectNullMethodTarget(
+    val definingClass: String,
+    val methodName: String,
+    val returnType: String,
+    val parameterTypes: List<String> = emptyList(),
+)
+
+/**
+ * Combines exact Boolean, Object-null, and Void substitutions for a single reviewed local
+ * source patch. This definition never imports bytecode or an upstream patch archive.
+ */
+data class CompositeRuntimeLayerDefinition(
+    val id: String,
+    val sourceRepository: String,
+    val sourcePatchName: String,
+    val packageNames: Set<String>,
+    val patchName: String,
+    val description: String,
+    val booleanTargets: List<BooleanMethodTarget> = emptyList(),
+    val objectNullTargets: List<ObjectNullMethodTarget> = emptyList(),
+    val voidTargets: List<VoidMethodTarget> = emptyList(),
+    val enabledByDefault: Boolean = false,
+) {
+    fun compile(): RuntimeLayer {
+        val compiledPatch = patch(
+            name = patchName,
+            description = description,
+            use = enabledByDefault,
+        ) {
+            booleanTargets.forEach { target ->
+                FingerprintDsl {
+                    definingClass(target.definingClass)
+                    name(target.methodName)
+                    parameters(*target.parameterTypes.toTypedArray())
+                    returns("Z")
+                }.build().hookMethod(XC_MethodReplacement.returnConstant(target.replacementValue))
+            }
+            objectNullTargets.forEach { target ->
+                FingerprintDsl {
+                    definingClass(target.definingClass)
+                    name(target.methodName)
+                    parameters(*target.parameterTypes.toTypedArray())
+                    returns(target.returnType)
+                }.build().hookMethod {
+                    before { hook -> hook.result = null }
+                }
+            }
+            voidTargets.forEach { target ->
+                FingerprintDsl {
+                    definingClass(target.definingClass)
+                    name(target.methodName)
+                    parameters(*target.parameterTypes.toTypedArray())
+                    returns("V")
+                }.build().hookMethod(XC_MethodReplacement.DO_NOTHING)
+            }
+        }
+        return RuntimeLayer(
+            id = id,
+            sourceRepository = sourceRepository,
+            sourcePatchName = sourcePatchName,
+            packageNames = packageNames,
+            patch = compiledPatch,
+        )
+    }
+}
+
 data class MultiVoidMethodSkipLayerDefinition(
     val id: String,
     val sourceRepository: String,

@@ -168,6 +168,35 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val disableTelegramChannelSwitchingDefinition = CompositeRuntimeLayerDefinition(
+        id = "morphe.telegram.disable-channel-switching.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Disable channel switching",
+        packageNames = setOf("org.telegram.messenger"),
+        patchName = "Runtime · Disable channel switching",
+        description = "Disables the reviewed Telegram pull-down gesture that switches to the next unread channel.",
+        booleanTargets = listOf(
+            BooleanMethodTarget(
+                definingClass = "Lorg/telegram/ui/ChatPullingDownDrawable;",
+                methodName = "needDrawBottomPanel",
+                replacementValue = false,
+            ),
+        ),
+        objectNullTargets = listOf(
+            ObjectNullMethodTarget(
+                definingClass = "Lorg/telegram/ui/ChatPullingDownDrawable;",
+                methodName = "getNextUnreadDialog",
+                returnType = "Lorg/telegram/tgnet/TLRPC\$Dialog;",
+            ),
+        ),
+        voidTargets = listOf(
+            VoidMethodTarget(
+                definingClass = "Lorg/telegram/ui/ChatPullingDownDrawable;",
+                methodName = "drawBottomPanel",
+            ),
+        ),
+    )
+
     private val disableProtonVpnTelemetryDefinition = MultiKotlinUnitReturnOverrideLayerDefinition(
         id = "paresh.proton-vpn.disable-telemetry.runtime",
         sourceRepository = "Paresh-Maheshwari/paresh-patches",
@@ -263,6 +292,7 @@ object CommunityRuntimeLayers {
         openMessengerLinksExternallyDefinition.compile(),
         hideMessengerInboxStoriesNotesTrayDefinition.compile(),
         removeTelegramSponsoredMessagesDefinition.compile(),
+        disableTelegramChannelSwitchingDefinition.compile(),
         disableProtonVpnTelemetryDefinition.compile(),
         disableTruecallerUpdateCheckDefinition.compile(),
         disableTruecallerTelemetryDefinition.compile(),

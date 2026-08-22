@@ -124,6 +124,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "morphe.telegram.disable-channel-switching.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "rushiranpise/morphe-patches",
+                sourcePatchName = "Disable channel switching",
+                packageName = "org.telegram.messenger",
+            )?.id,
+        )
+        assertEquals(
             "morphe.messenger.open-links-externally.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "rushiranpise/morphe-patches",
