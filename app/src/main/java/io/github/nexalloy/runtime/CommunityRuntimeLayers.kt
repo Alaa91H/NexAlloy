@@ -257,6 +257,42 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val telegramPlusAnalyticsFingerprints = listOf(
+        Fingerprint(
+            definingClass = "Lorg/telegram/plus/helpers/AnalyticsHelper;",
+            name = "enableAnalytics",
+            returnType = "V",
+            parameters = listOf("Landroid/app/Application;"),
+        ),
+        Fingerprint(
+            definingClass = "Lorg/telegram/plus/helpers/AnalyticsHelper;",
+            name = "trackEvent",
+            returnType = "V",
+            parameters = listOf("Ljava/lang/String;"),
+        ),
+        Fingerprint(
+            definingClass = "Lorg/telegram/plus/helpers/AnalyticsHelper;",
+            name = "trackEvent",
+            returnType = "V",
+            parameters = listOf("Ljava/lang/String;", "Ljava/util/HashMap;"),
+        ),
+    )
+
+    private val disableTelegramPlusAnalyticsDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "morphe.telegram-plus.disable-analytics.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Disable analytics",
+        packageNames = setOf("org.telegram.plus"),
+        patch = patch(
+            name = "Runtime · Disable analytics",
+            description = "Skips the reviewed Telegram Plus Firebase analytics initialization and event-dispatch methods.",
+        ) {
+            telegramPlusAnalyticsFingerprints.forEach { fingerprint ->
+                fingerprint.memberOrNull?.hookMethod { before { param -> param.result = null } }
+            }
+        },
+    )
+
     private val removeMessengerMetaAiDefinition = ExistingPatchRuntimeLayerDefinition(
         id = "morphe.messenger.remove-meta-ai.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -804,6 +840,7 @@ object CommunityRuntimeLayers {
         disableCamScannerTelemetryDefinition.compile(),
         disableEsExplorerTrackingDefinition.compile(),
         disableAmazonSearchSuggestionsTrackingDefinition.compile(),
+        disableTelegramPlusAnalyticsDefinition.compile(),
         removeMessengerMetaAiDefinition.compile(),
         disableMessengerMediaTranscodingDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),

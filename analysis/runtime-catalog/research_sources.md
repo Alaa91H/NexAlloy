@@ -203,3 +203,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** the local adapter requires the exact nested Builder descriptor, `setEvent` method name, Builder return contract, and Event parameter, then returns the original builder object. The catalog mapping is limited to `com.amazon.mShop.android.shopping` and `in.amazon.mShop.android.shopping`.
 - **Effect and failure mode:** matching search-suggestion requests proceed without the reviewed event field, while the original builder and regular request flow remain intact. If the class, method, return type, or parameter changes, no hook is installed and the app keeps its original behavior.
 - **Scope:** this is a local search-event telemetry control only. It does not buy, sell, order, pay, alter product eligibility, modify accounts, authentication, subscriptions, integrity, safety protections, or content access.
+
+### Telegram Plus — Disable analytics
+
+- **Source review:** inspected `TelegramPlusDisableAnalyticsPatch.kt` and `TelegramPlusFingerprints.kt` in `rushiranpise/morphe-patches`, verified for Telegram Plus `org.telegram.plus`. The source targets exactly `AnalyticsHelper.enableAnalytics(Application)`, `trackEvent(String)`, and `trackEvent(String, HashMap)`, each returning void.
+- **Runtime mapping:** the local adapter lists only those three exact AnalyticsHelper signatures, then skips each resolved body. It does not touch Firebase app initialization, push notifications, Telegram messaging, account state, or arbitrary analytics classes.
+- **Effect and failure mode:** matching initialization and event-dispatch methods are no-oped. If any class descriptor, method name, return contract, or parameter signature changes, that target is not hooked and Telegram Plus keeps its original behavior.
+- **Scope:** this is a local Firebase analytics and event-tracking control only. It does not alter authentication, subscriptions, licensing, premium features, integrity, safety protections, content access, message delivery, or account behavior.

@@ -39,6 +39,7 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("Amazon India", "in.amazon.mShop.android.shopping", emptyArray()),
     AppPatchInfo("Truecaller", "com.truecaller", emptyArray()),
     AppPatchInfo("Telegram", "org.telegram.messenger", emptyArray()),
+    AppPatchInfo("Telegram Plus", "org.telegram.plus", emptyArray()),
     AppPatchInfo("Messenger", "com.facebook.orca", emptyArray()),
     AppPatchInfo("Proton VPN", "ch.protonvpn.android", emptyArray()),
     AppPatchInfo("X", "com.twitter.android", emptyArray()),
