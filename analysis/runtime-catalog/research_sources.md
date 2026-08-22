@@ -237,3 +237,9 @@ The adapter affects only local banner, native, sponsored-message, and video-ad l
 The public `TelegramPlusHideTypingPatch.kt` and its `PlusSendTypingFingerprint` in `rushiranpise/morphe-patches` were reviewed as text only. The local adapter matches the exact `MessagesController.sendTyping(long, long, int, int): boolean` dispatch method and returns `false`, then enumerates only no-argument void methods named `needSendTyping` in the Telegram Plus process, matching the source's explicit all-match UI-delegate behavior.
 
 The Boolean dispatch target is constrained by its exact class descriptor, name, return contract, and four primitive parameter types. The UI target list requires the exact method name, void return type, and zero parameters; an empty or changed match list simply installs no hooks. This adapter only suppresses the client-side typing-state send path. It does not alter messages, account state, authentication, subscriptions, payments, Premium or licensing, integrity, safety controls, content restrictions, or remote patch payloads.
+
+### Gboard — Force Incognito Mode
+
+The public `GboardForceIncognitoPatch.kt` in `kveld9/kveld-morphe-patches` was reviewed as text only. The local adapter enumerates only two exact Boolean targets: `Lsew;.H(EditorInfo): boolean` and `Lfoh;.F(): boolean`. Each resolved target returns `true`, mirroring the reviewed source's local incognito-state decision without any extension, resource transformation, or downloaded code.
+
+A target with a changed class descriptor, method name, return contract, or parameter list does not resolve and receives no hook. The adapter only controls these client-side incognito checks for `com.google.android.inputmethod.latin`; it does not unlock features, bypass authentication or integrity, change payments or subscriptions, access text content, or load external payloads.

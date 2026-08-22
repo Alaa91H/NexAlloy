@@ -122,6 +122,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "kveld.gboard.force-incognito-mode.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "kveld9/kveld-morphe-patches",
+                sourcePatchName = "Force Incognito Mode",
+                packageName = "com.google.android.inputmethod.latin",
+            )?.id,
+        )
+        assertEquals(
             "kveld.gboard.disable-remote-configuration.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "kveld9/kveld-morphe-patches",

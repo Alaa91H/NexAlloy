@@ -77,6 +77,28 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val forceGboardIncognitoModeDefinition = MultiBooleanReturnOverrideLayerDefinition(
+        id = "kveld.gboard.force-incognito-mode.runtime",
+        sourceRepository = "kveld9/kveld-morphe-patches",
+        sourcePatchName = "Force Incognito Mode",
+        packageNames = setOf("com.google.android.inputmethod.latin"),
+        patchName = "Runtime · Force Incognito Mode",
+        description = "Returns true only from the reviewed Gboard incognito-state checks.",
+        targets = listOf(
+            BooleanMethodTarget(
+                definingClass = "Lsew;",
+                methodName = "H",
+                parameterTypes = listOf("Landroid/view/inputmethod/EditorInfo;"),
+                replacementValue = true,
+            ),
+            BooleanMethodTarget(
+                definingClass = "Lfoh;",
+                methodName = "F",
+                replacementValue = true,
+            ),
+        ),
+    )
+
     private val disableGboardRemoteConfigurationDefinition = MultiVoidMethodSkipLayerDefinition(
         id = "kveld.gboard.disable-remote-configuration.runtime",
         sourceRepository = "kveld9/kveld-morphe-patches",
@@ -934,6 +956,7 @@ object CommunityRuntimeLayers {
         sanitizeRedditSharingDefinition.compile(),
         blockGboardTelemetryDefinition.compile(),
         disableGboardDiagnosticsDefinition.compile(),
+        forceGboardIncognitoModeDefinition.compile(),
         disableGboardRemoteConfigurationDefinition.compile(),
         disableGboardSuperpacksEagerSyncDefinition.compile(),
         disableGboardTenorShareTrackingDefinition.compile(),
