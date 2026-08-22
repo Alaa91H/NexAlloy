@@ -210,3 +210,24 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** the local adapter lists only those three exact AnalyticsHelper signatures, then skips each resolved body. It does not touch Firebase app initialization, push notifications, Telegram messaging, account state, or arbitrary analytics classes.
 - **Effect and failure mode:** matching initialization and event-dispatch methods are no-oped. If any class descriptor, method name, return contract, or parameter signature changes, that target is not hooked and Telegram Plus keeps its original behavior.
 - **Scope:** this is a local Firebase analytics and event-tracking control only. It does not alter authentication, subscriptions, licensing, premium features, integrity, safety protections, content access, message delivery, or account behavior.
+
+### Follow-up screening — 2026-08-22
+
+- **Duolingo — Disable dynamic app icon** (`hoo-dles/morphe-patches`): deferred. The reviewed source depends on a login-integrity patch and edits the target application's `AndroidManifest.xml` by removing disabled `activity-alias` entries. This is a resource-time transformation, not a narrow LSPosed Runtime hook.
+- **Truecaller — Hide Assistant tab** (`Paresh-Maheshwari/paresh-patches`): already represented locally as `paresh.truecaller.hide-assistant-tab.runtime`. The source fingerprint is a no-argument Boolean decision with the exact `featureCallAssistant` string anchor; no duplicate adapter is added.
+- **Instagram — Disable story auto flipping** (`brosssh/morphe-patches`): already represented locally as `piko.instagram.disable-story-flipping.runtime`, using the reviewed `ReelViewerFragment`, `userSession`, one-object-argument, void target. No duplicate catalog bridge is added.
+- **Facebook — Hide Sponsored Stories** (`RookieEnough/De-Vanced`): deferred. The reviewed source synthesizes a private static helper, extracts runtime literals from another method, and injects a conditional GraphQL-story branch into a target method. This cannot be faithfully represented by a narrow fixed LSPosed hook without broad bytecode construction.
+- **TikTok — Disable long-press quick share** (`icysymmetra/tiktok-patches-for-morphe`): deferred. It depends on the TikTok shared extension, inserts a settings-status call, and injects a feature-controls override at a calculated return instruction; no extension code or dynamic patch instructions are accepted by this module.
+- **Gboard — Disable Diagnostics** (`kveld9/kveld-morphe-patches`): already represented locally as `kveld.gboard.disable-diagnostics.runtime`, which mirrors the reviewed AppDoctor DEX-`p0` object return and exact receiver void skip. No duplicate adapter is added.
+- **Brave — Block Telemetry** (`kveld9/kveld-morphe-patches`): deferred. The source requires target-resource default rewrites and direct version-offset mutation of `libchrome.so`, in addition to bytecode changes. It is outside the local LSPosed Runtime contract.
+- **TeraBox — Unlock VIP** (`rushiranpise/morphe-patches`): rejected. The only catalog entry is a subscription/Premium entitlement unlock and remains permanently out of scope.
+
+All reviewed sources in this pass were read as text only. No archive, extension, native payload, or external executable code was loaded, interpreted, or run.
+
+### Telegram Plus — Remove ads
+
+The public `TelegramPlusRemoveAdsPatch.kt` and its fingerprint files in `rushiranpise/morphe-patches` were reviewed as text only. The local adapter is limited to the exact Plus controller and instance targets `AdsController.adsDisabled(): boolean`, `AdsInstance.loadAds(): void`, and `AdsInstance.loadNativeAd(Context, boolean, AdsInstanceInterface)`, as well as the exact inherited Telegram sponsored-state and private video-ad loader targets named by the source.
+
+`loadNativeAd` is intentionally fail-closed at runtime. The hook returns `false` only if the resolved target returns Boolean and skips it only if it returns void, which are the two source-reviewed contracts. Any other return type is left to the original implementation. All other targets require their exact class descriptor, name, return contract, and where applicable parameter types and private access flag. A missing, ambiguous, or changed target therefore receives no hook.
+
+The adapter affects only local banner, native, sponsored-message, and video-ad loading decisions for `org.telegram.plus`. It does not modify message delivery, accounts, authentication, contacts, subscriptions, Premium or licensing state, payments, integrity or protection checks, channel/content restrictions, or any remote patch payload. No community archive, extension, or executable external code is loaded or interpreted.

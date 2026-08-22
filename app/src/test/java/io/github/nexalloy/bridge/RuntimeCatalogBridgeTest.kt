@@ -194,6 +194,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "morphe.telegram-plus.remove-ads.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "rushiranpise/morphe-patches",
+                sourcePatchName = "Remove ads",
+                packageName = "org.telegram.plus",
+            )?.id,
+        )
+        assertEquals(
             "morphe.telegram.disable-auto-update.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "rushiranpise/morphe-patches",

@@ -293,6 +293,72 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val telegramPlusAdsDisabledFingerprint = Fingerprint(
+        definingClass = "Lorg/telegram/plus/ads/AdsController;",
+        name = "adsDisabled",
+        returnType = "Z",
+    )
+
+    private val telegramPlusLoadAdsFingerprint = Fingerprint(
+        definingClass = "Lorg/telegram/plus/ads/AdsInstance;",
+        name = "loadAds",
+        returnType = "V",
+    )
+
+    private val telegramPlusLoadNativeAdFingerprint = Fingerprint(
+        definingClass = "Lorg/telegram/plus/ads/AdsInstance;",
+        name = "loadNativeAd",
+        parameters = listOf(
+            "Landroid/content/Context;",
+            "Z",
+            "Lorg/telegram/plus/ads/AdsInstance\$AdsInstanceInterface;",
+        ),
+    )
+
+    private val telegramPlusSponsoredDisabledFingerprint = Fingerprint(
+        definingClass = "Lorg/telegram/messenger/MessagesController;",
+        name = "isSponsoredDisabled",
+        returnType = "Z",
+    )
+
+    private val telegramPlusMessageIsSponsoredFingerprint = Fingerprint(
+        definingClass = "Lorg/telegram/messenger/MessageObject;",
+        name = "isSponsored",
+        returnType = "Z",
+    )
+
+    private val telegramPlusVideoAdsLoadFingerprint = Fingerprint(
+        definingClass = "Lorg/telegram/messenger/video/VideoAds;",
+        name = "load",
+        returnType = "V",
+        accessFlags = listOf(AccessFlags.PRIVATE),
+    )
+
+    private val removeTelegramPlusAdsDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "morphe.telegram-plus.remove-ads.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Remove ads",
+        packageNames = setOf("org.telegram.plus"),
+        patch = patch(
+            name = "Runtime · Remove ads",
+            description = "Blocks only the reviewed Telegram Plus banner, native, sponsored-message, and video-ad paths.",
+        ) {
+            telegramPlusAdsDisabledFingerprint.memberOrNull?.hookMethod { before { param -> param.result = true } }
+            telegramPlusLoadAdsFingerprint.memberOrNull?.hookMethod { before { param -> param.result = null } }
+            telegramPlusLoadNativeAdFingerprint.memberOrNull?.hookMethod {
+                before { param ->
+                    when ((param.method as? Method)?.returnType) {
+                        java.lang.Boolean.TYPE, java.lang.Boolean::class.java -> param.result = false
+                        java.lang.Void.TYPE, java.lang.Void::class.java -> param.result = null
+                    }
+                }
+            }
+            telegramPlusSponsoredDisabledFingerprint.memberOrNull?.hookMethod { before { param -> param.result = true } }
+            telegramPlusMessageIsSponsoredFingerprint.memberOrNull?.hookMethod { before { param -> param.result = false } }
+            telegramPlusVideoAdsLoadFingerprint.memberOrNull?.hookMethod { before { param -> param.result = null } }
+        },
+    )
+
     private val removeMessengerMetaAiDefinition = ExistingPatchRuntimeLayerDefinition(
         id = "morphe.messenger.remove-meta-ai.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -841,6 +907,7 @@ object CommunityRuntimeLayers {
         disableEsExplorerTrackingDefinition.compile(),
         disableAmazonSearchSuggestionsTrackingDefinition.compile(),
         disableTelegramPlusAnalyticsDefinition.compile(),
+        removeTelegramPlusAdsDefinition.compile(),
         removeMessengerMetaAiDefinition.compile(),
         disableMessengerMediaTranscodingDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),
