@@ -35,6 +35,7 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("Gboard", "com.google.android.inputmethod.latin", emptyArray()),
     AppPatchInfo("CamScanner", "com.intsig.camscanner", emptyArray()),
     AppPatchInfo("ES File Explorer", "com.estrongs.android.pop", emptyArray()),
+    AppPatchInfo("Amazon Music", "com.amazon.mp3", emptyArray()),
     AppPatchInfo("Amazon Shopping", "com.amazon.mShop.android.shopping", emptyArray()),
     AppPatchInfo("Amazon India", "in.amazon.mShop.android.shopping", emptyArray()),
     AppPatchInfo("Avito", "com.avito.android", emptyArray()),

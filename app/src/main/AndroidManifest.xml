@@ -20,6 +20,7 @@
         <package android:name="com.google.android.inputmethod.latin" />
         <package android:name="com.intsig.camscanner" />
         <package android:name="com.estrongs.android.pop" />
+        <package android:name="com.amazon.mp3" />
         <package android:name="com.amazon.mShop.android.shopping" />
         <package android:name="in.amazon.mShop.android.shopping" />
         <package android:name="com.avito.android" />

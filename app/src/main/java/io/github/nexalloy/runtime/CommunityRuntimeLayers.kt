@@ -296,6 +296,36 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val amazonMusicCrashLogUploadFingerprints = listOf(
+        Fingerprint(
+            definingClass = "Lcom/amazon/mp3/det/PendingCrashLogs;",
+            name = "uploadLogAfterCrash",
+            returnType = "V",
+            parameters = emptyList(),
+        ),
+        Fingerprint(
+            definingClass = "Lcom/amazon/mp3/det/PendingCrashLogs;",
+            name = "uploadPendingCrashLogsIfRequired",
+            returnType = "V",
+            parameters = emptyList(),
+        ),
+    )
+
+    private val preventAmazonMusicLogUploadDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "devanced.amazon-music.prevent-log-upload.runtime",
+        sourceRepository = "RookieEnough/De-Vanced",
+        sourcePatchName = "Prevent log upload",
+        packageNames = setOf("com.amazon.mp3"),
+        patch = patch(
+            name = "Runtime · Prevent log upload",
+            description = "Skips only the reviewed Amazon Music PendingCrashLogs upload methods.",
+        ) {
+            amazonMusicCrashLogUploadFingerprints.forEach { fingerprint ->
+                fingerprint.memberOrNull?.hookMethod { before { param -> param.result = null } }
+            }
+        },
+    )
+
     private val disableSoundCloudTelemetryDefinition = ExistingPatchRuntimeLayerDefinition(
         id = "hoodles.soundcloud.disable-telemetry.runtime",
         sourceRepository = "hoo-dles/morphe-patches",
@@ -1271,6 +1301,7 @@ object CommunityRuntimeLayers {
         blockStravaSnowplowTrackingDefinition.compile(),
         disableStravaQuickEditDefinition.compile(),
         hidePixivAdsDefinition.compile(),
+        preventAmazonMusicLogUploadDefinition.compile(),
         disableSoundCloudTelemetryDefinition.compile(),
         disableEsExplorerTrackingDefinition.compile(),
         disableAmazonSearchSuggestionsTrackingDefinition.compile(),

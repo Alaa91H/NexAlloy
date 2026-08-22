@@ -361,3 +361,20 @@ The candidate source was reviewed as text only and deferred. Its two `run(): voi
 The public `HideAdsPatch.kt`, `ShouldShowAdsFingerprint`, and Pixiv compatibility record in `RookieEnough/De-Vanced` were reviewed as text only. The local adapter matches only a public final boolean `shouldShowAds` method inside a class whose name ends with `.AdUtils`, then returns `false`.
 
 A changed class suffix, method name, access flags, or return type produces no hook. The adapter does not alter Pixiv accounts, authentication, subscriptions, purchases, licensing, content access, image downloads, privacy settings, or integrity controls. No external archive, extension, or payload is downloaded, interpreted, or executed.
+
+### Amazon Music — Prevent log upload
+
+The public `PreventUploadLogsPatch.kt` in `RookieEnough/De-Vanced` was reviewed as text only. The source defines two exact, optional zero-argument void methods on `Lcom/amazon/mp3/det/PendingCrashLogs;`: `uploadLogAfterCrash()` and `uploadPendingCrashLogsIfRequired()`.
+
+The local adapter is constrained to `com.amazon.mp3`, that exact class descriptor, both exact method names, void return type, and an empty parameter list. Each resolved method is skipped before the original upload body. A changed descriptor, name, return type, parameter list, or absent target installs no hook. The adapter does not alter Amazon Music playback, catalogue access, downloads, accounts, authentication, subscriptions, purchases, licensing, integrity, crash capture, or ordinary application logging; it only suppresses the two reviewed client-side crash-log upload dispatches. No external archive, extension, or payload is downloaded, interpreted, or executed.
+
+### Follow-up screening after Alpha 52
+
+- **Letterboxd — Hide ads** (`RookieEnough/De-Vanced`): deferred. Its source combines a setter-argument rewrite with several app-version-dependent `showAds` methods whose complete parameter contracts are not constrained by the supplied fingerprints. A partial `shouldShowAds` override would not faithfully represent the source, so no adapter or catalog entry was added.
+- **IMDb and 9GAG — Remove ads** (`jkennethcarino/adobo`): deferred. Both sources require the shared host-blocker dependency, and 9GAG also requires a hide-containers dependency. The local module does not install host lists or execute dependency patches.
+- **Reddit — Hide Ask button** (`jkennethcarino/adobo`): deferred. The source depends on certificate-hash spoofing, which is outside the local Runtime safety boundary.
+- **Opera News — Remove ads** (`rushiranpise/morphe-patches`): deferred. The source scans broad classes and rewrites method bodies and instructions across multiple advertising SDK integrations; it cannot be represented as a narrow fixed Runtime hook.
+- **TikTok — Remember clear display** (`icysymmetra/tiktok-patches-for-morphe`): deferred. The source injects instructions and calls extension-owned code, neither of which is loaded or executed by this module.
+- **Messenger — Hide Facebook buttons** (`rushiranpise/morphe-patches`): deferred. The source combines signature handling with class-wide instruction inspection to discover plugin constructors. No broad scan, signature bypass, or partial UI hook was added.
+
+All candidates in this follow-up pass were read as text only; no archive, extension, native payload, executable code, or external patch artifact was downloaded, interpreted, or run.

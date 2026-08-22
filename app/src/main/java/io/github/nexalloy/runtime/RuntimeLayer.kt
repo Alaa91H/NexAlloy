@@ -508,6 +508,7 @@ object RuntimeLayerTargetRegistry {
         "com.strava",
         "com.soundcloud.android",
         "jp.pxv.android",
+        "com.amazon.mp3",
         "com.alltrails.alltrails",
         "com.google.android.inputmethod.latin",
         "com.truecaller",

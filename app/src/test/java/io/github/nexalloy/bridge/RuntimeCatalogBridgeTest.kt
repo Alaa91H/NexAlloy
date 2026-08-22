@@ -112,6 +112,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "devanced.amazon-music.prevent-log-upload.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "RookieEnough/De-Vanced",
+                sourcePatchName = "Prevent log upload",
+                packageName = "com.amazon.mp3",
+            )?.id,
+        )
+        assertEquals(
             "hoodles.soundcloud.disable-telemetry.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "hoo-dles/morphe-patches",
