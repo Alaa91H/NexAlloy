@@ -864,6 +864,44 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val myTelenorTrackerInitFingerprints = listOf(
+        Fingerprint(
+            returnType = "V",
+            accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC, AccessFlags.FINAL),
+            parameters = listOf("Landroid/app/Application;", "Ljava/lang/String;", "L"),
+            strings = listOf("partnerName", "notificationCallback"),
+        ),
+        Fingerprint(
+            returnType = "V",
+            accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+            parameters = listOf("Landroid/content/Context;"),
+            filters = listOf(
+                methodCall(definingClass = "Lcom/tiktok/TikTokBusinessSdk;", name = "initializeSdk"),
+            ),
+        ),
+        Fingerprint(
+            returnType = "V",
+            accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC, AccessFlags.FINAL),
+            parameters = listOf("Landroid/app/Application;"),
+            strings = listOf("Failed to initialize Mixpanel SDK"),
+        ),
+    )
+
+    private val blockMyTelenorTrackersDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "totsiaw.mytelenor.block-trackers.runtime",
+        sourceRepository = "totsiaw/proxma-patches",
+        sourcePatchName = "Block trackers",
+        packageNames = setOf("com.telenor.pakistan.mytelenor"),
+        patch = patch(
+            name = "Runtime · Block trackers",
+            description = "Skips only the reviewed Insider, TikTok Business, and Mixpanel tracker initialization paths.",
+        ) {
+            myTelenorTrackerInitFingerprints.forEach { fingerprint ->
+                fingerprint.memberOrNull?.hookMethod { before { param -> param.result = null } }
+            }
+        },
+    )
+
     private val avitoTelemetryFingerprints = listOf(
         Fingerprint(
             definingClass = "Lcom/avito/android/analytics/clickstream/",
@@ -1111,6 +1149,7 @@ object CommunityRuntimeLayers {
         clearXTrackingParamsDefinition.compile(),
         removeXSearchSuggestionsDefinition.compile(),
         sanitizeTikTokSharingLinksDefinition.compile(),
+        blockMyTelenorTrackersDefinition.compile(),
         disableAvitoTelemetryDefinition.compile(),
         hideTruecallerScamsTabDefinition.compile(),
         hideTruecallerAssistantTabDefinition.compile(),

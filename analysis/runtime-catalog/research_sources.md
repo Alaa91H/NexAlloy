@@ -261,3 +261,9 @@ Both targets require the exact class descriptor, method name, void return contra
 The public `DisableTelemetryPatch.kt` and `Fingerprints.kt` in `xob0t/morphe-patches` were reviewed as text only. The local adapter considers only six reviewed void telemetry paths: the primary clickstream tracker (or legacy clickstream enqueue path when independently resolved), Adjust initialization, Adjust event tracking, Adjust user-ID partner-parameter handling, and Adjust push-token handling. Each candidate is constrained by the source's Avito package-prefix, parameter, string, and/or invoked-method anchors before a no-op hook is installed.
 
 Unlike the bytecode source patch, a missing or changed target simply receives no hook; the module does not guess classes, scan arbitrary analytics methods, or load source extensions. The adapter does not modify Avito listings, messages, accounts, authentication, payments, subscriptions, licensing, integrity, or content access. It only suppresses the reviewed local clickstream and Adjust dispatch paths for `com.avito.android`.
+
+### MyTelenor — Block trackers
+
+The public `BlockTrackersPatch.kt` and `Fingerprints.kt` in `totsiaw/proxma-patches` were reviewed as text only. The local adapter targets only three reviewed void initialization chokepoints: the Insider launcher anchored by the paired Kotlin parameter strings `partnerName` and `notificationCallback`; the TikTok Business worker anchored by its `TikTokBusinessSdk.initializeSdk` call; and the Mixpanel Session Replay launcher anchored by `Failed to initialize Mixpanel SDK`.
+
+Each resolved target is skipped before the associated tracking SDK starts. If any class, signature, access flags, invoked method, or string anchor changes, that target installs no hook. AWS Amplify, Firebase core, RemoteConfig, FCM, Google Mobile Ads, app data, push, accounts, authentication, payments, subscriptions, licensing, integrity, protection, and content access remain unchanged.

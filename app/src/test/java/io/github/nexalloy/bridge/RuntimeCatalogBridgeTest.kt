@@ -162,6 +162,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "totsiaw.mytelenor.block-trackers.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "totsiaw/proxma-patches",
+                sourcePatchName = "Block trackers",
+                packageName = "com.telenor.pakistan.mytelenor",
+            )?.id,
+        )
+        assertEquals(
             "xob0t.avito.disable-telemetry.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "xob0t/morphe-patches",
