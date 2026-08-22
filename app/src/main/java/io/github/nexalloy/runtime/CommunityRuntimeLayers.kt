@@ -315,6 +315,23 @@ object CommunityRuntimeLayers {
         replacementValue = false,
     )
 
+    /**
+     * De-Vanced uses the same reviewed FriendsInboxTray Boolean gate. A separate compiled
+     * definition preserves catalog attribution while retaining the existing fail-closed match.
+     */
+    private val hideMessengerInboxStoriesNotesTrayFromDevancedDefinition = BooleanReturnOverrideLayerDefinition(
+        id = "devanced.messenger.hide-inbox-stories-notes-tray.runtime",
+        sourceRepository = "RookieEnough/De-Vanced",
+        sourcePatchName = "Hide inbox stories and notes tray",
+        packageNames = setOf("com.facebook.orca"),
+        patchName = "Runtime · Hide inbox stories and notes tray",
+        description = "Hides the reviewed Messenger inbox stories and notes tray visibility decision.",
+        fingerprintStrings = listOf(
+            "com.facebook.messaging.friendsinboxunit.plugins.inboxunit.FriendsInboxUnitKillSwitch",
+        ),
+        replacementValue = false,
+    )
+
     private val removeTelegramSponsoredMessagesDefinition = MultiBooleanReturnOverrideLayerDefinition(
         id = "morphe.telegram.remove-sponsored-messages.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -674,6 +691,7 @@ object CommunityRuntimeLayers {
         disableMessengerTypingIndicatorDefinition.compile(),
         disableMessengerTypingIndicatorFromDevancedDefinition.compile(),
         hideMessengerInboxStoriesNotesTrayDefinition.compile(),
+        hideMessengerInboxStoriesNotesTrayFromDevancedDefinition.compile(),
         removeTelegramSponsoredMessagesDefinition.compile(),
         disableTelegramAutoUpdateDefinition.compile(),
         hideTelegramTypingIndicatorDefinition.compile(),

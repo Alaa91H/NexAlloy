@@ -242,6 +242,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "devanced.messenger.hide-inbox-stories-notes-tray.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "RookieEnough/De-Vanced",
+                sourcePatchName = "Hide inbox stories and notes tray",
+                packageName = "com.facebook.orca",
+            )?.id,
+        )
+        assertEquals(
             "morphe.x.hide-navigation-badges.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "crimera/piko",

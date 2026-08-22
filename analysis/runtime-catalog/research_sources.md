@@ -161,3 +161,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** the local `ExistingPatchRuntimeLayerDefinition` is constrained to `com.facebook.orca`, the exact reviewed `InboxAdsItemSupplierImplementation` descriptor, a void return type, and both source markers. It returns before the body only when that complete target resolves; no downloaded code, source extension, or broad inbox scan is used.
 - **Effect and failure mode:** a resolved source-equivalent loader is skipped, preventing that local inbox-ad load path. If the supplier was removed, its descriptor or markers change, or the target fails to resolve, no hook is installed and Messenger continues unchanged.
 - **Scope:** this is a narrow local interface control. It does not alter messages, accounts, authentication, subscriptions, payments, eligibility, integrity, safety protections, or content-access controls.
+
+### Messenger — Hide inbox stories and notes tray (De-Vanced catalog source)
+
+- **Source review:** inspected `HideInboxStoriesNotesTrayPatch.kt` and `FriendsInboxTrayFingerprint` in `RookieEnough/De-Vanced`. The source targets a Boolean-returning gate anchored by `com.facebook.messaging.friendsinboxunit.plugins.inboxunit.FriendsInboxUnitKillSwitch` and returns `false` before the original body runs.
+- **Runtime mapping:** the separately attributed local `BooleanReturnOverrideLayerDefinition` remains constrained to `com.facebook.orca`, Boolean return type, and that exact reviewed marker. It does not import the source archive or add a broad Messenger UI hook.
+- **Effect and failure mode:** the exact gate returns `false`, so the reviewed inbox stories-and-notes tray is not displayed. If the marker, return type, or target changes, no hook is installed and Messenger keeps its original interface behavior.
+- **Scope:** this is a local interface-preference control only. It does not alter messages, accounts, authentication, subscriptions, payments, eligibility, integrity, safety protections, or content-access controls.
