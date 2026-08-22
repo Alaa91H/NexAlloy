@@ -172,6 +172,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "piko.x.clear-tracking-params.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "crimera/piko",
+                sourcePatchName = "Clear tracking params",
+                packageName = "com.twitter.android",
+            )?.id,
+        )
+        assertEquals(
             "paresh.proton-vpn.disable-telemetry.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "Paresh-Maheshwari/paresh-patches",

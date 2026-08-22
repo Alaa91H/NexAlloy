@@ -15,5 +15,6 @@
         <item>org.telegram.messenger</item>
         <item>com.facebook.orca</item>
         <item>ch.protonvpn.android</item>
+        <item>com.twitter.android</item>
     </string-array>
 </resources>

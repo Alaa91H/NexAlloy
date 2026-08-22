@@ -72,3 +72,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** local `MultiVoidMethodSkipLayerDefinition`, constrained to `com.facebook.orca`, class `LX/Ay7;`, and method `run(): V`. The known source comment identifies this as `ConversationTypingContext$sendActiveStateRunnable$1` for Messenger 573.0.0.44.88.
 - **Effect and failure mode:** the selected Runnable is skipped before its body and therefore does not transmit the active typing-state event. If the narrow target is absent after an app update, no hook is installed.
 - **Scope:** this is a messaging-privacy control only. It does not alter authentication, accounts, subscription, payment, moderation, security, or content-access controls.
+
+### X — Clear tracking params
+
+- **Source review:** inspected `ClearTrackingParamsPatch.kt` in `crimera/piko`. The source intercepts its uniquely fingerprinted share-parameter method and returns DEX register `p0` before a session token is appended.
+- **Runtime mapping:** local `StaticFirstStringArgumentReturnLayerDefinition`, constrained to `com.twitter.android`, return type `String`, exactly three parameters (`String`, object, `String`), and the anchors `<this>`, `shareParam`, and `sessionToken`.
+- **Effect and failure mode:** only a static target whose first argument is a String receives that string as its result. A target absent after an X update, a non-static match, or any mismatch in the first argument proceeds unchanged.
+- **Scope:** this is a share-link privacy control. It does not alter accounts, login, content visibility, subscriptions, payments, update enforcement, integrity, or safety protections.

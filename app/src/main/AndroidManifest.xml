@@ -21,6 +21,7 @@
         <package android:name="org.telegram.messenger" />
         <package android:name="com.facebook.orca" />
         <package android:name="ch.protonvpn.android" />
+        <package android:name="com.twitter.android" />
     </queries>
 
     <application

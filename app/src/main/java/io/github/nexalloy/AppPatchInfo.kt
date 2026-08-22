@@ -37,6 +37,7 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("Telegram", "org.telegram.messenger", emptyArray()),
     AppPatchInfo("Messenger", "com.facebook.orca", emptyArray()),
     AppPatchInfo("Proton VPN", "ch.protonvpn.android", emptyArray()),
+    AppPatchInfo("X", "com.twitter.android", emptyArray()),
 )
 
 val patchesByPackage = appPatchConfigurations.associate { it.packageName to it.patches }

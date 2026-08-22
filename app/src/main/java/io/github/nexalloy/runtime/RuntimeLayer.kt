@@ -75,6 +75,52 @@ data class BooleanReturnOverrideLayerDefinition(
  * Maps a reviewed local LSPosed patch to a community catalog item. The patch is already
  * compiled into this module; this definition only supplies store attribution and discovery.
  */
+/**
+ * Compile-time definition for a reviewed static method whose original bytecode replacement
+ * returns DEX register p0, the first method argument. The hook proceeds unchanged unless the
+ * target is static and its first argument is a String, keeping this adapter fail-closed.
+ */
+data class StaticFirstStringArgumentReturnLayerDefinition(
+    val id: String,
+    val sourceRepository: String,
+    val sourcePatchName: String,
+    val packageNames: Set<String>,
+    val patchName: String,
+    val description: String,
+    val fingerprintStrings: List<String>,
+    val parameterTypes: List<String>,
+    val enabledByDefault: Boolean = false,
+) {
+    fun compile(): RuntimeLayer {
+        val fingerprint = FingerprintDsl {
+            strings(*fingerprintStrings.toTypedArray())
+            parameters(*parameterTypes.toTypedArray())
+            returns("Ljava/lang/String;")
+        }.build()
+        val compiledPatch = patch(
+            name = patchName,
+            description = description,
+            use = enabledByDefault,
+        ) {
+            fingerprint.hookMethod {
+                before { hook ->
+                    val firstArgument = hook.args.firstOrNull()
+                    if (hook.thisObject == null && firstArgument is String) {
+                        hook.result = firstArgument
+                    }
+                }
+            }
+        }
+        return RuntimeLayer(
+            id = id,
+            sourceRepository = sourceRepository,
+            sourcePatchName = sourcePatchName,
+            packageNames = packageNames,
+            patch = compiledPatch,
+        )
+    }
+}
+
 data class ExistingPatchRuntimeLayerDefinition(
     val id: String,
     val sourceRepository: String,
@@ -314,6 +360,7 @@ data class DexP0ObjectReturnTarget(
     val definingClass: String,
     val methodName: String,
     val parameterTypes: List<String> = emptyList(),
+    val returnType: String = "Ljava/lang/Object;",
 )
 
 /**
@@ -342,7 +389,7 @@ data class MultiDexP0ObjectReturnOverrideLayerDefinition(
                     definingClass(target.definingClass)
                     name(target.methodName)
                     parameters(*target.parameterTypes.toTypedArray())
-                    returns("Ljava/lang/Object;")
+                    returns(target.returnType)
                 }.build().hookMethod {
                     before { hook ->
                         hook.result = hook.thisObject ?: hook.args.firstOrNull()
@@ -420,6 +467,7 @@ object RuntimeLayerTargetRegistry {
         "org.telegram.messenger",
         "com.facebook.orca",
         "ch.protonvpn.android",
+        "com.twitter.android",
     )
 }
 

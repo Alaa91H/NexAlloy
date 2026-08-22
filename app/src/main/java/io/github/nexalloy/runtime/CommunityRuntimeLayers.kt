@@ -248,6 +248,17 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val clearXTrackingParamsDefinition = StaticFirstStringArgumentReturnLayerDefinition(
+        id = "piko.x.clear-tracking-params.runtime",
+        sourceRepository = "crimera/piko",
+        sourcePatchName = "Clear tracking params",
+        packageNames = setOf("com.twitter.android"),
+        patchName = "Runtime · Clear tracking params",
+        description = "Returns the original shared URL before the reviewed X session-tracking parameter is added.",
+        fingerprintStrings = listOf("<this>", "shareParam", "sessionToken"),
+        parameterTypes = listOf("Ljava/lang/String;", "L", "Ljava/lang/String;"),
+    )
+
     private val disableProtonVpnTelemetryDefinition = MultiKotlinUnitReturnOverrideLayerDefinition(
         id = "paresh.proton-vpn.disable-telemetry.runtime",
         sourceRepository = "Paresh-Maheshwari/paresh-patches",
@@ -359,6 +370,7 @@ object CommunityRuntimeLayers {
         disableTelegramAutoUpdateDefinition.compile(),
         disableTelegramChannelSwitchingDefinition.compile(),
         disableProtonVpnTelemetryDefinition.compile(),
+        clearXTrackingParamsDefinition.compile(),
         hideTruecallerAssistantTabDefinition.compile(),
         disableTruecallerUpdateCheckDefinition.compile(),
         disableTruecallerTelemetryDefinition.compile(),
