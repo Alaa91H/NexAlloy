@@ -120,6 +120,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "paresh.plus-messenger.disable-analytics.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "Paresh-Maheshwari/paresh-patches",
+                sourcePatchName = "Disable analytics",
+                packageName = "org.telegram.plus",
+            )?.id,
+        )
+        assertEquals(
             "kveld.gboard.disable-diagnostics.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "kveld9/kveld-morphe-patches",

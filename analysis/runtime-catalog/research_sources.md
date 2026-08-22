@@ -285,3 +285,9 @@ The resolved void method is skipped before the CleverTap SDK initializes. If the
 The public `DisableStoryAutoFlippingPatch.kt` in `brosssh/morphe-patches` was reviewed as text only. The source targets the story-timeout action with the `userSession` marker, a void return type, one object parameter, and a class descriptor ending in `ReelViewerFragment`. The local catalog-attribution adapter uses the exact reviewed `Linstagram/features/stories/fragment/ReelViewerFragment;` descriptor together with the same marker, return contract, and parameter constraint.
 
 When that exact timeout action resolves, it is skipped before the original body and the active story is not advanced by this client-side timeout path. A changed class, marker, return type, or parameter signature produces no hook. The adapter does not alter stories themselves, networking, accounts, authentication, subscriptions, payments, integrity, safety controls, content access, or any external archive, extension, or payload.
+
+### Plus Messenger — Disable analytics
+
+The public `DisableAnalyticsPatch.kt` and its Plus Messenger compatibility constant in `Paresh-Maheshwari/paresh-patches` were reviewed as text only. The local adapter considers only `Lorg/telegram/plus/helpers/AnalyticsHelper;->start(): void`, `trackEvent(String): void`, and `trackEvent(String, HashMap): void` for the reviewed `org.telegram.plus` package.
+
+Each resolved void target is skipped before analytics startup or event dispatch. A changed class descriptor, method name, return type, or parameter signature produces no hook for that method. The adapter does not load, interpret, or execute an upstream archive, extension, or payload, and it does not modify messages, accounts, authentication, contacts, subscriptions, licensing, payments, integrity, safety controls, content restrictions, or content access.

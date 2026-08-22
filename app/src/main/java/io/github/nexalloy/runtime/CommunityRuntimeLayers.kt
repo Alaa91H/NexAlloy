@@ -317,6 +317,39 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val disablePlusMessengerAnalyticsDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "paresh.plus-messenger.disable-analytics.runtime",
+        sourceRepository = "Paresh-Maheshwari/paresh-patches",
+        sourcePatchName = "Disable analytics",
+        packageNames = setOf("org.telegram.plus"),
+        patch = patch(
+            name = "Runtime · Disable analytics",
+            description = "Skips only the reviewed Plus Messenger analytics start and event-dispatch methods.",
+        ) {
+            listOf(
+                Fingerprint(
+                    definingClass = "Lorg/telegram/plus/helpers/AnalyticsHelper;",
+                    name = "start",
+                    returnType = "V",
+                ),
+                Fingerprint(
+                    definingClass = "Lorg/telegram/plus/helpers/AnalyticsHelper;",
+                    name = "trackEvent",
+                    returnType = "V",
+                    parameters = listOf("Ljava/lang/String;"),
+                ),
+                Fingerprint(
+                    definingClass = "Lorg/telegram/plus/helpers/AnalyticsHelper;",
+                    name = "trackEvent",
+                    returnType = "V",
+                    parameters = listOf("Ljava/lang/String;", "Ljava/util/HashMap;"),
+                ),
+            ).forEach { fingerprint ->
+                fingerprint.memberOrNull?.hookMethod { before { param -> param.result = null } }
+            }
+        },
+    )
+
     private val telegramPlusAdsDisabledFingerprint = Fingerprint(
         definingClass = "Lorg/telegram/plus/ads/AdsController;",
         name = "adsDisabled",
@@ -1165,6 +1198,7 @@ object CommunityRuntimeLayers {
         disableEsExplorerTrackingDefinition.compile(),
         disableAmazonSearchSuggestionsTrackingDefinition.compile(),
         disableTelegramPlusAnalyticsDefinition.compile(),
+        disablePlusMessengerAnalyticsDefinition.compile(),
         removeTelegramPlusAdsDefinition.compile(),
         hideTelegramPlusTypingIndicatorDefinition.compile(),
         removeMessengerMetaAiDefinition.compile(),
