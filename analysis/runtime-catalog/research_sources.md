@@ -351,3 +351,13 @@ The candidate source was reviewed as text only and rejected. It explicitly depen
 The public `DisableTypingIndicatorPatch.kt` and `SendTypingIndicatorFingerprint` in `RookieEnough/De-Vanced` were reviewed as text only. The local adapter requires a zero-argument `run(): void` method in a class containing the Redex original-name field value `ConversationTypingContext$sendActiveStateRunnable$1`.
 
 Only that resolved active-typing dispatch runnable is skipped. A changed field value, method name, signature, or class shape produces no hook. Message content, delivery, read receipts, accounts, authentication, attachments, calls, subscriptions, payments, integrity controls, screenshot controls, and content access remain unchanged. No external archive, extension, or payload is downloaded, interpreted, or executed.
+
+### Facebook — Hide story ads (deferred)
+
+The candidate source was reviewed as text only and deferred. Its two `run(): void` targets are identified solely through Redex original-name field values. The local Runtime fingerprint bridge supports method constraints and class-level matchers, but not a field-value class constraint; a method-name-only translation would be broad and unsafe. No adapter or catalog entry was added.
+
+### Pixiv — Hide ads
+
+The public `HideAdsPatch.kt`, `ShouldShowAdsFingerprint`, and Pixiv compatibility record in `RookieEnough/De-Vanced` were reviewed as text only. The local adapter matches only a public final boolean `shouldShowAds` method inside a class whose name ends with `.AdUtils`, then returns `false`.
+
+A changed class suffix, method name, access flags, or return type produces no hook. The adapter does not alter Pixiv accounts, authentication, subscriptions, purchases, licensing, content access, image downloads, privacy settings, or integrity controls. No external archive, extension, or payload is downloaded, interpreted, or executed.

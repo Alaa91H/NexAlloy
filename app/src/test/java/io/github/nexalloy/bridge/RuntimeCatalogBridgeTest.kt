@@ -104,6 +104,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "devanced.pixiv.hide-ads.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "RookieEnough/De-Vanced",
+                sourcePatchName = "Hide ads",
+                packageName = "jp.pxv.android",
+            )?.id,
+        )
+        assertEquals(
             "hoodles.soundcloud.disable-telemetry.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "hoo-dles/morphe-patches",

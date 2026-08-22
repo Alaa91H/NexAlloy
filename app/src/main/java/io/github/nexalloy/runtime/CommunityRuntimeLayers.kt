@@ -9,6 +9,7 @@ import io.github.nexalloy.morphe.string
 import io.github.nexalloy.patch
 import android.net.Uri
 import java.lang.reflect.Method
+import org.luckypray.dexkit.query.enums.StringMatchType
 import io.github.nexalloy.morphe.reddit.ad.HideAds
 import io.github.nexalloy.morphe.reddit.misc.privacy.SanitizeSharingLinks
 import io.github.nexalloy.revanced.googlephotos.misc.backup.EnableDCIMFoldersBackupControl
@@ -269,6 +270,29 @@ object CommunityRuntimeLayers {
                 name = "getHasAccessToQuickEdit",
                 returnType = "Z",
             ).memberOrNull?.hookMethod { before { param -> param.result = false } }
+        },
+    )
+
+    private val pixivShouldShowAdsFingerprint = object : Fingerprint(
+        name = "shouldShowAds",
+        accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+        returnType = "Z",
+    ) {
+        init {
+            classMatcher { className(".AdUtils", StringMatchType.EndsWith) }
+        }
+    }
+
+    private val hidePixivAdsDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "devanced.pixiv.hide-ads.runtime",
+        sourceRepository = "RookieEnough/De-Vanced",
+        sourcePatchName = "Hide ads",
+        packageNames = setOf("jp.pxv.android"),
+        patch = patch(
+            name = "Runtime · Hide ads",
+            description = "Returns false only from the reviewed Pixiv AdUtils shouldShowAds gate.",
+        ) {
+            pixivShouldShowAdsFingerprint.memberOrNull?.hookMethod { before { param -> param.result = false } }
         },
     )
 
@@ -1246,6 +1270,7 @@ object CommunityRuntimeLayers {
         disableCamScannerTelemetryDefinition.compile(),
         blockStravaSnowplowTrackingDefinition.compile(),
         disableStravaQuickEditDefinition.compile(),
+        hidePixivAdsDefinition.compile(),
         disableSoundCloudTelemetryDefinition.compile(),
         disableEsExplorerTrackingDefinition.compile(),
         disableAmazonSearchSuggestionsTrackingDefinition.compile(),
