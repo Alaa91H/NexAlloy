@@ -70,6 +70,55 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val disableGboardRemoteConfigurationDefinition = MultiVoidMethodSkipLayerDefinition(
+        id = "kveld.gboard.disable-remote-configuration.runtime",
+        sourceRepository = "kveld9/kveld-morphe-patches",
+        sourcePatchName = "Disable Remote Configuration",
+        packageNames = setOf("com.google.android.inputmethod.latin"),
+        patchName = "Runtime · Disable Remote Configuration",
+        description = "Disables reviewed Gboard remote experiment synchronization and periodic background updates.",
+        targets = listOf(
+            VoidMethodTarget(
+                definingClass = "Lcom/google/android/libraries/phenotype/client/stable/PhenotypeUpdateBackgroundBroadcastReceiver;",
+                methodName = "onReceive",
+                parameterTypes = listOf("Landroid/content/Context;", "Landroid/content/Intent;"),
+            ),
+            VoidMethodTarget(
+                definingClass = "Lcom/google/android/libraries/phenotype/client/stable/AccountRemovedBroadcastReceiver;",
+                methodName = "onReceive",
+                parameterTypes = listOf("Landroid/content/Context;", "Landroid/content/Intent;"),
+            ),
+            VoidMethodTarget("Lwhh;", "dB", listOf("Landroid/content/Context;", "Lvsp;")),
+            VoidMethodTarget("Lwhh;", "e"),
+            VoidMethodTarget("Lwhh;", "g"),
+        ),
+    )
+
+    private val disableGboardSuperpacksEagerSyncDefinition = MultiVoidMethodSkipLayerDefinition(
+        id = "kveld.gboard.disable-superpacks-eager-sync.runtime",
+        sourceRepository = "kveld9/kveld-morphe-patches",
+        sourcePatchName = "Disable Superpacks Eager Sync",
+        packageNames = setOf("com.google.android.inputmethod.latin"),
+        patchName = "Runtime · Disable Superpacks Eager Sync",
+        description = "Disables reviewed Gboard startup Superpacks synchronization while preserving on-demand downloads.",
+        targets = listOf(
+            VoidMethodTarget("Lgvk;", "n"),
+            VoidMethodTarget("Lgrp;", "n"),
+        ),
+    )
+
+    private val disableGboardTenorShareTrackingDefinition = MultiVoidMethodSkipLayerDefinition(
+        id = "kveld.gboard.disable-tenor-share-tracking.runtime",
+        sourceRepository = "kveld9/kveld-morphe-patches",
+        sourcePatchName = "Disable Tenor Share Tracking",
+        packageNames = setOf("com.google.android.inputmethod.latin"),
+        patchName = "Runtime · Disable Tenor Share Tracking",
+        description = "Disables the reviewed Gboard Tenor GIF selection and sharing telemetry path.",
+        targets = listOf(
+            VoidMethodTarget("Limg;", "K", listOf("Lafsc;", "Lidb;")),
+        ),
+    )
+
     private val openMessengerLinksExternallyDefinition = BooleanReturnOverrideLayerDefinition(
         id = "morphe.messenger.open-links-externally.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -138,6 +187,18 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val disableTruecallerUpdateCheckDefinition = BooleanReturnOverrideLayerDefinition(
+        id = "paresh.truecaller.disable-update-check.runtime",
+        sourceRepository = "Paresh-Maheshwari/paresh-patches",
+        sourcePatchName = "Disable update check",
+        packageNames = setOf("com.truecaller"),
+        patchName = "Runtime · Disable update check",
+        description = "Disables the reviewed Truecaller in-app update decision without changing system updates.",
+        fingerprintStrings = listOf("playAppUpdateManager", "configsInventory"),
+        replacementValue = false,
+        parameterTypes = listOf("Lcom/truecaller/inappupdate/UpdateTrigger;"),
+    )
+
     private val disableTruecallerTelemetryDefinition = MultiVoidMethodSkipLayerDefinition(
         id = "paresh.truecaller.disable-telemetry.runtime",
         sourceRepository = "Paresh-Maheshwari/paresh-patches",
@@ -183,9 +244,13 @@ object CommunityRuntimeLayers {
         sanitizeRedditSharingDefinition.compile(),
         blockGboardTelemetryDefinition.compile(),
         disableGboardDiagnosticsDefinition.compile(),
+        disableGboardRemoteConfigurationDefinition.compile(),
+        disableGboardSuperpacksEagerSyncDefinition.compile(),
+        disableGboardTenorShareTrackingDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),
         removeTelegramSponsoredMessagesDefinition.compile(),
         disableProtonVpnTelemetryDefinition.compile(),
+        disableTruecallerUpdateCheckDefinition.compile(),
         disableTruecallerTelemetryDefinition.compile(),
         enableDcimFoldersBackupControlDefinition.compile(),
         disableReelsScrollingDefinition.compile(),

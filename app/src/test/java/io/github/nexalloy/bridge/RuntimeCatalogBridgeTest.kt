@@ -76,6 +76,38 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "kveld.gboard.disable-remote-configuration.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "kveld9/kveld-morphe-patches",
+                sourcePatchName = "Disable Remote Configuration",
+                packageName = "com.google.android.inputmethod.latin",
+            )?.id,
+        )
+        assertEquals(
+            "kveld.gboard.disable-superpacks-eager-sync.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "kveld9/kveld-morphe-patches",
+                sourcePatchName = "Disable Superpacks Eager Sync",
+                packageName = "com.google.android.inputmethod.latin",
+            )?.id,
+        )
+        assertEquals(
+            "kveld.gboard.disable-tenor-share-tracking.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "kveld9/kveld-morphe-patches",
+                sourcePatchName = "Disable Tenor Share Tracking",
+                packageName = "com.google.android.inputmethod.latin",
+            )?.id,
+        )
+        assertEquals(
+            "paresh.truecaller.disable-update-check.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "Paresh-Maheshwari/paresh-patches",
+                sourcePatchName = "Disable update check",
+                packageName = "com.truecaller",
+            )?.id,
+        )
+        assertEquals(
             "paresh.truecaller.disable-telemetry.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "Paresh-Maheshwari/paresh-patches",
