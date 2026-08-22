@@ -202,6 +202,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "morphe.telegram-plus.hide-typing-indicator.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "rushiranpise/morphe-patches",
+                sourcePatchName = "Hide typing indicator",
+                packageName = "org.telegram.plus",
+            )?.id,
+        )
+        assertEquals(
             "morphe.telegram.disable-auto-update.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "rushiranpise/morphe-patches",

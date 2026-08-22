@@ -1,5 +1,6 @@
 package io.github.nexalloy.runtime
 
+import de.robv.android.xposed.XC_MethodReplacement
 import io.github.nexalloy.hookMethod
 import io.github.nexalloy.morphe.AccessFlags
 import io.github.nexalloy.morphe.Fingerprint
@@ -356,6 +357,39 @@ object CommunityRuntimeLayers {
             telegramPlusSponsoredDisabledFingerprint.memberOrNull?.hookMethod { before { param -> param.result = true } }
             telegramPlusMessageIsSponsoredFingerprint.memberOrNull?.hookMethod { before { param -> param.result = false } }
             telegramPlusVideoAdsLoadFingerprint.memberOrNull?.hookMethod { before { param -> param.result = null } }
+        },
+    )
+
+    private val telegramPlusSendTypingFingerprint = Fingerprint(
+        definingClass = "Lorg/telegram/messenger/MessagesController;",
+        name = "sendTyping",
+        returnType = "Z",
+        parameters = listOf("J", "J", "I", "I"),
+    )
+
+    private val hideTelegramPlusTypingIndicatorDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "morphe.telegram-plus.hide-typing-indicator.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Hide typing indicator",
+        packageNames = setOf("org.telegram.plus"),
+        patch = patch(
+            name = "Runtime · Hide typing indicator",
+            description = "Prevents the reviewed Telegram Plus typing-state dispatch and matching UI delegates from running.",
+        ) {
+            telegramPlusSendTypingFingerprint.memberOrNull?.hookMethod { before { param -> param.result = false } }
+            hookMethodList(
+                cacheKey = "morphe.telegram-plus.hide-typing-indicator.runtime|needSendTyping|",
+                findMethods = {
+                    findMethod {
+                        matcher {
+                            name = "needSendTyping"
+                            returnType = "void"
+                            paramTypes()
+                        }
+                    }.filter { it.isMethod }
+                },
+                callback = XC_MethodReplacement.DO_NOTHING,
+            )
         },
     )
 
@@ -908,6 +942,7 @@ object CommunityRuntimeLayers {
         disableAmazonSearchSuggestionsTrackingDefinition.compile(),
         disableTelegramPlusAnalyticsDefinition.compile(),
         removeTelegramPlusAdsDefinition.compile(),
+        hideTelegramPlusTypingIndicatorDefinition.compile(),
         removeMessengerMetaAiDefinition.compile(),
         disableMessengerMediaTranscodingDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),
