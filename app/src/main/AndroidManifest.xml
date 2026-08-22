@@ -16,6 +16,7 @@
         <package android:name="com.strava" />
         <package android:name="com.soundcloud.android" />
         <package android:name="jp.pxv.android" />
+        <package android:name="com.sonyliv" />
         <package android:name="com.sofascore.results" />
         <package android:name="com.alltrails.alltrails" />
         <package android:name="com.google.android.inputmethod.latin" />

@@ -112,6 +112,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "chiggi.sonyliv.remove-video-ads.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "durgesh0505/chiggi_morphe_patches",
+                sourcePatchName = "Remove video ads",
+                packageName = "com.sonyliv",
+            )?.id,
+        )
+        assertEquals(
             "hoodles.sofascore.disable-ads.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "hoo-dles/morphe-patches",

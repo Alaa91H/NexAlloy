@@ -296,6 +296,38 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val sonyLivAdGateFingerprints = listOf(
+        Fingerprint(
+            definingClass = "Lcom/sonyliv/mediaplayer/util/PlayerUtil;",
+            name = "isAdEnable",
+            returnType = "Z",
+            accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC),
+            parameters = emptyList(),
+        ),
+        Fingerprint(
+            definingClass = "Lcom/sonyliv/mediaplayer/util/PlayerUtil;",
+            name = "isAdEnable",
+            returnType = "Z",
+            accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC),
+            parameters = listOf("Lcom/sonyliv/network/model/core/AssetMetadata;"),
+        ),
+    )
+
+    private val removeSonyLivVideoAdsDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "chiggi.sonyliv.remove-video-ads.runtime",
+        sourceRepository = "durgesh0505/chiggi_morphe_patches",
+        sourcePatchName = "Remove video ads",
+        packageNames = setOf("com.sonyliv"),
+        patch = patch(
+            name = "Runtime · Remove video ads",
+            description = "Returns false only from the reviewed SonyLIV PlayerUtil client-side ad gates.",
+        ) {
+            sonyLivAdGateFingerprints.forEach { fingerprint ->
+                fingerprint.memberOrNull?.hookMethod { before { param -> param.result = false } }
+            }
+        },
+    )
+
     private val sofascoreAdsGateFingerprints = listOf(
         "getForceAds" to false,
         "getForceHideAds" to true,
@@ -1332,6 +1364,7 @@ object CommunityRuntimeLayers {
         blockStravaSnowplowTrackingDefinition.compile(),
         disableStravaQuickEditDefinition.compile(),
         hidePixivAdsDefinition.compile(),
+        removeSonyLivVideoAdsDefinition.compile(),
         disableSofascoreAdsDefinition.compile(),
         preventAmazonMusicLogUploadDefinition.compile(),
         disableSoundCloudTelemetryDefinition.compile(),
