@@ -156,6 +156,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "morphe.messenger.remove-meta-ai.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "rushiranpise/morphe-patches",
+                sourcePatchName = "Remove Meta AI",
+                packageName = "com.facebook.orca",
+            )?.id,
+        )
+        assertEquals(
             "morphe.messenger.open-links-externally.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "rushiranpise/morphe-patches",

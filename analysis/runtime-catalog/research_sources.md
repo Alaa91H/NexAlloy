@@ -86,3 +86,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** local `AllMatchingVoidMethodSkipLayerDefinition`, constrained to `org.telegram.messenger`, method name `needSendTyping`, void return type, and no parameters. Its multi-match semantics intentionally mirror the reviewed upstream source rather than choosing an obfuscated class name.
 - **Effect and failure mode:** every exact implementation found in the target process is skipped before it can dispatch a typing-state request. If a release has no such method, the matched set is empty and no hook is installed.
 - **Scope:** this is a user-controlled messaging privacy setting only. It does not change authentication, account behavior, subscriptions, payments, server-side content controls, integrity checks, or safety protections.
+
+### Messenger — Remove Meta AI
+
+- **Source review:** inspected `RemoveMetaAiPatch.kt` and its fingerprints in `rushiranpise/morphe-patches`. The source suppresses the Meta AI floating compose button, the AI Creation drawer item, the AI Home drawer item, and AI search suggestions; each target is optional to accommodate app-version changes.
+- **Runtime mapping:** a locally compiled `ExistingPatchRuntimeLayerDefinition` targets `com.facebook.orca` using the same reviewed anchors. The FAB renderer is matched by `fab_expanded` and `AiFabComponent` and returns null; the three visibility gates are constrained by their reviewed method calls, stable strings, return type, and access flags, then return false.
+- **Effect and failure mode:** any surface whose exact target is found is hidden. A missing, reorganized, or non-unique target produces no hook for that surface; no downloaded code or broad class-name scan is used.
+- **Scope:** the adapter only hides local Meta AI interface surfaces. It does not alter authentication, accounts, payments, subscriptions, model safety behavior, moderation, integrity, or content-access controls.

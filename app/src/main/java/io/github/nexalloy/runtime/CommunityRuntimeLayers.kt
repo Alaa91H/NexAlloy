@@ -1,6 +1,10 @@
 package io.github.nexalloy.runtime
 
+import io.github.nexalloy.hookMethod
 import io.github.nexalloy.morphe.AccessFlags
+import io.github.nexalloy.morphe.Fingerprint
+import io.github.nexalloy.morphe.methodCall
+import io.github.nexalloy.patch
 import io.github.nexalloy.morphe.reddit.ad.HideAds
 import io.github.nexalloy.morphe.reddit.misc.privacy.SanitizeSharingLinks
 import io.github.nexalloy.revanced.googlephotos.misc.backup.EnableDCIMFoldersBackupControl
@@ -117,6 +121,79 @@ object CommunityRuntimeLayers {
         targets = listOf(
             VoidMethodTarget("Limg;", "K", listOf("Lafsc;", "Lidb;")),
         ),
+    )
+
+    private val messengerMetaAiFabRenderFingerprint = Fingerprint(
+        accessFlags = listOf(AccessFlags.PUBLIC),
+        strings = listOf("fab_expanded", "AiFabComponent"),
+    )
+
+    private val messengerMetaAiCreationFolderFingerprint = Fingerprint(
+        returnType = "Z",
+        accessFlags = listOf(AccessFlags.PRIVATE),
+        parameters = emptyList(),
+        filters = listOf(
+            methodCall(
+                definingClass = "Lcom/facebook/messaging/navigation/plugins/aicreationfolder/folderitem/AiCreationFolderItem;",
+                name = "A00",
+            ),
+        ),
+        strings = listOf(
+            "com.facebook.messaging.navigation.plugins.aicreationfolder.folderitem.AiCreationFolderItem",
+        ),
+    )
+
+    private val messengerMetaAiHomeFolderFingerprint = Fingerprint(
+        returnType = "Z",
+        accessFlags = listOf(AccessFlags.PRIVATE),
+        parameters = emptyList(),
+        filters = listOf(
+            methodCall(
+                definingClass = "Lcom/facebook/messaging/navigation/plugins/aihomefolder/folderitem/AiHomeFolderItem;",
+                name = "A00",
+            ),
+        ),
+        strings = listOf(
+            "com.facebook.messaging.navigation.plugins.aihomefolder.folderitem.AiHomeFolderItem",
+        ),
+    )
+
+    private val messengerMetaAiSearchFingerprint = Fingerprint(
+        returnType = "Z",
+        accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC),
+        filters = listOf(
+            methodCall(
+                definingClass = "Lcom/facebook/mobileconfig/factory/MobileConfigUnsafeContext;",
+                name = "Afy",
+            ),
+        ),
+        strings = listOf(
+            "messaging.search.aiagent.implementations.SearchAiagentImplementationsKillSwitch",
+        ),
+    )
+
+    private val removeMessengerMetaAiDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "morphe.messenger.remove-meta-ai.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Remove Meta AI",
+        packageNames = setOf("com.facebook.orca"),
+        patch = patch(
+            name = "Runtime · Remove Meta AI",
+            description = "Hides the reviewed Messenger Meta AI button, drawer items, and search suggestions.",
+        ) {
+            messengerMetaAiFabRenderFingerprint.memberOrNull?.hookMethod {
+                before { it.result = null }
+            }
+            messengerMetaAiCreationFolderFingerprint.memberOrNull?.hookMethod {
+                before { it.result = false }
+            }
+            messengerMetaAiHomeFolderFingerprint.memberOrNull?.hookMethod {
+                before { it.result = false }
+            }
+            messengerMetaAiSearchFingerprint.memberOrNull?.hookMethod {
+                before { it.result = false }
+            }
+        },
     )
 
     private val openMessengerLinksExternallyDefinition = BooleanReturnOverrideLayerDefinition(
@@ -373,6 +450,7 @@ object CommunityRuntimeLayers {
         disableGboardRemoteConfigurationDefinition.compile(),
         disableGboardSuperpacksEagerSyncDefinition.compile(),
         disableGboardTenorShareTrackingDefinition.compile(),
+        removeMessengerMetaAiDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),
         disableMessengerTypingIndicatorDefinition.compile(),
         hideMessengerInboxStoriesNotesTrayDefinition.compile(),
