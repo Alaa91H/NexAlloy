@@ -5,6 +5,7 @@ import io.github.nexalloy.morphe.AccessFlags
 import io.github.nexalloy.morphe.Fingerprint
 import io.github.nexalloy.morphe.methodCall
 import io.github.nexalloy.patch
+import java.lang.reflect.Method
 import io.github.nexalloy.morphe.reddit.ad.HideAds
 import io.github.nexalloy.morphe.reddit.misc.privacy.SanitizeSharingLinks
 import io.github.nexalloy.revanced.googlephotos.misc.backup.EnableDCIMFoldersBackupControl
@@ -192,6 +193,34 @@ object CommunityRuntimeLayers {
             }
             messengerMetaAiSearchFingerprint.memberOrNull?.hookMethod {
                 before { it.result = false }
+            }
+        },
+    )
+
+    private val messengerDisableMediaTranscodingFingerprint = Fingerprint(
+        accessFlags = listOf(AccessFlags.PUBLIC),
+        returnType = "Lcom/facebook/fbservice/service/OperationResult;",
+        parameters = listOf("L"),
+        strings = listOf("transcode", "should_transcode", "transcoded_video_larger"),
+    )
+
+    private val disableMessengerMediaTranscodingDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "morphe.messenger.disable-media-transcoding.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Disable media transcoding",
+        packageNames = setOf("com.facebook.orca"),
+        patch = patch(
+            name = "Runtime · Disable media transcoding",
+            description = "Returns Messenger's reviewed default operation result before the media transcoding workflow begins.",
+        ) {
+            messengerDisableMediaTranscodingFingerprint.memberOrNull?.hookMethod {
+                before { param ->
+                    val resultType = (param.method as? Method)?.returnType ?: return@before
+                    val defaultResult = runCatching {
+                        resultType.getDeclaredField("A00").apply { isAccessible = true }.get(null)
+                    }.getOrNull() ?: return@before
+                    param.result = defaultResult
+                }
             }
         },
     )
@@ -463,6 +492,7 @@ object CommunityRuntimeLayers {
         disableGboardSuperpacksEagerSyncDefinition.compile(),
         disableGboardTenorShareTrackingDefinition.compile(),
         removeMessengerMetaAiDefinition.compile(),
+        disableMessengerMediaTranscodingDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),
         hideMessengerInboxSubtabsDefinition.compile(),
         disableMessengerTypingIndicatorDefinition.compile(),

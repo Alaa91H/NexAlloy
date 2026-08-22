@@ -164,6 +164,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "morphe.messenger.disable-media-transcoding.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "rushiranpise/morphe-patches",
+                sourcePatchName = "Disable media transcoding",
+                packageName = "com.facebook.orca",
+            )?.id,
+        )
+        assertEquals(
             "morphe.messenger.open-links-externally.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "rushiranpise/morphe-patches",

@@ -100,3 +100,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** local `MultiVoidMethodSkipLayerDefinition`, constrained to `com.facebook.orca`, class `LX/2Je;`, and method `run(): void`. Skipping the known one-shot Runnable leaves the supplier from signalling that its subtabs are ready.
 - **Effect and failure mode:** Home and Channels inbox subtabs remain absent when the exact reviewed Runnable exists. If the obfuscated target changes or disappears, no hook is installed.
 - **Scope:** this is a local interface-preference control only. It does not alter messages, accounts, authentication, subscriptions, payments, content-access controls, integrity, or safety protections.
+
+### Messenger — Disable media transcoding
+
+- **Source review:** inspected `DisableMediaTranscodingPatch.kt` and `Fingerprints.kt` in `rushiranpise/morphe-patches`. The source targets the public Messenger service operation that contains the three stable markers `transcode`, `should_transcode`, and `transcoded_video_larger`, then returns `OperationResult.A00` before the transcoding workflow begins.
+- **Runtime mapping:** an `ExistingPatchRuntimeLayerDefinition` is constrained to `com.facebook.orca`, the exact `OperationResult` return type, one object parameter, public access, and all three reviewed strings. The local hook resolves the actual target method's return class and reads only its reviewed `A00` default-result field.
+- **Effect and failure mode:** when both the exact method and its expected result field exist, the client-side media-transcoding operation is skipped and Messenger continues with its normal fallback upload path. If either lookup fails, the original operation runs unchanged. Server upload limits remain unchanged.
+- **Scope:** this is a local media-quality preference; it does not alter authentication, accounts, subscriptions, payments, server limits, integrity, safety protections, or content-access controls.
