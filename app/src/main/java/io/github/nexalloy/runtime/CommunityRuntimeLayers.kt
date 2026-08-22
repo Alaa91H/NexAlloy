@@ -168,6 +168,45 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val disableTelegramAutoUpdateDefinition = CompositeRuntimeLayerDefinition(
+        id = "morphe.telegram.disable-auto-update.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Disable auto-update",
+        packageNames = setOf("org.telegram.messenger"),
+        patchName = "Runtime · Disable auto-update",
+        description = "Disables the reviewed Telegram in-app update checks and update UI only; Android system updates are unchanged.",
+        booleanTargets = listOf(
+            BooleanMethodTarget(
+                definingClass = "Lorg/telegram/messenger/SharedConfig;",
+                methodName = "isAppUpdateAvailable",
+                replacementValue = false,
+            ),
+            BooleanMethodTarget(
+                definingClass = "Lorg/telegram/messenger/SharedConfig;",
+                methodName = "setNewAppVersionAvailable",
+                replacementValue = false,
+                parameterTypes = listOf("Lorg/telegram/tgnet/TLRPC\$TL_help_appUpdate;"),
+            ),
+        ),
+        voidTargets = listOf(
+            VoidMethodTarget(
+                definingClass = "Lorg/telegram/ui/LaunchActivity;",
+                methodName = "checkAppUpdate",
+                parameterTypes = listOf("Z", "Lorg/telegram/messenger/browser/Browser\$Progress;"),
+            ),
+            VoidMethodTarget(
+                definingClass = "Lorg/telegram/ui/Components/BlockingUpdateView;",
+                methodName = "show",
+                parameterTypes = listOf("I", "Lorg/telegram/tgnet/TLRPC\$TL_help_appUpdate;", "Z"),
+            ),
+            VoidMethodTarget(
+                definingClass = "Lorg/telegram/messenger/MessagesController;",
+                methodName = "checkPromoInfoInternal",
+                parameterTypes = listOf("Z"),
+            ),
+        ),
+    )
+
     private val disableTelegramChannelSwitchingDefinition = CompositeRuntimeLayerDefinition(
         id = "morphe.telegram.disable-channel-switching.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -292,6 +331,7 @@ object CommunityRuntimeLayers {
         openMessengerLinksExternallyDefinition.compile(),
         hideMessengerInboxStoriesNotesTrayDefinition.compile(),
         removeTelegramSponsoredMessagesDefinition.compile(),
+        disableTelegramAutoUpdateDefinition.compile(),
         disableTelegramChannelSwitchingDefinition.compile(),
         disableProtonVpnTelemetryDefinition.compile(),
         disableTruecallerUpdateCheckDefinition.compile(),
