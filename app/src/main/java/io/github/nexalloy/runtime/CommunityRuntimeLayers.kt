@@ -926,6 +926,27 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val hideTruecallerAfterCallAdsDefinition = MultiVoidMethodSkipLayerDefinition(
+        id = "bufferk.truecaller.hide-ads.runtime",
+        sourceRepository = "bufferk/morphe-patches",
+        sourcePatchName = "Hide ads",
+        packageNames = setOf("com.truecaller"),
+        patchName = "Runtime · Hide ads",
+        description = "Skips only the reviewed after-call and Neo after-call ad-update methods.",
+        targets = listOf(
+            VoidMethodTarget(
+                definingClass = "Lcom/truecaller/acs/ui/baz;",
+                methodName = "Rh",
+                parameterTypes = listOf("Z"),
+            ),
+            VoidMethodTarget(
+                definingClass = "Ltw1/f;",
+                methodName = "Th",
+                parameterTypes = listOf("Z"),
+            ),
+        ),
+    )
+
     private val truecallerCleverTapPushFingerprints = listOf(
         Fingerprint(
             definingClass = "Lkr0/k;",
@@ -1023,6 +1044,7 @@ object CommunityRuntimeLayers {
         hideTruecallerAssistantTabDefinition.compile(),
         disableTruecallerUpdateCheckDefinition.compile(),
         disableTruecallerTelemetryDefinition.compile(),
+        hideTruecallerAfterCallAdsDefinition.compile(),
         disableTruecallerCleverTapAnalyticsDefinition.compile(),
         enableDcimFoldersBackupControlDefinition.compile(),
         disableReelsScrollingDefinition.compile(),

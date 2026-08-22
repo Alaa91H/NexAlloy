@@ -249,3 +249,9 @@ A target with a changed class descriptor, method name, return contract, or param
 The public `DisableAnalyticsPatch.kt` and `Fingerprints.kt` in `bufferk/morphe-patches` were reviewed as text only. The local adapter lists only the two reviewed public-final void methods on `Lkr0/k;`: `push(String)` and `push(String, Map)`. Each resolved target is skipped before it dispatches a CleverTap behavioural event.
 
 The adapter does not hook profile updates, push-notification registration, Firebase diagnostics, Adjust attribution, or arbitrary analytics classes. If the exact class descriptor, method name, void contract, parameter list, or public-final access flags change, no hook is installed. It only suppresses those local behavioural-event dispatches for `com.truecaller`; accounts, caller-ID service, authentication, payments, subscriptions, licensing, integrity, protection, and content access remain unchanged.
+
+### Truecaller — Hide ads
+
+The public `HideAdsPatch.kt` and `Fingerprints.kt` in `bufferk/morphe-patches` were reviewed as text only. The local adapter skips only the two exact void after-call ad-update targets reviewed by the source: `Lcom/truecaller/acs/ui/baz;.Rh(boolean)` and `Ltw1/f;.Th(boolean)`.
+
+Both targets require the exact class descriptor, method name, void return contract, and Boolean parameter. If either path changes or is absent in a Truecaller release, no hook is installed for it. The adapter affects only the local after-call and Neo after-call advertising update paths; it does not modify caller-ID logic, spam detection, accounts, authentication, payments, subscriptions, licensing, integrity or protection checks, or content access.
