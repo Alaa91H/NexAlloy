@@ -322,6 +322,27 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val sonyLivAppsFlyerSupportedFingerprint = Fingerprint(
+        definingClass = "Lcom/sonyliv/Analytics/AppsFlyerManager;",
+        name = "isAppsFlyerSupported",
+        returnType = "Z",
+        accessFlags = listOf(AccessFlags.PRIVATE, AccessFlags.FINAL),
+        parameters = emptyList(),
+    )
+
+    private val disableSonyLivAppsFlyerTrackingDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "chiggi.sonyliv.disable-appsflyer-tracking.runtime",
+        sourceRepository = "durgesh0505/chiggi_morphe_patches",
+        sourcePatchName = "Disable AppsFlyer tracking",
+        packageNames = setOf("com.sonyliv"),
+        patch = patch(
+            name = "Runtime · Disable AppsFlyer tracking",
+            description = "Returns false only from the reviewed SonyLIV AppsFlyer support gate.",
+        ) {
+            sonyLivAppsFlyerSupportedFingerprint.memberOrNull?.hookMethod { before { param -> param.result = false } }
+        },
+    )
+
     private val sonyLivAdGateFingerprints = listOf(
         Fingerprint(
             definingClass = "Lcom/sonyliv/mediaplayer/util/PlayerUtil;",
@@ -1391,6 +1412,7 @@ object CommunityRuntimeLayers {
         disableStravaQuickEditDefinition.compile(),
         hidePixivAdsDefinition.compile(),
         removeViMoviesAdsDefinition.compile(),
+        disableSonyLivAppsFlyerTrackingDefinition.compile(),
         removeSonyLivVideoAdsDefinition.compile(),
         disableSofascoreAdsDefinition.compile(),
         preventAmazonMusicLogUploadDefinition.compile(),

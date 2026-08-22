@@ -120,6 +120,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "chiggi.sonyliv.disable-appsflyer-tracking.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "durgesh0505/chiggi_morphe_patches",
+                sourcePatchName = "Disable AppsFlyer tracking",
+                packageName = "com.sonyliv",
+            )?.id,
+        )
+        assertEquals(
             "chiggi.sonyliv.remove-video-ads.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "durgesh0505/chiggi_morphe_patches",
