@@ -236,6 +236,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "morphe.proton-vpn.remove-server-change-delay.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "hoo-dles/morphe-patches",
+                sourcePatchName = "Remove delay",
+                packageName = "ch.protonvpn.android",
+            )?.id,
+        )
+        assertEquals(
             "paresh.proton-vpn.disable-telemetry.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "Paresh-Maheshwari/paresh-patches",

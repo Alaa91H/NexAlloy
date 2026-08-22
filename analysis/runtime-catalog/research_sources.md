@@ -127,3 +127,9 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Source review:** inspected `HideScamsTabPatch.kt` and `ScamFeedEnabledFingerprint` in `Paresh-Maheshwari/paresh-patches` on GitLab. The source identifies a no-argument Boolean scam-feed gate by the paired calls `hc2/a.a()` and `hc2/baz.a()`, then returns `false` so the tab is not added to the bottom navigation.
 - **Runtime mapping:** local `ExistingPatchRuntimeLayerDefinition`, constrained to `com.truecaller`, a Boolean return type, no arguments, and both reviewed call filters. The hook returns `false` only when that complete fingerprint resolves.
 - **Effect and failure mode:** the Scams tab is not added to Truecaller navigation when the reviewed gate is found. The adapter neither blocks scam detection services nor changes account, caller-ID, or protection behavior. If the fingerprint changes or is absent, no hook is installed.
+
+### Proton VPN — Remove delay
+
+- **Source review:** inspected `RemoveDelayPatch.kt` and its two source fingerprints in `hoo-dles/morphe-patches`. The source returns zero from `getChangeServerLongDelayInSeconds` and `getChangeServerShortDelayInSeconds`.
+- **Runtime mapping:** local `ExistingPatchRuntimeLayerDefinition` is constrained to `ch.protonvpn.android` and those two reviewed accessor names. It acts only on no-argument methods whose reflected return type is a supported numeric primitive or wrapper, returning the correctly typed zero value.
+- **Effect and failure mode:** the known local server-change delay accessors resolve to zero when found. If an accessor is absent, takes arguments, or returns a nonnumeric type, its original implementation runs unchanged. This adapter does not modify server eligibility, account state, subscription, authentication, or network-security behavior.

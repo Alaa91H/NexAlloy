@@ -412,6 +412,44 @@ object CommunityRuntimeLayers {
         parameterTypes = listOf("Ljava/lang/String;", "L", "Ljava/lang/String;"),
     )
 
+    private val protonVpnLongDelayFingerprint = Fingerprint(
+        name = "getChangeServerLongDelayInSeconds",
+    )
+
+    private val protonVpnShortDelayFingerprint = Fingerprint(
+        name = "getChangeServerShortDelayInSeconds",
+    )
+
+    private val removeProtonVpnServerChangeDelayDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "morphe.proton-vpn.remove-server-change-delay.runtime",
+        sourceRepository = "hoo-dles/morphe-patches",
+        sourcePatchName = "Remove delay",
+        packageNames = setOf("ch.protonvpn.android"),
+        patch = patch(
+            name = "Runtime · Remove server-change delay",
+            description = "Returns zero from the reviewed Proton VPN server-change delay accessors.",
+        ) {
+            listOf(protonVpnLongDelayFingerprint, protonVpnShortDelayFingerprint).forEach { fingerprint ->
+                fingerprint.memberOrNull?.hookMethod {
+                    before { param ->
+                        if (param.args.isNotEmpty()) return@before
+                        val returnType = (param.method as? Method)?.returnType ?: return@before
+                        val zero = when (returnType) {
+                            Int::class.javaPrimitiveType, Int::class.javaObjectType -> 0
+                            Long::class.javaPrimitiveType, Long::class.javaObjectType -> 0L
+                            Short::class.javaPrimitiveType, Short::class.javaObjectType -> 0.toShort()
+                            Byte::class.javaPrimitiveType, Byte::class.javaObjectType -> 0.toByte()
+                            Float::class.javaPrimitiveType, Float::class.javaObjectType -> 0f
+                            Double::class.javaPrimitiveType, Double::class.javaObjectType -> 0.0
+                            else -> return@before
+                        }
+                        param.result = zero
+                    }
+                }
+            }
+        },
+    )
+
     private val disableProtonVpnTelemetryDefinition = MultiKotlinUnitReturnOverrideLayerDefinition(
         id = "paresh.proton-vpn.disable-telemetry.runtime",
         sourceRepository = "Paresh-Maheshwari/paresh-patches",
@@ -580,6 +618,7 @@ object CommunityRuntimeLayers {
         disableTelegramAutoUpdateDefinition.compile(),
         hideTelegramTypingIndicatorDefinition.compile(),
         disableTelegramChannelSwitchingDefinition.compile(),
+        removeProtonVpnServerChangeDelayDefinition.compile(),
         disableProtonVpnTelemetryDefinition.compile(),
         hideXNavigationBadgesDefinition.compile(),
         clearXTrackingParamsDefinition.compile(),
