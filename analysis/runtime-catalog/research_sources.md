@@ -325,3 +325,29 @@ The candidate source was reviewed as text only and rejected. It explicitly depen
 The public `DisableQuickEditPatch.kt` and `GetHasAccessToQuickEditFingerprint` in `RookieEnough/De-Vanced` were reviewed as text only. The local adapter targets only the boolean `getHasAccessToQuickEdit` method and returns `false`, matching the reviewed prompt-suppression behavior.
 
 This is limited to suppressing the Quick Edit prompt gate. It does not enable Quick Edit or other paid functionality, alter subscriptions or entitlement state, modify purchases, accounts, authentication, integrity, activity recording, routes, or social data. A changed method name or return type produces no hook, and no external archive, extension, or payload is downloaded, interpreted, or executed.
+
+### CamScanner — Disable telemetry (Hoo-dles candidate, deferred)
+
+The candidate source was reviewed as text only and rejected. It explicitly depends on `spoofSignaturePatch` and a package-installer change. Signature spoofing and installer manipulation are outside the permitted local Runtime scope, so this alternate catalog source is not adapted or displayed. The separate reviewed CamScanner telemetry adapter already present remains limited to its own safe fingerprints.
+
+### Cloudflare WARP — Disable Analytics / Telemetry (deferred)
+
+The candidate source was reviewed as text only and deferred. It couples a direct void hook with dynamic discovery of compiler-numbered Kotlin lambda classes, instruction inspection, and Kotlin `Unit` object-return rewrites. Translating only its first layer would make the catalog claim incomplete, while translating the dynamic scan would broaden the Runtime surface beyond a narrow, stable adapter. No adapter or catalog entry was added.
+
+### Instagram — Hide Notes Tray (deferred)
+
+The candidate source was reviewed as text only and deferred. It depends on resource mapping and performs register-aware instruction injection around an obfuscated view-construction path. That is not equivalent to a narrow LSPosed/DexKit method hook, so no partial or broader Runtime adapter was added.
+
+### Instagram — Disable Reels Scrolling (deferred)
+
+The candidate source was reviewed as text only and deferred. It locates an obfuscated `ViewPager2` field and injects instructions to change user input, plus modifies a touch-interception method. These field and instruction rewrites exceed the narrow LSPosed/DexKit Runtime adapter model, so no partial adapter or catalog entry was added.
+
+### TikTok — Disable Long Press Quick Share (deferred)
+
+The candidate source was reviewed as text only and rejected. It explicitly depends on a TikTok shared extension and invokes extension-owned settings and feature-control methods. The application does not download, interpret, or execute extensions, so no adapter or catalog entry was added.
+
+### Messenger — Disable typing indicator
+
+The public `DisableTypingIndicatorPatch.kt` and `SendTypingIndicatorFingerprint` in `RookieEnough/De-Vanced` were reviewed as text only. The local adapter requires a zero-argument `run(): void` method in a class containing the Redex original-name field value `ConversationTypingContext$sendActiveStateRunnable$1`.
+
+Only that resolved active-typing dispatch runnable is skipped. A changed field value, method name, signature, or class shape produces no hook. Message content, delivery, read receipts, accounts, authentication, attachments, calls, subscriptions, payments, integrity controls, screenshot controls, and content access remain unchanged. No external archive, extension, or payload is downloaded, interpreted, or executed.
