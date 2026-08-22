@@ -100,6 +100,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "morphe.tiktok.sanitize-sharing-links.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "icysymmetra/tiktok-patches-for-morphe",
+                sourcePatchName = "Sanitize sharing links",
+                packageName = "com.zhiliaoapp.musically",
+            )?.id,
+        )
+        assertEquals(
             "paresh.truecaller.hide-assistant-tab.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "Paresh-Maheshwari/paresh-patches",

@@ -5,6 +5,7 @@ import io.github.nexalloy.morphe.AccessFlags
 import io.github.nexalloy.morphe.Fingerprint
 import io.github.nexalloy.morphe.methodCall
 import io.github.nexalloy.patch
+import android.net.Uri
 import java.lang.reflect.Method
 import io.github.nexalloy.morphe.reddit.ad.HideAds
 import io.github.nexalloy.morphe.reddit.misc.privacy.SanitizeSharingLinks
@@ -443,6 +444,36 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val tiktokShareUrlTrackerFingerprint = Fingerprint(
+        accessFlags = listOf(AccessFlags.STATIC),
+        returnType = "Ljava/lang/String;",
+        strings = listOf("utm_campaign", "share_link_id"),
+    )
+
+    private val sanitizeTikTokSharingLinksDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "morphe.tiktok.sanitize-sharing-links.runtime",
+        sourceRepository = "icysymmetra/tiktok-patches-for-morphe",
+        sourcePatchName = "Sanitize sharing links",
+        packageNames = setOf("com.zhiliaoapp.musically"),
+        patch = patch(
+            name = "Runtime · Sanitize sharing links",
+            description = "Removes query tracking parameters from the reviewed TikTok share URL before it is returned.",
+        ) {
+            tiktokShareUrlTrackerFingerprint.memberOrNull?.hookMethod {
+                before { param ->
+                    val stringArgumentCount = param.args.count { it is String }
+                    val url = param.args.firstOrNull() as? String
+                        ?: return@before
+                    if (stringArgumentCount < 2) return@before
+                    val sanitized = runCatching {
+                        Uri.parse(url).buildUpon().clearQuery().build().toString()
+                    }.getOrNull() ?: return@before
+                    param.result = sanitized
+                }
+            }
+        },
+    )
+
     private val hideTruecallerAssistantTabDefinition = BooleanReturnOverrideLayerDefinition(
         id = "paresh.truecaller.hide-assistant-tab.runtime",
         sourceRepository = "Paresh-Maheshwari/paresh-patches",
@@ -528,6 +559,7 @@ object CommunityRuntimeLayers {
         disableProtonVpnTelemetryDefinition.compile(),
         hideXNavigationBadgesDefinition.compile(),
         clearXTrackingParamsDefinition.compile(),
+        sanitizeTikTokSharingLinksDefinition.compile(),
         hideTruecallerAssistantTabDefinition.compile(),
         disableTruecallerUpdateCheckDefinition.compile(),
         disableTruecallerTelemetryDefinition.compile(),

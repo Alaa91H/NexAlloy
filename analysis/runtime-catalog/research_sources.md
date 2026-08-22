@@ -114,3 +114,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** local `ExistingPatchRuntimeLayerDefinition`, constrained to `com.twitter.android`, the reviewed class suffix, and the `setBadgeNumber` method name. The local pre-hook replaces exactly one integer argument with `0`; any other shape proceeds unchanged.
 - **Effect and failure mode:** notification nudges and numeric badges are suppressed in X navigation tab views that expose the reviewed method. If the target does not resolve or its argument signature changes, no value is modified.
 - **Scope:** this is a local interface-preference control only. It does not alter notifications at the service level, accounts, authentication, subscriptions, payments, integrity, or safety protections.
+
+### TikTok — Sanitize sharing links
+
+- **Source review:** inspected `SanitizeShareUrlsPatch.kt` and its `ShareUrlTrackerFingerprint` in `icysymmetra/tiktok-patches-for-morphe`. The source identifies a static string-returning share-URL tracker containing `utm_campaign` and `share_link_id`, with at least two string parameters, then returns a link with its query parameters removed.
+- **Runtime mapping:** local `ExistingPatchRuntimeLayerDefinition`, constrained to `com.zhiliaoapp.musically`, static access, a String return type, and both reviewed tracking anchors. The pre-hook also verifies at least two String arguments and operates only on the first String URL argument.
+- **Effect and failure mode:** valid reviewed share URLs are returned without query parameters. If matching is ambiguous, the method signature changes, parsing fails, or the expected String argument is unavailable, the original method executes unchanged.
+- **Scope:** the adapter only removes client-side share-link query parameters. It does not alter authentication, accounts, subscriptions, payments, content-access controls, integrity, safety protections, or downloaded code.
