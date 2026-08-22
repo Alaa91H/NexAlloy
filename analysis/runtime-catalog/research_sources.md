@@ -273,3 +273,9 @@ Each resolved target is skipped before the associated tracking SDK starts. If an
 The public `DisableAnalyticsPatch.kt` and `Fingerprints.kt` in `WZSE/aapam-patches` were reviewed as text only. The local adapter hooks only `Lcom/zee5/android/analytics/data/DefaultAnalytics;->trackEvent(Lcom/zee5/android/analytics/data/trackers/mixpanel/data/models/AnalyticEvent;)V`, the source's central analytics event dispatcher for the supported `com.graymatrix.did` target.
 
 The resolved void method is skipped before analytics dispatch. If its class, name, return type, or event parameter changes, no hook is installed. Playback, server-side ad insertion, accounts, authentication, payments, subscriptions, licensing, integrity, protection, and content access remain unchanged.
+
+### ZEE5 Android TV — Disable CleverTap
+
+The public `DisableCleverTapPatch.kt` and its `CleverTapInitFingerprint` in `WZSE/aapam-patches` were reviewed as text only. The local adapter hooks only `Lcom/zee5/android/analytics/data/trackers/clevertap/DefaultCleverTapAnalytics;->initCleverTap(): void`, the source-reviewed CleverTap initialization chokepoint for the supported `com.graymatrix.did` target.
+
+The resolved void method is skipped before the CleverTap SDK initializes. If the class, method name, public access contract, return type, or no-argument signature changes, no hook is installed. The adapter does not download, interpret, or execute any upstream archive, extension, or payload. Playback, server-side ad insertion, accounts, authentication, payments, subscriptions, licensing, integrity, protection, and content access remain unchanged.

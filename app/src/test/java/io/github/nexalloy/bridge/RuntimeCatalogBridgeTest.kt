@@ -162,6 +162,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "wzse.zee5.disable-clevertap.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "WZSE/aapam-patches",
+                sourcePatchName = "Disable CleverTap",
+                packageName = "com.graymatrix.did",
+            )?.id,
+        )
+        assertEquals(
             "wzse.zee5.disable-analytics.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "WZSE/aapam-patches",

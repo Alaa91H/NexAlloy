@@ -864,6 +864,25 @@ object CommunityRuntimeLayers {
         },
     )
 
+    private val disableZee5CleverTapDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "wzse.zee5.disable-clevertap.runtime",
+        sourceRepository = "WZSE/aapam-patches",
+        sourcePatchName = "Disable CleverTap",
+        packageNames = setOf("com.graymatrix.did"),
+        patch = patch(
+            name = "Runtime · Disable CleverTap",
+            description = "Skips only the reviewed Zee5 CleverTap initialization method.",
+        ) {
+            Fingerprint(
+                definingClass = "Lcom/zee5/android/analytics/data/trackers/clevertap/DefaultCleverTapAnalytics;",
+                name = "initCleverTap",
+                accessFlags = listOf(AccessFlags.PUBLIC),
+                returnType = "V",
+                parameters = emptyList(),
+            ).memberOrNull?.hookMethod { before { param -> param.result = null } }
+        },
+    )
+
     private val disableZee5AnalyticsDefinition = ExistingPatchRuntimeLayerDefinition(
         id = "wzse.zee5.disable-analytics.runtime",
         sourceRepository = "WZSE/aapam-patches",
@@ -1169,6 +1188,7 @@ object CommunityRuntimeLayers {
         clearXTrackingParamsDefinition.compile(),
         removeXSearchSuggestionsDefinition.compile(),
         sanitizeTikTokSharingLinksDefinition.compile(),
+        disableZee5CleverTapDefinition.compile(),
         disableZee5AnalyticsDefinition.compile(),
         blockMyTelenorTrackersDefinition.compile(),
         disableAvitoTelemetryDefinition.compile(),
