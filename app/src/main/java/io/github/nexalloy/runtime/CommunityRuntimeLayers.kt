@@ -174,6 +174,48 @@ object CommunityRuntimeLayers {
         ),
     )
 
+    private val camScannerLogAgentInitFingerprints = listOf(
+        Fingerprint(
+            definingClass = "Lcom/intsig/logagent/LogAgent;",
+            name = "Init",
+            returnType = "I",
+            parameters = listOf(
+                "Landroid/app/Application;", "I", "Ljava/lang/String;", "Ljava/lang/String;", "Ljava/lang/String;",
+            ),
+        ),
+        Fingerprint(
+            definingClass = "Lcom/intsig/logagent/LogAgent;",
+            name = "Init",
+            returnType = "I",
+            parameters = listOf(
+                "Landroid/app/Application;", "Lcom/intsig/logagent/SocketInterface;",
+            ),
+        ),
+        Fingerprint(
+            definingClass = "Lcom/intsig/logagent/LogAgent;",
+            name = "Init",
+            returnType = "I",
+            parameters = listOf(
+                "Landroid/app/Application;", "Ljava/lang/String;", "Ljava/lang/String;", "Ljava/lang/String;", "Ljava/lang/String;",
+            ),
+        ),
+    )
+
+    private val disableCamScannerTelemetryDefinition = ExistingPatchRuntimeLayerDefinition(
+        id = "morphe.camscanner.disable-telemetry.runtime",
+        sourceRepository = "rushiranpise/morphe-patches",
+        sourcePatchName = "Disable telemetry",
+        packageNames = setOf("com.intsig.camscanner"),
+        patch = patch(
+            name = "Runtime · Disable telemetry",
+            description = "Prevents the reviewed CamScanner LogAgent initialization overloads from starting telemetry.",
+        ) {
+            camScannerLogAgentInitFingerprints.forEach { fingerprint ->
+                fingerprint.memberOrNull?.hookMethod { before { param -> param.result = 0 } }
+            }
+        },
+    )
+
     private val removeMessengerMetaAiDefinition = ExistingPatchRuntimeLayerDefinition(
         id = "morphe.messenger.remove-meta-ai.runtime",
         sourceRepository = "rushiranpise/morphe-patches",
@@ -718,6 +760,7 @@ object CommunityRuntimeLayers {
         disableGboardRemoteConfigurationDefinition.compile(),
         disableGboardSuperpacksEagerSyncDefinition.compile(),
         disableGboardTenorShareTrackingDefinition.compile(),
+        disableCamScannerTelemetryDefinition.compile(),
         removeMessengerMetaAiDefinition.compile(),
         disableMessengerMediaTranscodingDefinition.compile(),
         openMessengerLinksExternallyDefinition.compile(),

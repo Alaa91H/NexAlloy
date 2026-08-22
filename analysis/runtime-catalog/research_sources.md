@@ -182,3 +182,10 @@ The reviewed non-premium layout patch suppresses one Boolean assistant-feature d
 - **Runtime mapping:** the separately attributed local `MultiVoidMethodSkipLayerDefinition` remains constrained to the already reviewed `com.facebook.orca` target `LX/2Je;->run(): void`. It does not enumerate arbitrary `run()` methods or interpret upstream metadata dynamically.
 - **Effect and failure mode:** the known supplier Runnable is skipped before it signals that subtabs are ready. If its concrete target is absent or changes after an app update, no hook is installed and Messenger continues unchanged.
 - **Scope:** this is a local inbox-interface control only. It does not alter messages, accounts, authentication, subscriptions, payments, eligibility, integrity, safety protections, or content-access controls.
+
+### CamScanner — Disable telemetry
+
+- **Source review:** inspected `DisableTelemetryPatch.kt` in `rushiranpise/morphe-patches`. The patch identifies CamScanner's non-obfuscated `Lcom/intsig/logagent/LogAgent;` class and its three static `Init` overloads, all returning `int`: Application plus three strings and an integer; Application plus `SocketInterface`; and Application plus four strings. The source returns `0`, the documented benign initialized/success status, before the agent is created.
+- **Runtime mapping:** the local adapter enumerates only those three exact `Init` signatures on the exact LogAgent descriptor, and returns integer `0` before each resolved body. It does not hook arbitrary methods, scan unrelated classes, load upstream code, or block CamScanner's scanning, document, account, subscription, or payment logic.
+- **Effect and failure mode:** resolved LogAgent initializers do not create the custom telemetry, event-tracking, or remote-logging agent. If any descriptor, method name, return contract, or parameter signature changes, that overload is left unhooked and CamScanner retains its original behavior.
+- **Scope:** this is a narrow telemetry control only. It does not alter authentication, license or subscription state, paid features, integrity, safety protections, content access, or account behavior.

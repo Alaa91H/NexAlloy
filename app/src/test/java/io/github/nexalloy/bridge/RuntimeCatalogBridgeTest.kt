@@ -74,6 +74,14 @@ class RuntimeCatalogBridgeTest {
             )?.id,
         )
         assertEquals(
+            "morphe.camscanner.disable-telemetry.runtime",
+            RuntimeLayerRegistry.find(
+                sourceRepository = "rushiranpise/morphe-patches",
+                sourcePatchName = "Disable telemetry",
+                packageName = "com.intsig.camscanner",
+            )?.id,
+        )
+        assertEquals(
             "kveld.gboard.disable-diagnostics.runtime",
             RuntimeLayerRegistry.find(
                 sourceRepository = "kveld9/kveld-morphe-patches",
