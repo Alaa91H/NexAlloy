@@ -72,6 +72,9 @@
 ### Threads
 - Hide ads
 
+### X (Twitter)
+- Hide promoted and RTB timeline entries
+
 ### TikTok
 - Show video seekbar
 - Disable forced login
@@ -79,6 +82,12 @@
 ### Twitch
 - Block client-side audio ads
 - Block client-side video ads
+
+### Spotify
+- Allow runtime audio capture (experimental, disabled by default)
+
+### Hex Editor
+- Disable ads
 
 ### Strava
 - Unlock subscription features
