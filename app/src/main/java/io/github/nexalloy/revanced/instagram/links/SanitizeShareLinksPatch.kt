@@ -1,12 +1,15 @@
 package io.github.nexalloy.revanced.instagram.links
 
+import android.net.Uri
+import io.github.nexalloy.hookMethod
 import io.github.nexalloy.patch
 import java.lang.reflect.Modifier
 
-private val trackingParameters = listOf(
+private val trackingParameters = setOf(
     "igsh",
     "utm_source",
     "utm_medium",
+    "utm_campaign",
     "utm_content",
     "fbclid",
     "si",
@@ -15,19 +18,18 @@ private val trackingParameters = listOf(
 private fun sanitizeInstagramUrl(value: String): String {
     if (!value.startsWith("http://") && !value.startsWith("https://")) return value
 
-    var sanitized = value
-    trackingParameters.forEach { key ->
-        sanitized = sanitized.replace(
-            Regex("([&?])" + Regex.escape(key) + "=[^&]*"),
-            "",
-        )
+    val uri = runCatching { Uri.parse(value) }.getOrNull() ?: return value
+    val names = runCatching { uri.queryParameterNames }.getOrNull() ?: return value
+    if (names.none { it in trackingParameters }) return value
+
+    val builder = uri.buildUpon().clearQuery()
+    names.forEach { name ->
+        if (name in trackingParameters) return@forEach
+        uri.getQueryParameters(name).forEach { parameterValue ->
+            builder.appendQueryParameter(name, parameterValue)
+        }
     }
-
-    sanitized = sanitized
-        .replace("?&", "?")
-        .replace(Regex("[?&]$"), "")
-
-    return sanitized
+    return builder.build().toString()
 }
 
 private fun sanitizeUrlFields(target: Any) {
