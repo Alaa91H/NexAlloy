@@ -2,6 +2,7 @@ package io.github.nexalloy.revanced.truecaller.premium
 
 import android.view.View
 import de.robv.android.xposed.XC_MethodReplacement
+import io.github.nexalloy.hookMethod
 import io.github.nexalloy.patch
 
 val RemovePremiumUi = patch(
