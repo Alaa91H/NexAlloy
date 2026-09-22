@@ -13,18 +13,23 @@ val HidePromotedTimelineEntries = patch(
     name = "Hide promoted timeline entries",
     description = "Removes promoted and RTB timeline entries from X/Twitter at runtime.",
 ) {
-    fun hookEntryParser(fingerprint: kotlin.reflect.KProperty0<io.github.nexalloy.FindMethodFunc>) {
-        fingerprint.hookMethod {
-            after { param ->
-                val entry = param.result ?: return@after
-                val entryId = entry.getObjectFieldOrNull("a") as? String ?: return@after
-                if (shouldHideEntry(entryId)) {
-                    param.result = null
-                }
+    ::timelineEntryParseFingerprint.hookMethod {
+        after { param ->
+            val entry = param.result ?: return@after
+            val entryId = entry.getObjectFieldOrNull("a") as? String ?: return@after
+            if (shouldHideEntry(entryId)) {
+                param.result = null
             }
         }
     }
 
-    hookEntryParser(::timelineEntryParseFingerprint)
-    hookEntryParser(::timelineModuleItemParseFingerprint)
+    ::timelineModuleItemParseFingerprint.hookMethod {
+        after { param ->
+            val entry = param.result ?: return@after
+            val entryId = entry.getObjectFieldOrNull("a") as? String ?: return@after
+            if (shouldHideEntry(entryId)) {
+                param.result = null
+            }
+        }
+    }
 }
