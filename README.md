@@ -59,6 +59,9 @@
 ### Reddit
 - Hide ads
 - Sanitize sharing links
+- Open external links directly without Reddit redirect wrappers
+- Open external links in the default browser (optional)
+- Remove repeat NSFW community warning (optional)
 
 ### Google Photos
 - Spoof Pixel XL
@@ -69,6 +72,9 @@
 ### Instagram
 - Hide ads
 - Enable native media downloads
+- Sanitize shared Instagram URLs
+- Disable DM/story screenshot detection (optional)
+- Disable automatic story flipping (optional)
 
 ### Threads
 - Hide ads
@@ -81,6 +87,8 @@
 
 ### X (Twitter)
 - Hide promoted and RTB timeline entries
+- Remove session tracking token from shared links
+- Block redirecting to X Lite
 
 ### TikTok
 - Hide feed ads
