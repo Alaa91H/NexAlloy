@@ -6,7 +6,7 @@ import org.luckypray.dexkit.query.enums.StringMatchType
 val onClearDisplayEventFingerprint = fingerprint {
     methodMatcher { name = "onClearModeEvent" }
     classMatcher {
-        className("/ClearModePanelComponent", StringMatchType.EndsWith)
+        className(".ClearModePanelComponent", StringMatchType.EndsWith)
     }
 }
 
@@ -18,6 +18,6 @@ val onRenderFirstFrameBodyFingerprint = fingerprint {
     )
     methodMatcher { name = "LLILZIL" }
     classMatcher {
-        className("/feed/controller/PlayerController", StringMatchType.EndsWith)
+        descriptor = "Lcom/ss/android/ugc/aweme/feed/controller/PlayerController;"
     }
 }
