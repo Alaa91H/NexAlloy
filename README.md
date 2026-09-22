@@ -29,7 +29,7 @@
 ### YouTube
 - Remove ads
 - SponsorBlock
-- Remove background playback restrictions
+- Remove background and screen-off playback restrictions
 - Remove share links tracking query parameter
 - Hide and change navigation buttons
 - Swipe controls
@@ -68,23 +68,47 @@
 
 ### Instagram
 - Hide ads
+- Enable native media downloads
 
 ### Threads
 - Hide ads
+
+### Messenger
+- Hide inbox ads
+
+### Facebook
+- Hide story ads
 
 ### X (Twitter)
 - Hide promoted and RTB timeline entries
 
 ### TikTok
+- Hide feed ads
 - Show video seekbar
+- Enable playback speed controls
+- Enable client-side downloads
 - Disable forced login
+- Fix Google login
+- Supports both `com.zhiliaoapp.musically` and `com.ss.android.ugc.trill`
 
 ### Twitch
 - Block client-side audio ads
 - Block client-side video ads
+- Auto-claim Channel Points
+- Show deleted chat messages using spoiler behavior
+- Enable internal debug mode (optional, disabled by default)
 
 ### Spotify
 - Allow runtime audio capture (experimental, disabled by default)
+
+### Duolingo
+- Disable ads
+
+### ProtonVPN
+- Remove client-side server-change delay
+
+### Inshorts
+- Hide ads
 
 ### Hex Editor
 - Disable ads
