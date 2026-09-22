@@ -6,6 +6,7 @@ import io.github.nexalloy.morphe.reddit.RedditPatches
 import io.github.nexalloy.morphe.youtube.YouTubePatches
 import io.github.nexalloy.revanced.googlephotos.GooglePhotosPatches
 import io.github.nexalloy.revanced.hexeditor.HexEditorPatches
+import io.github.nexalloy.revanced.messenger.MessengerPatches
 import io.github.nexalloy.revanced.meta.MetaPatches
 import io.github.nexalloy.revanced.photomath.PhotomathPatches
 import io.github.nexalloy.revanced.spotify.SpotifyPatches
@@ -24,8 +25,10 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("Photomath", "com.microblink.photomath", PhotomathPatches),
     AppPatchInfo("Instagram", "com.instagram.android", MetaPatches),
     AppPatchInfo("Threads", "com.instagram.barcelona", MetaPatches),
+    AppPatchInfo("Messenger", "com.facebook.orca", MessengerPatches),
     AppPatchInfo("X (Twitter)", "com.twitter.android", TwitterPatches),
     AppPatchInfo("TikTok", "com.zhiliaoapp.musically", TikTokPatches),
+    AppPatchInfo("TikTok (Trill)", "com.ss.android.ugc.trill", TikTokPatches),
     AppPatchInfo("Twitch", "tv.twitch.android.app", TwitchPatches),
     AppPatchInfo("Spotify", "com.spotify.music", SpotifyPatches),
     AppPatchInfo("Hex Editor", "com.myprog.hexedit", HexEditorPatches),
