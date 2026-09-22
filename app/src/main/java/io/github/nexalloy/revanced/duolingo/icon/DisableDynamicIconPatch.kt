@@ -3,6 +3,7 @@ package io.github.nexalloy.revanced.duolingo.icon
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
+import io.github.nexalloy.hookMethod
 import io.github.nexalloy.patch
 
 val DisableDynamicIcon = patch(
