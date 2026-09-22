@@ -2,6 +2,7 @@ package io.github.nexalloy.revanced.tiktok
 
 import io.github.nexalloy.revanced.shared.privacy.DisableCommonAnalytics
 import io.github.nexalloy.revanced.tiktok.ad.HideAds
+import io.github.nexalloy.revanced.tiktok.interaction.antirecording.DisableScreenCaptureDetection
 import io.github.nexalloy.revanced.tiktok.interaction.cleardisplay.RememberClearDisplay
 import io.github.nexalloy.revanced.tiktok.interaction.downloads.EnableDownloads
 import io.github.nexalloy.revanced.tiktok.interaction.looping.StopVideoLooping
@@ -24,6 +25,7 @@ val TikTokPatches = arrayOf(
     FixGoogleLogin,
     SanitizeShareUrls,
     RememberClearDisplay,
+    DisableScreenCaptureDetection,
     OpenExternalLinks,
     StopVideoLooping,
     HideQuickCommentReactions,
