@@ -81,6 +81,7 @@
 ### TikTok
 - Hide feed ads
 - Show video seekbar
+- Enable playback speed controls
 - Enable client-side downloads
 - Disable forced login
 - Fix Google login
