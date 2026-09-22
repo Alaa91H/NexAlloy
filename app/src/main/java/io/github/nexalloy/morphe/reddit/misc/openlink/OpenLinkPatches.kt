@@ -46,32 +46,34 @@ val OpenLinksExternally = patch(
 ) {
     val customTabsIntent = runCatching {
         classLoader.loadClass("androidx.browser.customtabs.CustomTabsIntent")
-    }.getOrNull() ?: return@patch
+    }.getOrNull()
 
-    customTabsIntent.declaredMethods
-        .filter {
-            it.name == "launchUrl" &&
-                it.returnType == Void.TYPE &&
-                it.parameterTypes.size == 2 &&
-                Context::class.java.isAssignableFrom(it.parameterTypes[0]) &&
-                it.parameterTypes[1] == Uri::class.java
-        }
-        .forEach { method ->
-            method.hookMethod {
-                before { param ->
-                    val context = param.args.getOrNull(0) as? Context ?: return@before
-                    val uri = param.args.getOrNull(1) as? Uri ?: return@before
-                    if (uri.scheme != "http" && uri.scheme != "https") return@before
+    if (customTabsIntent != null) {
+        customTabsIntent.declaredMethods
+            .filter {
+                it.name == "launchUrl" &&
+                    it.returnType == Void.TYPE &&
+                    it.parameterTypes.size == 2 &&
+                    Context::class.java.isAssignableFrom(it.parameterTypes[0]) &&
+                    it.parameterTypes[1] == Uri::class.java
+            }
+            .forEach { method ->
+                method.hookMethod {
+                    before { param ->
+                        val context = param.args.getOrNull(0) as? Context ?: return@before
+                        val uri = param.args.getOrNull(1) as? Uri ?: return@before
+                        if (uri.scheme != "http" && uri.scheme != "https") return@before
 
-                    val intent = Intent(Intent.ACTION_VIEW, redirectTarget(uri) ?: uri)
-                        .addCategory(Intent.CATEGORY_BROWSABLE)
-                    if (context !is Activity) {
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        val intent = Intent(Intent.ACTION_VIEW, redirectTarget(uri) ?: uri)
+                            .addCategory(Intent.CATEGORY_BROWSABLE)
+                        if (context !is Activity) {
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+
+                        runCatching { context.startActivity(intent) }
+                            .onSuccess { param.result = null }
                     }
-
-                    runCatching { context.startActivity(intent) }
-                        .onSuccess { param.result = null }
                 }
             }
-        }
+    }
 }
