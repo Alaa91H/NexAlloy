@@ -20,6 +20,7 @@
         <package android:name="com.ss.android.ugc.trill" />
         <package android:name="tv.twitch.android.app" />
         <package android:name="com.spotify.music" />
+        <package android:name="com.nis.app" />
         <package android:name="com.myprog.hexedit" />
         <package android:name="com.strava" />
         <package android:name="com.alltrails.alltrails" />
