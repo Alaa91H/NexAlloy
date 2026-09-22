@@ -1,5 +1,6 @@
 package io.github.nexalloy.revanced.tiktok.interaction.looping
 
+import io.github.nexalloy.hookMethod
 import io.github.nexalloy.patch
 
 val StopVideoLooping = patch(
