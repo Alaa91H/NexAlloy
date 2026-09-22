@@ -97,6 +97,9 @@
 ### Spotify
 - Allow runtime audio capture (experimental, disabled by default)
 
+### Inshorts
+- Hide ads
+
 ### Hex Editor
 - Disable ads
 
