@@ -11,27 +11,27 @@ val RelaxAudioCapturePolicy = patch(
     description = "Forces Spotify runtime audio-capture policy calls to allow capture. Manifest-level restrictions may still apply.",
     use = false,
 ) {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return@patch
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        val intType = Int::class.javaPrimitiveType!!
 
-    val intType = Int::class.javaPrimitiveType ?: return@patch
-
-    runCatching {
-        AudioAttributes.Builder::class.java
-            .getDeclaredMethod("setAllowedCapturePolicy", intType)
-            .hookMethod {
-                before { param ->
-                    param.args[0] = AudioAttributes.ALLOW_CAPTURE_BY_ALL
+        runCatching {
+            AudioAttributes.Builder::class.java
+                .getDeclaredMethod("setAllowedCapturePolicy", intType)
+                .hookMethod {
+                    before { param ->
+                        param.args[0] = AudioAttributes.ALLOW_CAPTURE_BY_ALL
+                    }
                 }
-            }
-    }
+        }
 
-    runCatching {
-        AudioManager::class.java
-            .getDeclaredMethod("setAllowedCapturePolicy", intType)
-            .hookMethod {
-                before { param ->
-                    param.args[0] = AudioAttributes.ALLOW_CAPTURE_BY_ALL
+        runCatching {
+            AudioManager::class.java
+                .getDeclaredMethod("setAllowedCapturePolicy", intType)
+                .hookMethod {
+                    before { param ->
+                        param.args[0] = AudioAttributes.ALLOW_CAPTURE_BY_ALL
+                    }
                 }
-            }
+        }
     }
 }
