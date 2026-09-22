@@ -10,7 +10,7 @@ val DisableAds = patch(
     val getBoolean = preferencesClass.getDeclaredMethod(
         "getBoolean",
         String::class.java,
-        Boolean::class.javaPrimitiveType,
+        Boolean::class.javaPrimitiveType!!,
     )
 
     getBoolean.hookMethod {
