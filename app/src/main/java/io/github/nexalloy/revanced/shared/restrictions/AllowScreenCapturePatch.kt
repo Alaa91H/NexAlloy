@@ -16,7 +16,8 @@ val AllowScreenCapture = patch(
     Window::class.java.declaredMethods
         .filter {
             it.name == "addFlags" &&
-                it.parameterTypes.contentEquals(arrayOf(Int::class.javaPrimitiveType))
+                it.parameterTypes.size == 1 &&
+                it.parameterTypes[0] == Int::class.javaPrimitiveType
         }
         .forEach { method ->
             method.hookMethod {
@@ -30,9 +31,9 @@ val AllowScreenCapture = patch(
     Window::class.java.declaredMethods
         .filter {
             it.name == "setFlags" &&
-                it.parameterTypes.contentEquals(
-                    arrayOf(Int::class.javaPrimitiveType, Int::class.javaPrimitiveType),
-                )
+                it.parameterTypes.size == 2 &&
+                it.parameterTypes[0] == Int::class.javaPrimitiveType &&
+                it.parameterTypes[1] == Int::class.javaPrimitiveType
         }
         .forEach { method ->
             method.hookMethod {
@@ -46,7 +47,8 @@ val AllowScreenCapture = patch(
     Window::class.java.declaredMethods
         .filter {
             it.name == "setAttributes" &&
-                it.parameterTypes.contentEquals(arrayOf(WindowManager.LayoutParams::class.java))
+                it.parameterTypes.size == 1 &&
+                it.parameterTypes[0] == WindowManager.LayoutParams::class.java
         }
         .forEach { method ->
             method.hookMethod {
@@ -61,7 +63,8 @@ val AllowScreenCapture = patch(
     SurfaceView::class.java.declaredMethods
         .filter {
             it.name == "setSecure" &&
-                it.parameterTypes.contentEquals(arrayOf(Boolean::class.javaPrimitiveType))
+                it.parameterTypes.size == 1 &&
+                it.parameterTypes[0] == Boolean::class.javaPrimitiveType
         }
         .forEach { method ->
             method.hookMethod {
