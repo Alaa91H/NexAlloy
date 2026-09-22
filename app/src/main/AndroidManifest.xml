@@ -22,7 +22,11 @@
         <package android:name="tv.twitch.android.app" />
         <package android:name="com.spotify.music" />
         <package android:name="com.duolingo" />
+        <package android:name="com.busuu.android.enc" />
+        <package android:name="com.intsig.camscanner" />
         <package android:name="ch.protonvpn.android" />
+        <package android:name="org.swiftapps.swiftbackup" />
+        <package android:name="com.truecaller" />
         <package android:name="com.nis.app" />
         <package android:name="com.myprog.hexedit" />
         <package android:name="com.strava" />

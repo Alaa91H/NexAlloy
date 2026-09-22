@@ -1,6 +1,7 @@
 package io.github.nexalloy.revanced.instagram.download
 
 import de.robv.android.xposed.XC_MethodReplacement
+import io.github.nexalloy.hookMethod
 import io.github.nexalloy.patch
 
 val EnableNativeDownloads = patch(
