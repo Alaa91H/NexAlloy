@@ -10,7 +10,7 @@ val feedItemListCloneFingerprint = fingerprint {
 
 val convertHelpFeedItemListFingerprint = fingerprint {
     methodMatcher {
-        addField { name = "preloadAds" }
+        addUsingField { name = "preloadAds" }
     }
     classMatcher { className(".ConvertHelp", StringMatchType.EndsWith) }
 }
