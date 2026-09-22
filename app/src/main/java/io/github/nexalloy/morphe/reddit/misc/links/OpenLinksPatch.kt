@@ -3,6 +3,7 @@ package io.github.nexalloy.morphe.reddit.misc.links
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import io.github.nexalloy.hookMethod
 import io.github.nexalloy.patch
 
 private fun Uri.unwrapRedditRedirect(): Uri {
