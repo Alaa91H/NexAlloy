@@ -1,6 +1,7 @@
 package io.github.nexalloy.revanced.truecaller.premium
 
 import android.app.Activity
+import io.github.nexalloy.hookMethod
 import io.github.nexalloy.patch
 
 val HideUpgradePrompts = patch(
