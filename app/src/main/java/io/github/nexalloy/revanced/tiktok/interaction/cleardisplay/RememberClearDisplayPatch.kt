@@ -42,14 +42,12 @@ val RememberClearDisplay = patch(
     if (eventMethod != null && renderMethod != null) {
         val eventClass = eventMethod.parameterTypes.firstOrNull()
         val constructor = eventClass?.declaredConstructors?.firstOrNull { ctor ->
-            ctor.parameterTypes.contentEquals(
-                arrayOf(
-                    Boolean::class.javaPrimitiveType,
-                    Int::class.javaPrimitiveType,
-                    String::class.java,
-                    String::class.java,
-                ),
-            )
+            val types = ctor.parameterTypes
+            types.size == 4 &&
+                types[0] == Boolean::class.javaPrimitiveType &&
+                types[1] == Int::class.javaPrimitiveType &&
+                types[2] == String::class.java &&
+                types[3] == String::class.java
         }?.apply { isAccessible = true }
 
         val postMethod = eventClass?.methods?.firstOrNull {
