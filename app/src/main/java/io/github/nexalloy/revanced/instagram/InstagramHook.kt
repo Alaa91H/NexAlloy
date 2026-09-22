@@ -6,7 +6,6 @@ import io.github.nexalloy.revanced.instagram.privacy.DisableScreenshotDetection
 import io.github.nexalloy.revanced.instagram.stories.DisableStoryFlipping
 import io.github.nexalloy.revanced.meta.ads.HideAds
 import io.github.nexalloy.revanced.meta.privacy.SanitizeMetaSharingLinks
-
 import io.github.nexalloy.revanced.shared.privacy.DisableCommonAnalytics
 
 val InstagramPatches = arrayOf(
