@@ -15,6 +15,9 @@ import io.github.nexalloy.revanced.inshorts.InshortsPatches
 import io.github.nexalloy.revanced.messenger.MessengerPatches
 import io.github.nexalloy.revanced.meta.MetaPatches
 import io.github.nexalloy.revanced.photomath.PhotomathPatches
+import io.github.nexalloy.revanced.pixelrecorder.PixelRecorderPatches
+import io.github.nexalloy.revanced.pixelscreenshots.PixelScreenshotsPatches
+import io.github.nexalloy.revanced.pixelweather.PixelWeatherPatches
 import io.github.nexalloy.revanced.protonvpn.ProtonVpnPatches
 import io.github.nexalloy.revanced.spotify.SpotifyPatches
 import io.github.nexalloy.revanced.strava.StravaPatches
@@ -32,6 +35,9 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("Reddit", "com.reddit.frontpage", RedditPatches),
     AppPatchInfo("Google Photos", "com.google.android.apps.photos", GooglePhotosPatches),
     AppPatchInfo("Photomath", "com.microblink.photomath", PhotomathPatches),
+    AppPatchInfo("Pixel Recorder", "com.google.android.apps.recorder", PixelRecorderPatches),
+    AppPatchInfo("Pixel Weather", "com.google.android.apps.weather", PixelWeatherPatches),
+    AppPatchInfo("Pixel Screenshots", "com.google.android.apps.pixel.agent", PixelScreenshotsPatches),
     AppPatchInfo("Instagram", "com.instagram.android", InstagramPatches),
     AppPatchInfo("Threads", "com.instagram.barcelona", MetaPatches),
     AppPatchInfo("Messenger", "com.facebook.orca", MessengerPatches),
