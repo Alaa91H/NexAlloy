@@ -102,28 +102,34 @@
 - Allow runtime audio capture (experimental, disabled by default)
 
 ### Duolingo
+- Allow screenshots and screen recording (optional)
 - Disable ads
 - Disable dynamic launcher icon changes (optional)
 - Disable common analytics SDK calls (optional)
 
 ### Busuu
+- Allow screenshots and screen recording (optional)
 - Disable common analytics SDK calls (optional)
 - Block common banner/interstitial ad SDK loads (optional)
 
 ### CamScanner
+- Allow screenshots and screen recording (optional)
 - Disable CamScanner LogAgent telemetry
 - Disable common analytics SDK calls (optional)
 - Block common banner/interstitial ad SDK loads (optional)
 
 ### ProtonVPN
+- Allow screenshots and screen recording (optional)
 - Remove client-side server-change delay
 - Disable common analytics SDK calls (optional)
 - Does not unlock paid servers, custom DNS, LAN, or split tunneling
 
 ### Swift Backup
+- Allow screenshots and screen recording (optional)
 - Disable common analytics SDK calls (optional)
 
 ### Truecaller
+- Allow screenshots and screen recording (optional)
 - Hide after-call and caller-ID ads
 - Disable CleverTap behavioural analytics
 - Disable app-start telemetry
