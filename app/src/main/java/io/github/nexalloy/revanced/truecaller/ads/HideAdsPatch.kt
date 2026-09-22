@@ -1,6 +1,7 @@
 package io.github.nexalloy.revanced.truecaller.ads
 
 import de.robv.android.xposed.XC_MethodReplacement
+import io.github.nexalloy.hookMethod
 import io.github.nexalloy.patch
 
 val HideAds = patch(
