@@ -1,5 +1,6 @@
 package io.github.nexalloy.revanced.duolingo.ads
 
+import io.github.nexalloy.hookMethod
 import io.github.nexalloy.patch
 
 val DisableAds = patch(

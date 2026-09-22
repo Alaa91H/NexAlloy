@@ -103,9 +103,33 @@
 
 ### Duolingo
 - Disable ads
+- Disable dynamic launcher icon changes (optional)
+- Disable common analytics SDK calls (optional)
+
+### Busuu
+- Disable common analytics SDK calls (optional)
+- Block common banner/interstitial ad SDK loads (optional)
+
+### CamScanner
+- Disable CamScanner LogAgent telemetry
+- Disable common analytics SDK calls (optional)
+- Block common banner/interstitial ad SDK loads (optional)
 
 ### ProtonVPN
 - Remove client-side server-change delay
+- Disable common analytics SDK calls (optional)
+- Does not unlock paid servers, custom DNS, LAN, or split tunneling
+
+### Swift Backup
+- Disable common analytics SDK calls (optional)
+
+### Truecaller
+- Hide after-call and caller-ID ads
+- Disable CleverTap behavioural analytics
+- Disable app-start telemetry
+- Hide full-screen upgrade prompts (optional)
+- Remove Premium navigation/profile UI (optional)
+- Disable in-app update nag (optional)
 
 ### Inshorts
 - Hide ads
