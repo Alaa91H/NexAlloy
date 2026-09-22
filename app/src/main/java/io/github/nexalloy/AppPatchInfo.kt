@@ -4,6 +4,8 @@ import io.github.nexalloy.hoodles.morphe.alltrails.AllTrailsPatches
 import io.github.nexalloy.morphe.music.YTMusicPatches
 import io.github.nexalloy.morphe.reddit.RedditPatches
 import io.github.nexalloy.morphe.youtube.YouTubePatches
+import io.github.nexalloy.revanced.busuu.BusuuPatches
+import io.github.nexalloy.revanced.camscanner.CamScannerPatches
 import io.github.nexalloy.revanced.duolingo.DuolingoPatches
 import io.github.nexalloy.revanced.facebook.FacebookPatches
 import io.github.nexalloy.revanced.googlephotos.GooglePhotosPatches
@@ -16,9 +18,11 @@ import io.github.nexalloy.revanced.photomath.PhotomathPatches
 import io.github.nexalloy.revanced.protonvpn.ProtonVpnPatches
 import io.github.nexalloy.revanced.spotify.SpotifyPatches
 import io.github.nexalloy.revanced.strava.StravaPatches
+import io.github.nexalloy.revanced.swiftbackup.SwiftBackupPatches
 import io.github.nexalloy.revanced.tiktok.TikTokPatches
 import io.github.nexalloy.revanced.twitch.TwitchPatches
 import io.github.nexalloy.revanced.twitter.TwitterPatches
+import io.github.nexalloy.revanced.truecaller.TruecallerPatches
 
 class AppPatchInfo(val appName: String, val packageName: String, val patches: Array<Patch>)
 
@@ -38,7 +42,11 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("Twitch", "tv.twitch.android.app", TwitchPatches),
     AppPatchInfo("Spotify", "com.spotify.music", SpotifyPatches),
     AppPatchInfo("Duolingo", "com.duolingo", DuolingoPatches),
+    AppPatchInfo("Busuu", "com.busuu.android.enc", BusuuPatches),
+    AppPatchInfo("CamScanner", "com.intsig.camscanner", CamScannerPatches),
     AppPatchInfo("ProtonVPN", "ch.protonvpn.android", ProtonVpnPatches),
+    AppPatchInfo("Swift Backup", "org.swiftapps.swiftbackup", SwiftBackupPatches),
+    AppPatchInfo("Truecaller", "com.truecaller", TruecallerPatches),
     AppPatchInfo("Inshorts", "com.nis.app", InshortsPatches),
     AppPatchInfo("Hex Editor", "com.myprog.hexedit", HexEditorPatches),
     AppPatchInfo("Strava", "com.strava", StravaPatches),
