@@ -6,6 +6,7 @@ import io.github.nexalloy.morphe.reddit.RedditPatches
 import io.github.nexalloy.morphe.youtube.YouTubePatches
 import io.github.nexalloy.revanced.googlephotos.GooglePhotosPatches
 import io.github.nexalloy.revanced.hexeditor.HexEditorPatches
+import io.github.nexalloy.revanced.inshorts.InshortsPatches
 import io.github.nexalloy.revanced.messenger.MessengerPatches
 import io.github.nexalloy.revanced.meta.MetaPatches
 import io.github.nexalloy.revanced.photomath.PhotomathPatches
@@ -31,6 +32,7 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("TikTok (Trill)", "com.ss.android.ugc.trill", TikTokPatches),
     AppPatchInfo("Twitch", "tv.twitch.android.app", TwitchPatches),
     AppPatchInfo("Spotify", "com.spotify.music", SpotifyPatches),
+    AppPatchInfo("Inshorts", "com.nis.app", InshortsPatches),
     AppPatchInfo("Hex Editor", "com.myprog.hexedit", HexEditorPatches),
     AppPatchInfo("Strava", "com.strava", StravaPatches),
     AppPatchInfo("AllTrails", "com.alltrails.alltrails", AllTrailsPatches),
