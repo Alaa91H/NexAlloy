@@ -27,6 +27,7 @@
 ## Patches
 
 ### YouTube
+- Allow screenshots and screen recording (optional)
 - Remove ads
 - SponsorBlock
 - Remove background and screen-off playback restrictions
@@ -50,6 +51,7 @@
 - Bypass image region restrictions
 
 ### YouTube Music
+- Allow screenshots and screen recording (optional)
 - Remove music video ads
 - Remove background playback restrictions
 - Hide upgrade button
@@ -57,32 +59,41 @@
 - Enable exclusive audio playback
 
 ### Reddit
+- Allow screenshots and screen recording (optional)
 - Hide ads
 - Sanitize sharing links
 
 ### Google Photos
+- Allow screenshots and screen recording (optional)
 - Spoof Pixel XL
 
 ### Photomath
+- Allow screenshots and screen recording (optional)
 - Unlock plus
 
 ### Instagram
+- Allow screenshots and screen recording (optional)
 - Hide ads
 - Enable native media downloads
 
 ### Threads
+- Allow screenshots and screen recording (optional)
 - Hide ads
 
 ### Messenger
+- Allow screenshots and screen recording (optional)
 - Hide inbox ads
 
 ### Facebook
+- Allow screenshots and screen recording (optional)
 - Hide story ads
 
 ### X (Twitter)
+- Allow screenshots and screen recording (optional)
 - Hide promoted and RTB timeline entries
 
 ### TikTok
+- Allow screenshots and screen recording (optional)
 - Hide feed ads
 - Show video seekbar
 - Enable playback speed controls
@@ -92,6 +103,7 @@
 - Supports both `com.zhiliaoapp.musically` and `com.ss.android.ugc.trill`
 
 ### Twitch
+- Allow screenshots and screen recording (optional)
 - Block client-side audio ads
 - Block client-side video ads
 - Auto-claim Channel Points
@@ -99,31 +111,38 @@
 - Enable internal debug mode (optional, disabled by default)
 
 ### Spotify
+- Allow screenshots and screen recording (optional)
 - Allow runtime audio capture (experimental, disabled by default)
 
 ### Duolingo
+- Allow screenshots and screen recording (optional)
 - Disable ads
 - Disable dynamic launcher icon changes (optional)
 - Disable common analytics SDK calls (optional)
 
 ### Busuu
+- Allow screenshots and screen recording (optional)
 - Disable common analytics SDK calls (optional)
 - Block common banner/interstitial ad SDK loads (optional)
 
 ### CamScanner
+- Allow screenshots and screen recording (optional)
 - Disable CamScanner LogAgent telemetry
 - Disable common analytics SDK calls (optional)
 - Block common banner/interstitial ad SDK loads (optional)
 
 ### ProtonVPN
+- Allow screenshots and screen recording (optional)
 - Remove client-side server-change delay
 - Disable common analytics SDK calls (optional)
 - Does not unlock paid servers, custom DNS, LAN, or split tunneling
 
 ### Swift Backup
+- Allow screenshots and screen recording (optional)
 - Disable common analytics SDK calls (optional)
 
 ### Truecaller
+- Allow screenshots and screen recording (optional)
 - Hide after-call and caller-ID ads
 - Disable CleverTap behavioural analytics
 - Disable app-start telemetry
@@ -132,16 +151,20 @@
 - Disable in-app update nag (optional)
 
 ### Inshorts
+- Allow screenshots and screen recording (optional)
 - Hide ads
 
 ### Hex Editor
+- Allow screenshots and screen recording (optional)
 - Disable ads
 
 ### Strava
+- Allow screenshots and screen recording (optional)
 - Unlock subscription features
 - Disable subscription suggestions
 
 ### AllTrails
+- Allow screenshots and screen recording (optional)
 - Enable Peak membership
 
 ## Supports
