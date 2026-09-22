@@ -72,12 +72,18 @@
 
 ### Threads
 - Hide ads
+- Disable common analytics (optional)
+- Block common display-ad SDK loads (optional)
 
 ### Messenger
 - Hide inbox ads
+- Disable common analytics (optional)
+- Block common display-ad SDK loads (optional)
 
 ### Facebook
 - Hide story ads
+- Disable common analytics (optional)
+- Block common display-ad SDK loads (optional)
 
 ### X (Twitter)
 - Hide promoted and RTB timeline entries
