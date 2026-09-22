@@ -20,7 +20,7 @@ val screenNavigatorFingerprint = findMethodDirect {
     val seed = customReportsFingerprint.invoke(this)
 
     val direct = seed.invokes
-        .filter(MethodData::isScreenNavigatorCandidate)
+        .filter { it.isScreenNavigatorCandidate() }
 
     if (direct.size == 1) {
         return@findMethodDirect direct.single()
@@ -30,7 +30,7 @@ val screenNavigatorFingerprint = findMethodDirect {
         .asSequence()
         .filter { it.returnTypeName == "void" }
         .flatMap { it.invokes.asSequence() }
-        .filter(MethodData::isScreenNavigatorCandidate)
+        .filter { it.isScreenNavigatorCandidate() }
         .distinctBy { it.descriptor }
         .toList()
 
