@@ -57,6 +57,7 @@
 - Enable exclusive audio playback
 
 ### Reddit
+- Disable common analytics SDK calls (optional)
 - Hide ads
 - Sanitize sharing links
 - Open redirect links directly (optional)
@@ -70,6 +71,7 @@
 - Unlock plus
 
 ### Instagram
+- Disable common analytics SDK calls (optional)
 - Hide ads
 - Enable native media downloads
 - Disable DM screenshot detection triggers (optional)
@@ -78,18 +80,22 @@
 - Sanitize tracking parameters from shared links (optional)
 
 ### Threads
+- Disable common analytics SDK calls (optional)
 - Hide ads
 - Sanitize tracking parameters from shared links (optional)
 
 ### Messenger
+- Disable common analytics SDK calls (optional)
 - Hide inbox ads
 - Sanitize tracking parameters from shared links (optional)
 
 ### Facebook
+- Disable common analytics SDK calls (optional)
 - Hide story ads
 - Sanitize tracking parameters from shared links (optional)
 
 ### X (Twitter)
+- Disable common analytics SDK calls (optional)
 - Hide promoted and RTB timeline entries
 - Block redirecting existing users to X Lite
 - Sanitize tracking parameters from shared links (optional)
