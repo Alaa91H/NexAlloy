@@ -78,6 +78,7 @@
 - Ghost privacy exceptions for selected users
 - Optional stealth controls for online, read/listen receipts, typing, recording, uploads, picker actions, emoji activity, group-call speaking, story views, and screenshot notifications
 - Master switch to hide all chat activity requests
+- Notification privacy controls for mark-as-read actions and quick replies
 - Remove sponsored messages and channel/video ads
 - Remove sponsored search results
 - Remove MTProxy sponsor dialogs while preserving Telegram PSA messages

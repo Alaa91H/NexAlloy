@@ -2,6 +2,8 @@ package io.github.nexalloy.revanced.telegram
 
 import io.github.nexalloy.revanced.telegram.ads.RemoveSponsoredAds
 import io.github.nexalloy.revanced.telegram.forward.ForwardOptions
+import io.github.nexalloy.revanced.telegram.notifications.DisableNotificationMarkRead
+import io.github.nexalloy.revanced.telegram.notifications.KeepUnreadAfterQuickReply
 import io.github.nexalloy.revanced.telegram.privacy.GhostExceptions
 import io.github.nexalloy.revanced.telegram.privacy.HideAllChatActivity
 import io.github.nexalloy.revanced.telegram.privacy.HideChoosingContactStatus
@@ -27,6 +29,8 @@ import io.github.nexalloy.revanced.telegram.privacy.HideVoiceUploadStatus
 val TelegramPatches = arrayOf(
     RemoveSponsoredAds,
     ForwardOptions,
+    DisableNotificationMarkRead,
+    KeepUnreadAfterQuickReply,
     GhostExceptions,
     HideOnlineStatus,
     HideReadReceipts,
