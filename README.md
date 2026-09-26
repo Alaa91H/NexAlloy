@@ -86,14 +86,20 @@
 ### Threads
 - Allow screenshots and screen recording (optional)
 - Hide ads
+- Disable common analytics (optional)
+- Block common display-ad SDK loads (optional)
 
 ### Messenger
 - Allow screenshots and screen recording (optional)
 - Hide inbox ads
+- Disable common analytics (optional)
+- Block common display-ad SDK loads (optional)
 
 ### Facebook
 - Allow screenshots and screen recording (optional)
 - Hide story ads
+- Disable common analytics (optional)
+- Block common display-ad SDK loads (optional)
 
 ### X (Twitter)
 - Allow screenshots and screen recording (optional)
@@ -109,19 +115,31 @@
 - Enable client-side downloads
 - Disable forced login
 - Fix Google login
+- Sanitize sharing links
+- Open supported profile/story links in the system browser (optional)
+- Remember Clear Display across videos (optional)
+- Disable screenshot/screen-recording detection callbacks (optional)
+- Stop automatic video looping (optional)
+- Hide quick comment reactions (optional)
+- Disable long-press quick share (optional)
+- Disable long-press repost (optional)
+- Disable common analytics (optional)
 - Supports both `com.zhiliaoapp.musically` and `com.ss.android.ugc.trill`
 
 ### Twitch
 - Allow screenshots and screen recording (optional)
 - Block client-side audio ads
 - Block client-side video ads
+- Hide banner, overlay and in-feed display ads
 - Auto-claim Channel Points
 - Show deleted chat messages using spoiler behavior
 - Enable internal debug mode (optional, disabled by default)
+- Disable common analytics (optional)
 
 ### Spotify
 - Allow screenshots and screen recording (optional)
 - Allow runtime audio capture (experimental, disabled by default)
+- Disable common analytics (optional)
 
 ### Duolingo
 - Allow screenshots and screen recording (optional)
