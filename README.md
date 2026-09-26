@@ -108,41 +108,41 @@
 - Block redirecting to X Lite
 
 ### Telegram
-- Enhanced forward menu with per-forward sender attribution control
-- Forward media without its caption/text from the quick share menu
-- Remove sponsored messages and channel/video ads
-- Remove sponsored search results
-- Remove MTProxy sponsor dialogs while preserving Telegram PSA messages
-- Ghost privacy exceptions from user profiles
-- Keep deleted messages locally (optional)
-- Keep original text of edited messages locally (optional)
-- Download speed boost profiles: balanced and maximum
-- Optional external-browser preference
-- Optional video/GIF autoplay disable
-- Notification privacy:
-  - Disable notification mark-as-read action
-  - Keep chats unread after notification quick replies
-- Optional privacy controls:
+- Remove sponsored messages, channel/video ads, sponsored search results, and MTProxy sponsor dialogs
+- Enhanced forward presets:
+  - Normal
+  - Without sender attribution
+  - Without caption/text
+  - Without sender + caption
+  - Optionally remember the last forward preset
+- Per-chat stealth and Ghost exceptions from the profile toolbar
+- Privacy controls:
   - Hide online status on this device
   - Hide message read receipts
   - Hide listened/content-read receipts
   - Hide typing status
-  - Hide voice recording status
-  - Hide video/round-video recording status
-  - Hide voice/audio upload status
-  - Hide video/round-video upload status
-  - Hide photo upload status
-  - Hide file upload status
-  - Hide choosing-location status
-  - Hide choosing-contact status
-  - Hide choosing-sticker status
-  - Hide playing-game status
-  - Hide animated-emoji interaction status
-  - Hide emoji acknowledgement status
+  - Separate voice/video recording and upload controls
+  - Hide photo/file upload activity
+  - Hide round-video activity
+  - Hide location/contact/sticker selection activity
+  - Hide game, emoji interaction, and emoji acknowledgement activity
   - Hide speaking status in group calls
-  - Hide story views
+  - Split story read receipts and story-view increments
   - Hide screenshot notifications in supported secret-chat flows
-  - Master switch to hide all chat activity requests
+  - Master switch to hide all chat activity
+- Local history controls:
+  - Keep remotely deleted messages locally while allowing deletions initiated on this device
+  - Keep the original local text when another participant edits a message while allowing edits initiated on this device
+- Download speed boost: Medium or Maximum
+- Force-disable video/GIF autoplay (optional global override; Telegram's native control remains available)
+- Clean common tracking parameters from outgoing links
+- Open ordinary external links in the system browser while preserving Telegram deep links
+- Notification privacy:
+  - Disable notification Mark as read
+  - Quick reply without marking the dialog as read
+  - Force-hide notification message previews
+- Confirm outgoing user and group calls
+- Optional profile tools to copy internal dialog ID and runtime diagnostics (version, account, DC, proxy, last TL request)
 - Supports Play Store, direct-download, and beta packages
 
 ### TikTok

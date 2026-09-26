@@ -2,61 +2,179 @@ package io.github.nexalloy.revanced.telegram.history
 
 import io.github.nexalloy.hookMethod
 import io.github.nexalloy.patch
+import io.github.nexalloy.revanced.telegram.runtime.findTelegramClassOrNull
+import io.github.nexalloy.revanced.telegram.runtime.hookTelegramRequests
+import io.github.nexalloy.revanced.telegram.runtime.messageDialogId
+import io.github.nexalloy.revanced.telegram.runtime.readTelegramField
+import io.github.nexalloy.revanced.telegram.runtime.requestDialogId
+import io.github.nexalloy.revanced.telegram.runtime.writeTelegramField
+import java.util.ArrayList
+import java.util.concurrent.ConcurrentHashMap
 
-private fun ClassLoader.findClassOrNull(name: String): Class<*>? =
-    runCatching { loadClass(name) }.getOrNull()
+private const val OWN_ACTION_TTL_MS = 120_000L
 
-private fun Any.readUpdatesList(): MutableList<Any>? =
-    runCatching {
-        @Suppress("UNCHECKED_CAST")
-        javaClass.getField("updates").get(this) as? MutableList<Any>
-    }.recoverCatching {
-        @Suppress("UNCHECKED_CAST")
-        javaClass.getDeclaredField("updates").apply { isAccessible = true }
-            .get(this) as? MutableList<Any>
-    }.getOrNull()
+private val pendingOwnDeletes = ConcurrentHashMap<String, Long>()
+private val pendingOwnEdits = ConcurrentHashMap<String, Long>()
 
-private fun ClassLoader.filterIncomingUpdates(predicate: (Any) -> Boolean) {
+private fun scopedKey(dialogId: Long, messageId: Int): String =
+    "$dialogId:$messageId"
+
+private fun cleanupPending(map: ConcurrentHashMap<String, Long>) {
+    val cutoff = System.currentTimeMillis() - OWN_ACTION_TTL_MS
+    for ((key, timestamp) in map) {
+        if (timestamp < cutoff) {
+            map.remove(key, timestamp)
+        }
+    }
+}
+
+private fun Any.messageIds(): List<Int> {
+    val value = readTelegramField("id") ?: readTelegramField("messages")
+    return when (value) {
+        is Number -> listOf(value.toInt())
+        is Iterable<*> -> value.mapNotNull { (it as? Number)?.toInt() }
+        else -> emptyList()
+    }
+}
+
+private fun Any.channelDialogId(): Long {
+    val direct = (readTelegramField("channel_id") as? Number)?.toLong() ?: 0L
+    if (direct != 0L) return -direct
+    return requestDialogId(this) ?: 0L
+}
+
+private fun ClassLoader.trackOwnDeleteRequests() {
+    hookTelegramRequests { request, _ ->
+        val name = request.javaClass.name
+        if (
+            !name.endsWith("\$TL_messages_deleteMessages") &&
+            !name.endsWith("\$TL_channels_deleteMessages")
+        ) return@hookTelegramRequests
+
+        cleanupPending(pendingOwnDeletes)
+        val scope = if (name.endsWith("\$TL_channels_deleteMessages")) {
+            request.channelDialogId()
+        } else {
+            0L
+        }
+        for (id in request.messageIds()) {
+            pendingOwnDeletes[scopedKey(scope, id)] = System.currentTimeMillis()
+        }
+    }
+}
+
+private fun ClassLoader.trackOwnEditRequests() {
+    hookTelegramRequests { request, _ ->
+        if (!request.javaClass.name.endsWith("\$TL_messages_editMessage")) {
+            return@hookTelegramRequests
+        }
+
+        val id = (request.readTelegramField("id") as? Number)?.toInt()
+            ?: return@hookTelegramRequests
+        val dialogId = requestDialogId(request) ?: 0L
+        cleanupPending(pendingOwnEdits)
+        pendingOwnEdits[scopedKey(dialogId, id)] = System.currentTimeMillis()
+    }
+}
+
+private fun ClassLoader.hookUpdateList(
+    transform: (MutableList<Any?>) -> Unit,
+) {
     val controller =
-        findClassOrNull("org.telegram.messenger.MessagesController") ?: return
+        findTelegramClassOrNull("org.telegram.messenger.MessagesController") ?: return
+    val updatesBase =
+        findTelegramClassOrNull("org.telegram.tgnet.TLRPC\$Updates")
 
     controller.declaredMethods
         .filter {
             it.name == "processUpdates" &&
                 it.parameterTypes.isNotEmpty() &&
-                it.parameterTypes[0].name == "org.telegram.tgnet.TLRPC\$Updates"
+                (updatesBase == null || updatesBase.isAssignableFrom(it.parameterTypes[0]))
         }
         .forEach { method ->
+            method.isAccessible = true
             method.hookMethod {
                 before { param ->
-                    val updates = param.args.firstOrNull() ?: return@before
-                    val list = updates.readUpdatesList() ?: return@before
-                    list.removeAll(predicate)
+                    val envelope = param.args.firstOrNull() ?: return@before
+                    @Suppress("UNCHECKED_CAST")
+                    val updates = envelope.readTelegramField("updates") as? MutableList<Any?>
+                        ?: return@before
+                    transform(updates)
                 }
             }
         }
 }
 
 val KeepDeletedMessages = patch(
-    name = "Keep deleted messages locally",
-    description = "Ignores incoming Telegram delete-message updates so messages already present on this device remain visible locally.",
+    name = "Keep remotely deleted messages",
+    description = "Keeps normal and channel messages in the local Telegram database when another participant deletes them. Deletions initiated from this device are still allowed.",
     use = false,
 ) {
-    classLoader.filterIncomingUpdates { update ->
-        val name = update.javaClass.name
-        name.endsWith("\$TL_updateDeleteMessages") ||
-            name.endsWith("\$TL_updateDeleteChannelMessages")
+    classLoader.trackOwnDeleteRequests()
+
+    classLoader.hookUpdateList { updates ->
+        cleanupPending(pendingOwnDeletes)
+
+        val iterator = updates.listIterator()
+        while (iterator.hasNext()) {
+            val update = iterator.next() ?: continue
+            val name = update.javaClass.name
+
+            val isChannel = name.endsWith("\$TL_updateDeleteChannelMessages")
+            val isNormal = name.endsWith("\$TL_updateDeleteMessages")
+            if (!isChannel && !isNormal) continue
+
+            val scope = if (isChannel) {
+                val id = (update.readTelegramField("channel_id") as? Number)?.toLong() ?: 0L
+                if (id != 0L) -id else 0L
+            } else {
+                0L
+            }
+
+            val ids = update.messageIds()
+            if (ids.isEmpty()) continue
+
+            val ownIds = ArrayList<Int>()
+            for (id in ids) {
+                if (pendingOwnDeletes.remove(scopedKey(scope, id)) != null) {
+                    ownIds.add(id)
+                }
+            }
+
+            when {
+                ownIds.isEmpty() -> iterator.remove()
+                ownIds.size != ids.size -> update.writeTelegramField("messages", ownIds)
+            }
+        }
     }
 }
 
 val KeepOriginalEditedMessages = patch(
-    name = "Keep original edited messages",
-    description = "Ignores incoming edit updates so the original message text already stored on this device remains visible locally.",
+    name = "Keep original text of remotely edited messages",
+    description = "Ignores remote message-edit updates so the locally stored original text remains visible. Edits initiated from this device are still allowed.",
     use = false,
 ) {
-    classLoader.filterIncomingUpdates { update ->
-        val name = update.javaClass.name
-        name.endsWith("\$TL_updateEditMessage") ||
-            name.endsWith("\$TL_updateEditChannelMessage")
+    classLoader.trackOwnEditRequests()
+
+    classLoader.hookUpdateList { updates ->
+        cleanupPending(pendingOwnEdits)
+
+        val iterator = updates.listIterator()
+        while (iterator.hasNext()) {
+            val update = iterator.next() ?: continue
+            val name = update.javaClass.name
+            if (
+                !name.endsWith("\$TL_updateEditMessage") &&
+                !name.endsWith("\$TL_updateEditChannelMessage")
+            ) continue
+
+            val message = update.readTelegramField("message") ?: continue
+            val id = (message.readTelegramField("id") as? Number)?.toInt() ?: continue
+            val dialogId = messageDialogId(message) ?: 0L
+
+            if (pendingOwnEdits.remove(scopedKey(dialogId, id)) == null) {
+                iterator.remove()
+            }
+        }
     }
 }

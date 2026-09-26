@@ -2,62 +2,69 @@ package io.github.nexalloy.revanced.telegram.download
 
 import io.github.nexalloy.hookMethod
 import io.github.nexalloy.patch
+import io.github.nexalloy.revanced.telegram.runtime.findTelegramClassOrNull
+import io.github.nexalloy.revanced.telegram.runtime.writeTelegramField
+import java.util.concurrent.atomic.AtomicBoolean
 
-private fun ClassLoader.findClassOrNull(name: String): Class<*>? =
-    runCatching { loadClass(name) }.getOrNull()
+private val downloadHookInstalled = AtomicBoolean(false)
 
-private fun Any.setIntField(name: String, value: Int) {
-    runCatching {
-        javaClass.getField(name).setInt(this, value)
-    }.recoverCatching {
-        javaClass.getDeclaredField(name).apply {
-            isAccessible = true
-            setInt(this@setIntField, value)
-        }
-    }
-}
+@Volatile
+private var requestedBoostLevel = 0
 
-private fun ClassLoader.installDownloadProfile(
-    normalChunk: Int,
-    bigChunk: Int,
-    maxRequests: Int,
-) {
+private fun ClassLoader.installDownloadBoostHook() {
+    if (!downloadHookInstalled.compareAndSet(false, true)) return
+
     val operation =
-        findClassOrNull("org.telegram.messenger.FileLoadOperation") ?: return
+        findTelegramClassOrNull("org.telegram.messenger.FileLoadOperation") ?: return
 
-    operation.declaredConstructors.forEach { constructor ->
-        constructor.hookMethod {
-            after { param ->
-                val instance = param.thisObject
-                instance.setIntField("downloadChunkSize", normalChunk)
-                instance.setIntField("downloadChunkSizeBig", bigChunk)
-                instance.setIntField("currentDownloadChunkSize", bigChunk)
-                instance.setIntField("currentMaxDownloadRequests", maxRequests)
+    operation.declaredMethods
+        .filter {
+            it.name == "updateParams" &&
+                it.parameterTypes.isEmpty() &&
+                it.returnType == Void.TYPE
+        }
+        .forEach { method ->
+            method.isAccessible = true
+            method.hookMethod {
+                after { param ->
+                    val target = param.thisObject
+                    when (requestedBoostLevel) {
+                        1 -> {
+                            target.writeTelegramField("downloadChunkSize", 128 * 1024)
+                            target.writeTelegramField("downloadChunkSizeBig", 512 * 1024)
+                            target.writeTelegramField("downloadChunkSizeAnimation", 256 * 1024)
+                            target.writeTelegramField("maxDownloadRequests", 8)
+                            target.writeTelegramField("maxDownloadRequestsBig", 8)
+                            target.writeTelegramField("maxDownloadRequestsAnimation", 8)
+                        }
+                        2 -> {
+                            target.writeTelegramField("downloadChunkSize", 256 * 1024)
+                            target.writeTelegramField("downloadChunkSizeBig", 1024 * 1024)
+                            target.writeTelegramField("downloadChunkSizeAnimation", 512 * 1024)
+                            target.writeTelegramField("maxDownloadRequests", 12)
+                            target.writeTelegramField("maxDownloadRequestsBig", 12)
+                            target.writeTelegramField("maxDownloadRequestsAnimation", 12)
+                        }
+                    }
+                }
             }
         }
-    }
 }
 
-val DownloadBoostBalanced = patch(
-    name = "Download boost: balanced",
-    description = "Uses larger Telegram file chunks and up to 8 parallel file requests. Do not enable together with maximum mode.",
+val DownloadBoostMedium = patch(
+    name = "Download speed boost: Medium",
+    description = "Uses larger Telegram file chunks and up to 8 parallel download requests. If Maximum is also enabled, Maximum takes precedence.",
     use = false,
 ) {
-    classLoader.installDownloadProfile(
-        normalChunk = 128 * 1024,
-        bigChunk = 512 * 1024,
-        maxRequests = 8,
-    )
+    requestedBoostLevel = maxOf(requestedBoostLevel, 1)
+    classLoader.installDownloadBoostHook()
 }
 
 val DownloadBoostMaximum = patch(
-    name = "Download boost: maximum",
-    description = "Uses aggressive 1 MiB chunks and up to 12 parallel file requests. May increase RAM, battery, or server throttling. Do not enable together with balanced mode.",
+    name = "Download speed boost: Maximum",
+    description = "Uses larger Telegram file chunks and up to 12 parallel download requests. This can increase RAM, bandwidth, and server throttling pressure.",
     use = false,
 ) {
-    classLoader.installDownloadProfile(
-        normalChunk = 256 * 1024,
-        bigChunk = 1024 * 1024,
-        maxRequests = 12,
-    )
+    requestedBoostLevel = maxOf(requestedBoostLevel, 2)
+    classLoader.installDownloadBoostHook()
 }
