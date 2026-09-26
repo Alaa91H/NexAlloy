@@ -5,8 +5,21 @@ import android.view.View
 import android.widget.LinearLayout
 import io.github.nexalloy.hookMethod
 import io.github.nexalloy.patch
+import io.github.nexalloy.revanced.telegram.runtime.findFieldRecursive
+import io.github.nexalloy.revanced.telegram.runtime.findTelegramClassOrNull
+import io.github.nexalloy.revanced.telegram.runtime.readTelegramField
+import io.github.nexalloy.revanced.telegram.runtime.telegramPrefs
+import io.github.nexalloy.revanced.telegram.runtime.writeTelegramField
 import java.util.Collections
 import java.util.WeakHashMap
+
+private const val PREF_REMEMBER_FORWARD = "remember_forward_preset"
+private const val PREF_FORWARD_MODE = "forward_preset"
+
+private const val MODE_NORMAL = 0
+private const val MODE_WITHOUT_SENDER = 1
+private const val MODE_WITHOUT_CAPTION = 2
+private const val MODE_WITHOUT_SENDER_AND_CAPTION = 3
 
 private val hideCaptionByShareAlert =
     Collections.synchronizedMap(WeakHashMap<Any, Boolean>())
@@ -16,35 +29,38 @@ private val sendingShareAlert = ThreadLocal<Any?>()
 private val shareMenuItemCount = ThreadLocal.withInitial { 0 }
 private val injectingMenuItem = ThreadLocal.withInitial { false }
 
-private fun ClassLoader.findClassOrNull(name: String): Class<*>? =
-    runCatching { loadClass(name) }.getOrNull()
+private fun currentMode(alert: Any): Int {
+    val showSender = (alert.readTelegramField("showSendersName") as? Boolean) ?: true
+    val hideCaption = hideCaptionByShareAlert[alert] == true
+    return (if (!showSender) MODE_WITHOUT_SENDER else 0) or
+        (if (hideCaption) MODE_WITHOUT_CAPTION else 0)
+}
 
-private fun ClassLoader.telegramString(name: String, fallback: String): CharSequence =
-    runCatching {
-        val stringClass = loadClass("org.telegram.messenger.R\$string")
-        val id = stringClass.getField(name).getInt(null)
-        val localeController = loadClass("org.telegram.messenger.LocaleController")
-        localeController
-            .getMethod("getString", Int::class.javaPrimitiveType)
-            .invoke(null, id) as CharSequence
-    }.getOrDefault(fallback)
+private fun applyMode(alert: Any, mode: Int) {
+    alert.writeTelegramField(
+        "showSendersName",
+        (mode and MODE_WITHOUT_SENDER) == 0,
+    )
+    hideCaptionByShareAlert[alert] =
+        (mode and MODE_WITHOUT_CAPTION) != 0
+}
 
 val ForwardOptions = patch(
-    name = "Enhanced forward options",
-    description = "Keeps Telegram's native sender-attribution option and adds a quick forward-without-caption option to the share menu.",
+    name = "Enhanced forward presets",
+    description = "Adds Normal, without sender, without caption, and without sender+caption forward presets with an optional remember-last-choice setting.",
 ) {
     val shareAlert =
-        classLoader.findClassOrNull("org.telegram.ui.Components.ShareAlert")
+        classLoader.findTelegramClassOrNull("org.telegram.ui.Components.ShareAlert")
             ?: return@patch
     val menuItemClass =
-        classLoader.findClassOrNull("org.telegram.ui.ActionBar.ActionBarMenuSubItem")
+        classLoader.findTelegramClassOrNull("org.telegram.ui.ActionBar.ActionBarMenuSubItem")
             ?: return@patch
     val popupLayoutClass =
-        classLoader.findClassOrNull(
+        classLoader.findTelegramClassOrNull(
             "org.telegram.ui.ActionBar.ActionBarPopupWindow\$ActionBarPopupWindowLayout"
         ) ?: return@patch
     val sendMessagesHelper =
-        classLoader.findClassOrNull("org.telegram.messenger.SendMessagesHelper")
+        classLoader.findTelegramClassOrNull("org.telegram.messenger.SendMessagesHelper")
             ?: return@patch
 
     shareAlert.declaredMethods
@@ -53,10 +69,21 @@ val ForwardOptions = patch(
             method.isAccessible = true
             method.hookMethod {
                 before { param ->
-                    buildingShareMenu.set(param.thisObject)
+                    val alert = param.thisObject
+                    buildingShareMenu.set(alert)
                     shareMenuItemCount.set(0)
+
+                    val prefs = classLoader.telegramPrefs()
+                    if (prefs?.getBoolean(PREF_REMEMBER_FORWARD, false) == true) {
+                        applyMode(alert, prefs.getInt(PREF_FORWARD_MODE, MODE_NORMAL))
+                    }
                 }
-                after {
+                after { param ->
+                    val alert = param.thisObject
+                    val prefs = classLoader.telegramPrefs()
+                    if (prefs?.getBoolean(PREF_REMEMBER_FORWARD, false) == true) {
+                        applyMode(alert, prefs.getInt(PREF_FORWARD_MODE, MODE_NORMAL))
+                    }
                     buildingShareMenu.remove()
                     shareMenuItemCount.remove()
                     injectingMenuItem.remove()
@@ -71,8 +98,8 @@ val ForwardOptions = patch(
                 it.parameterTypes[0] == View::class.java &&
                 it.parameterTypes[1].name == "android.widget.LinearLayout\$LayoutParams"
         }
-        .forEach { method ->
-            method.hookMethod {
+        .forEach { addViewMethod ->
+            addViewMethod.hookMethod {
                 after { param ->
                     if (injectingMenuItem.get() == true) return@after
 
@@ -85,10 +112,8 @@ val ForwardOptions = patch(
                     if (count != 2) return@after
 
                     runCatching {
-                        val resourcesProvider = menuItemClass
-                            .getDeclaredField("resourcesProvider")
-                            .apply { isAccessible = true }
-                            .get(child)
+                        val resourcesProvider =
+                            child.findFieldRecursive("resourcesProvider")?.get(child)
 
                         val constructor = menuItemClass.declaredConstructors.first {
                             val types = it.parameterTypes
@@ -99,57 +124,113 @@ val ForwardOptions = patch(
                                 types[3] == Boolean::class.javaPrimitiveType
                         }.apply { isAccessible = true }
 
-                        val option = constructor.newInstance(
-                            child.context,
-                            true,
-                            false,
-                            true,
-                            resourcesProvider,
-                        ) as View
-
-                        val label = classLoader.telegramString(
-                            "HideCaption",
-                            "Forward without caption",
-                        )
-
-                        menuItemClass.getMethod(
-                            "setTextAndIcon",
-                            CharSequence::class.java,
-                            Int::class.javaPrimitiveType,
-                        ).invoke(option, label, 0)
-
-                        fun updateChecked() {
-                            menuItemClass.getMethod(
-                                "setChecked",
-                                Boolean::class.javaPrimitiveType,
-                            ).invoke(option, hideCaptionByShareAlert[alert] == true)
-                        }
-
-                        updateChecked()
-                        option.setOnClickListener {
-                            hideCaptionByShareAlert[alert] =
-                                hideCaptionByShareAlert[alert] != true
-                            updateChecked()
-                        }
-
-                        // The original "hide sender" row used to be the bottom item.
-                        runCatching {
-                            menuItemClass.getDeclaredField("bottom").apply {
-                                isAccessible = true
-                                setBoolean(child, false)
-                            }
-                            menuItemClass.getMethod("updateBackground").invoke(child)
-                        }
-
                         val density = child.resources.displayMetrics.density
-                        val params = LinearLayout.LayoutParams(
+                        val layoutParams = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             (48f * density).toInt(),
                         )
 
+                        runCatching {
+                            child.writeTelegramField("bottom", false)
+                            menuItemClass.getMethod("updateBackground").invoke(child)
+                        }
+
+                        val presetRows = listOf(
+                            MODE_NORMAL to "Normal forward",
+                            MODE_WITHOUT_SENDER to "Forward without sender",
+                            MODE_WITHOUT_CAPTION to "Forward without caption",
+                            MODE_WITHOUT_SENDER_AND_CAPTION to "Forward without sender + caption",
+                        )
+
+                        val presetViews = mutableListOf<Pair<Int, View>>()
+
+                        fun setChecked(view: View, checked: Boolean) {
+                            menuItemClass.getMethod(
+                                "setChecked",
+                                Boolean::class.javaPrimitiveType,
+                            ).invoke(view, checked)
+                        }
+
+                        fun effectiveMode(): Int {
+                            val prefs = classLoader.telegramPrefs()
+                            return if (prefs?.getBoolean(PREF_REMEMBER_FORWARD, false) == true) {
+                                prefs.getInt(PREF_FORWARD_MODE, MODE_NORMAL)
+                            } else {
+                                currentMode(alert)
+                            }
+                        }
+
+                        fun refreshPresets() {
+                            val mode = effectiveMode()
+                            presetViews.forEach { (rowMode, view) ->
+                                setChecked(view, rowMode == mode)
+                            }
+                        }
+
                         injectingMenuItem.set(true)
                         try {
-                            method.invoke(param.thisObject, option, params)
+                            presetRows.forEach { (mode, label) ->
+                                val option = constructor.newInstance(
+                                    child.context,
+                                    true,
+                                    false,
+                                    false,
+                                    resourcesProvider,
+                                ) as View
+
+                                menuItemClass.getMethod(
+                                    "setTextAndIcon",
+                                    CharSequence::class.java,
+                                    Int::class.javaPrimitiveType,
+                                ).invoke(option, label, 0)
+
+                                presetViews += mode to option
+                                option.setOnClickListener {
+                                    applyMode(alert, mode)
+                                    val prefs = classLoader.telegramPrefs()
+                                    if (prefs?.getBoolean(PREF_REMEMBER_FORWARD, false) == true) {
+                                        prefs.edit().putInt(PREF_FORWARD_MODE, mode).apply()
+                                    }
+                                    refreshPresets()
+                                }
+
+                                addViewMethod.invoke(param.thisObject, option, layoutParams)
+                            }
+
+                            val remember = constructor.newInstance(
+                                child.context,
+                                true,
+                                false,
+                                true,
+                                resourcesProvider,
+                            ) as View
+
+                            menuItemClass.getMethod(
+                                "setTextAndIcon",
+                                CharSequence::class.java,
+                                Int::class.javaPrimitiveType,
+                            ).invoke(remember, "Remember last forward preset", 0)
+
+                            fun refreshRemember() {
+                                val enabled = classLoader.telegramPrefs()
+                                    ?.getBoolean(PREF_REMEMBER_FORWARD, false) == true
+                                setChecked(remember, enabled)
+                            }
+
+                            refreshRemember()
+                            remember.setOnClickListener {
+                                val prefs = classLoader.telegramPrefs() ?: return@setOnClickListener
+                                val enabled = !prefs.getBoolean(PREF_REMEMBER_FORWARD, false)
+                                prefs.edit()
+                                    .putBoolean(PREF_REMEMBER_FORWARD, enabled)
+                                    .putInt(PREF_FORWARD_MODE, currentMode(alert))
+                                    .apply()
+                                refreshRemember()
+                                refreshPresets()
+                            }
+
+                            addViewMethod.invoke(param.thisObject, remember, layoutParams)
+                            refreshPresets()
                         } finally {
                             injectingMenuItem.set(false)
                         }
@@ -189,6 +270,9 @@ val ForwardOptions = patch(
             method.hookMethod {
                 before { param ->
                     val alert = sendingShareAlert.get() ?: return@before
+                    val showSender =
+                        (alert.readTelegramField("showSendersName") as? Boolean) ?: true
+                    param.args[2] = !showSender
                     if (hideCaptionByShareAlert[alert] == true) {
                         param.args[3] = true
                     }
