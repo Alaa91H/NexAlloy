@@ -36,6 +36,8 @@ import io.github.nexalloy.revanced.telegram.notifications.DisableNotificationMar
 import io.github.nexalloy.revanced.telegram.notifications.ForceHideNotificationPreviews
 import io.github.nexalloy.revanced.telegram.notifications.QuickReplyWithoutReadReceipt
 import io.github.nexalloy.revanced.telegram.tools.ProfileDebugTools
+import io.github.nexalloy.revanced.telegram.history.KeepDeletedMessages
+import io.github.nexalloy.revanced.telegram.history.KeepOriginalEditedMessages
 
 val TelegramPatches = arrayOf(
     RemoveSponsoredAds,
@@ -66,6 +68,9 @@ val TelegramPatches = arrayOf(
     HideStoryViews,
     HideScreenshotNotifications,
     HideAllChatActivity,
+
+    KeepDeletedMessages,
+    KeepOriginalEditedMessages,
 
     DownloadBoostMedium,
     DownloadBoostMaximum,
