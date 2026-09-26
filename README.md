@@ -108,6 +108,7 @@
 - Block redirecting to X Lite
 
 ### Telegram
+- Forward messages without original sender/source attribution (optional)
 - Remove sponsored messages and channel/video ads
 - Remove sponsored search results
 - Remove MTProxy sponsor dialogs while preserving Telegram PSA messages
