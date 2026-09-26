@@ -6,6 +6,36 @@ import io.github.nexalloy.patch
 private fun ClassLoader.findClassOrNull(name: String): Class<*>? =
     runCatching { loadClass(name) }.getOrNull()
 
+private fun Any.peerUserIdOrNull(): Long? {
+    val peer = runCatching { javaClass.getField("peer").get(this) }
+        .recoverCatching {
+            javaClass.getDeclaredField("peer").apply { isAccessible = true }.get(this)
+        }
+        .getOrNull() ?: return null
+
+    return runCatching { peer.javaClass.getField("user_id").getLong(peer) }
+        .recoverCatching {
+            peer.javaClass.getDeclaredField("user_id").apply { isAccessible = true }.getLong(peer)
+        }
+        .getOrNull()
+        ?.takeIf { it != 0L }
+}
+
+private fun ClassLoader.isGhostException(request: Any): Boolean {
+    val userId = request.peerUserIdOrNull() ?: return false
+    val context = runCatching {
+        val app = loadClass("org.telegram.messenger.ApplicationLoader")
+        val field = runCatching { app.getField("applicationContext") }
+            .getOrElse { app.getDeclaredField("applicationContext").apply { isAccessible = true } }
+        field.get(null) as android.content.Context
+    }.getOrNull() ?: return false
+
+    return context
+        .getSharedPreferences("nexalloy.telegram.ghost", android.content.Context.MODE_PRIVATE)
+        .getStringSet("exceptions", emptySet())
+        ?.contains(userId.toString()) == true
+}
+
 private fun ClassLoader.blockOutgoingRequests(
     predicate: (Any) -> Boolean,
 ) {
@@ -22,7 +52,7 @@ private fun ClassLoader.blockOutgoingRequests(
             method.hookMethod {
                 before { param ->
                     val request = param.args.firstOrNull() ?: return@before
-                    if (predicate(request)) {
+                    if (!isGhostException(request) && predicate(request)) {
                         // Returning 0 matches Telegram's no-request / cancelled token convention.
                         param.result = 0
                     }

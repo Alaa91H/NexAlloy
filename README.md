@@ -113,13 +113,32 @@
 - Remove sponsored messages and channel/video ads
 - Remove sponsored search results
 - Remove MTProxy sponsor dialogs while preserving Telegram PSA messages
+- Ghost privacy exceptions from user profiles
+- Keep deleted messages locally (optional)
+- Keep original text of edited messages locally (optional)
+- Download speed boost profiles: balanced and maximum
+- Optional external-browser preference
+- Optional video/GIF autoplay disable
+- Notification privacy:
+  - Disable notification mark-as-read action
+  - Keep chats unread after notification quick replies
 - Optional privacy controls:
   - Hide online status on this device
   - Hide message read receipts
   - Hide listened/content-read receipts
   - Hide typing status
-  - Hide recording and upload status
+  - Hide voice recording status
+  - Hide video/round-video recording status
+  - Hide voice/audio upload status
+  - Hide video/round-video upload status
+  - Hide photo upload status
+  - Hide file upload status
+  - Hide choosing-location status
+  - Hide choosing-contact status
+  - Hide choosing-sticker status
+  - Hide playing-game status
   - Hide animated-emoji interaction status
+  - Hide emoji acknowledgement status
   - Hide speaking status in group calls
   - Hide story views
   - Hide screenshot notifications in supported secret-chat flows

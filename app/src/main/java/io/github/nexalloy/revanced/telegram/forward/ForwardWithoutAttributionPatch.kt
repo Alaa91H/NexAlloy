@@ -10,6 +10,8 @@ import java.util.WeakHashMap
 
 private val hideCaptionByShareAlert =
     Collections.synchronizedMap(WeakHashMap<Any, Boolean>())
+private val combinedPresetByShareAlert =
+    Collections.synchronizedMap(WeakHashMap<Any, Boolean>())
 
 private val buildingShareMenu = ThreadLocal<Any?>()
 private val sendingShareAlert = ThreadLocal<Any?>()
@@ -53,8 +55,33 @@ val ForwardOptions = patch(
             method.isAccessible = true
             method.hookMethod {
                 before { param ->
-                    buildingShareMenu.set(param.thisObject)
+                    val alert = param.thisObject
+                    buildingShareMenu.set(alert)
                     shareMenuItemCount.set(0)
+
+                    val context = runCatching {
+                        val field = alert.javaClass.getDeclaredField("parentActivity").apply { isAccessible = true }
+                        field.get(alert) as? Context
+                    }.getOrNull()
+
+                    if (context != null) {
+                        val prefs = context.getSharedPreferences(
+                            "nexalloy.telegram.forward",
+                            Context.MODE_PRIVATE,
+                        )
+                        if (prefs.getBoolean("remember", false)) {
+                            val hideSender = prefs.getBoolean("hide_sender", false)
+                            val hideCaption = prefs.getBoolean("hide_caption", false)
+                            runCatching {
+                                alert.javaClass.getDeclaredField("showSendersName").apply {
+                                    isAccessible = true
+                                    setBoolean(alert, !hideSender)
+                                }
+                            }
+                            hideCaptionByShareAlert[alert] = hideCaption
+                            combinedPresetByShareAlert[alert] = hideSender && hideCaption
+                        }
+                    }
                 }
                 after {
                     buildingShareMenu.remove()
@@ -147,9 +174,75 @@ val ForwardOptions = patch(
                             (48f * density).toInt(),
                         )
 
+                        fun addExtraOption(label: CharSequence, checked: () -> Boolean, click: () -> Unit) {
+                            val extra = constructor.newInstance(
+                                child.context,
+                                true,
+                                false,
+                                true,
+                                resourcesProvider,
+                            ) as View
+                            menuItemClass.getMethod(
+                                "setTextAndIcon",
+                                CharSequence::class.java,
+                                Int::class.javaPrimitiveType,
+                            ).invoke(extra, label, 0)
+
+                            fun sync() {
+                                menuItemClass.getMethod(
+                                    "setChecked",
+                                    Boolean::class.javaPrimitiveType,
+                                ).invoke(extra, checked())
+                            }
+                            sync()
+                            extra.setOnClickListener {
+                                click()
+                                sync()
+                            }
+                            method.invoke(param.thisObject, extra, params)
+                        }
+
                         injectingMenuItem.set(true)
                         try {
                             method.invoke(param.thisObject, option, params)
+
+                            addExtraOption(
+                                "Without sender + caption",
+                                { combinedPresetByShareAlert[alert] == true },
+                            ) {
+                                runCatching {
+                                    alert.javaClass.getDeclaredField("showSendersName").apply {
+                                        isAccessible = true
+                                        setBoolean(alert, false)
+                                    }
+                                }
+                                hideCaptionByShareAlert[alert] = true
+                                combinedPresetByShareAlert[alert] = true
+                            }
+
+                            val prefs = child.context.getSharedPreferences(
+                                "nexalloy.telegram.forward",
+                                Context.MODE_PRIVATE,
+                            )
+                            addExtraOption(
+                                "Remember forward choice",
+                                { prefs.getBoolean("remember", false) },
+                            ) {
+                                val newValue = !prefs.getBoolean("remember", false)
+                                val hideSender = runCatching {
+                                    !alert.javaClass.getDeclaredField("showSendersName").apply {
+                                        isAccessible = true
+                                    }.getBoolean(alert)
+                                }.getOrDefault(false)
+                                prefs.edit()
+                                    .putBoolean("remember", newValue)
+                                    .putBoolean("hide_sender", hideSender)
+                                    .putBoolean(
+                                        "hide_caption",
+                                        hideCaptionByShareAlert[alert] == true,
+                                    )
+                                    .apply()
+                            }
                         } finally {
                             injectingMenuItem.set(false)
                         }
