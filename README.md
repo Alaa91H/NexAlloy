@@ -108,10 +108,21 @@
 - Block redirecting to X Lite
 
 ### Telegram
-- Forward messages without original sender/source attribution (optional)
+- Enhanced forward menu with per-forward sender attribution control
+- Forward media without its caption/text from the quick share menu
 - Remove sponsored messages and channel/video ads
 - Remove sponsored search results
 - Remove MTProxy sponsor dialogs while preserving Telegram PSA messages
+- Optional privacy controls:
+  - Hide message read receipts
+  - Hide listened/content-read receipts
+  - Hide typing status
+  - Hide recording and upload status
+  - Hide animated-emoji interaction status
+  - Hide speaking status in group calls
+  - Hide story views
+  - Hide screenshot notifications in supported secret-chat flows
+  - Master switch to hide all chat activity requests
 - Supports Play Store, direct-download, and beta packages
 
 ### TikTok
