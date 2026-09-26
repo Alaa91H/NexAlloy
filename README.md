@@ -74,6 +74,7 @@
 - Hide ads
 
 ### Telegram
+- Enhanced forward menu with sender attribution, caption removal, combined preset, and remembered choice
 - Remove sponsored messages and channel/video ads
 - Remove sponsored search results
 - Remove MTProxy sponsor dialogs while preserving Telegram PSA messages
