@@ -173,8 +173,14 @@
 - Hide after-call and caller-ID ads
 - Disable CleverTap behavioural analytics
 - Disable app-start telemetry
+- Disable known third-party analytics/ad SDK initialization (optional)
+- Block common display-ad SDK loads (optional)
 - Hide full-screen upgrade prompts (optional)
 - Remove Premium navigation/profile UI (optional)
+- Hide Premium settings block (optional)
+- Hide Assistant tab (optional)
+- Hide Family Protection button (optional)
+- Hide Scams tab (optional)
 - Disable in-app update nag (optional)
 
 ### Inshorts
