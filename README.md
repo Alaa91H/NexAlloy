@@ -73,6 +73,12 @@
 ### Threads
 - Hide ads
 
+### Telegram
+- Remove sponsored messages and channel/video ads
+- Remove sponsored search results
+- Remove MTProxy sponsor dialogs while preserving Telegram PSA messages
+- Supports Play Store, direct-download, and beta packages
+
 ### Strava
 - Unlock subscription features
 - Disable subscription suggestions
