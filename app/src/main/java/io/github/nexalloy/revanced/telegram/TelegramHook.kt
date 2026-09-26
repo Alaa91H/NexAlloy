@@ -27,6 +27,15 @@ import io.github.nexalloy.revanced.telegram.privacy.HideVideoUploadStatus
 import io.github.nexalloy.revanced.telegram.privacy.HideVoiceRecordingStatus
 import io.github.nexalloy.revanced.telegram.privacy.HideVoiceUploadStatus
 import io.github.nexalloy.revanced.telegram.privacy.PerChatStealthAndExceptions
+import io.github.nexalloy.revanced.telegram.calls.ConfirmOutgoingCalls
+import io.github.nexalloy.revanced.telegram.download.DownloadBoostMaximum
+import io.github.nexalloy.revanced.telegram.download.DownloadBoostMedium
+import io.github.nexalloy.revanced.telegram.links.CleanSharedLinks
+import io.github.nexalloy.revanced.telegram.links.OpenExternalLinksInSystemBrowser
+import io.github.nexalloy.revanced.telegram.notifications.DisableNotificationMarkAsRead
+import io.github.nexalloy.revanced.telegram.notifications.ForceHideNotificationPreviews
+import io.github.nexalloy.revanced.telegram.notifications.QuickReplyWithoutReadReceipt
+import io.github.nexalloy.revanced.telegram.tools.ProfileDebugTools
 
 val TelegramPatches = arrayOf(
     RemoveSponsoredAds,
@@ -57,4 +66,17 @@ val TelegramPatches = arrayOf(
     HideStoryViews,
     HideScreenshotNotifications,
     HideAllChatActivity,
+
+    DownloadBoostMedium,
+    DownloadBoostMaximum,
+
+    CleanSharedLinks,
+    OpenExternalLinksInSystemBrowser,
+
+    DisableNotificationMarkAsRead,
+    QuickReplyWithoutReadReceipt,
+    ForceHideNotificationPreviews,
+
+    ConfirmOutgoingCalls,
+    ProfileDebugTools,
 )
