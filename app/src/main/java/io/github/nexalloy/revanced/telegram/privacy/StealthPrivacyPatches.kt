@@ -162,3 +162,42 @@ val HideAllChatActivity = patch(
         request.classNameEndsWith("\$TL_messages_setTyping")
     }
 }
+
+val HideOnlineStatus = patch(
+    name = "Hide online status",
+    description = "Keeps this Telegram session from announcing online presence by converting account.updateStatus online updates into offline updates. Other logged-in sessions can still expose online state.",
+    use = false,
+) {
+    val connectionsManager =
+        classLoader.findClassOrNull("org.telegram.tgnet.ConnectionsManager")
+            ?: return@patch
+
+    connectionsManager.declaredMethods
+        .filter {
+            it.name == "sendRequest" &&
+                it.parameterTypes.isNotEmpty() &&
+                it.returnType == Int::class.javaPrimitiveType
+        }
+        .forEach { method ->
+            method.hookMethod {
+                before { param ->
+                    val request = param.args.firstOrNull() ?: return@before
+                    if (!request.javaClass.name.endsWith("\$updateStatus")) {
+                        return@before
+                    }
+                    if (!request.javaClass.name.contains("TL_account")) {
+                        return@before
+                    }
+
+                    runCatching {
+                        request.javaClass.getField("offline").setBoolean(request, true)
+                    }.recoverCatching {
+                        request.javaClass.getDeclaredField("offline").apply {
+                            isAccessible = true
+                            setBoolean(request, true)
+                        }
+                    }
+                }
+            }
+        }
+}

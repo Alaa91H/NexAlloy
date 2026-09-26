@@ -114,6 +114,7 @@
 - Remove sponsored search results
 - Remove MTProxy sponsor dialogs while preserving Telegram PSA messages
 - Optional privacy controls:
+  - Hide online status on this device
   - Hide message read receipts
   - Hide listened/content-read receipts
   - Hide typing status

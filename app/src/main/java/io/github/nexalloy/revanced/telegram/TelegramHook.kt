@@ -6,6 +6,7 @@ import io.github.nexalloy.revanced.telegram.privacy.HideAllChatActivity
 import io.github.nexalloy.revanced.telegram.privacy.HideContentReadReceipts
 import io.github.nexalloy.revanced.telegram.privacy.HideEmojiInteractions
 import io.github.nexalloy.revanced.telegram.privacy.HideGroupCallSpeakingStatus
+import io.github.nexalloy.revanced.telegram.privacy.HideOnlineStatus
 import io.github.nexalloy.revanced.telegram.privacy.HideReadReceipts
 import io.github.nexalloy.revanced.telegram.privacy.HideRecordingAndUploadStatus
 import io.github.nexalloy.revanced.telegram.privacy.HideScreenshotNotifications
@@ -15,6 +16,7 @@ import io.github.nexalloy.revanced.telegram.privacy.HideTypingStatus
 val TelegramPatches = arrayOf(
     RemoveSponsoredAds,
     ForwardOptions,
+    HideOnlineStatus,
     HideReadReceipts,
     HideContentReadReceipts,
     HideTypingStatus,
