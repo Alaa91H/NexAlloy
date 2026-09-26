@@ -63,6 +63,9 @@
 - Allow screenshots and screen recording (optional)
 - Hide ads
 - Sanitize sharing links
+- Open external links directly without Reddit redirect wrappers
+- Open external links in the default browser (optional)
+- Remove repeat NSFW community warning (optional)
 
 ### Google Photos
 - Allow screenshots and screen recording (optional)
@@ -76,6 +79,9 @@
 - Allow screenshots and screen recording (optional)
 - Hide ads
 - Enable native media downloads
+- Sanitize shared Instagram URLs
+- Disable DM/story screenshot detection (optional)
+- Disable automatic story flipping (optional)
 
 ### Threads
 - Allow screenshots and screen recording (optional)
@@ -92,6 +98,8 @@
 ### X (Twitter)
 - Allow screenshots and screen recording (optional)
 - Hide promoted and RTB timeline entries
+- Remove session tracking token from shared links
+- Block redirecting to X Lite
 
 ### TikTok
 - Allow screenshots and screen recording (optional)
