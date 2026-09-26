@@ -134,6 +134,7 @@
   - Keep remotely deleted messages locally while allowing deletions initiated on this device
   - Keep the original local text when another participant edits a message while allowing edits initiated on this device
 - Download speed boost: Medium or Maximum
+- Force-disable video/GIF autoplay (optional global override; Telegram's native control remains available)
 - Clean common tracking parameters from outgoing links
 - Open ordinary external links in the system browser while preserving Telegram deep links
 - Notification privacy:
