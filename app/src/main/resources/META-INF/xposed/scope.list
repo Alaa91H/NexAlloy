@@ -8,6 +8,9 @@ com.instagram.barcelona
 com.facebook.orca
 com.facebook.katana
 com.twitter.android
+org.telegram.messenger
+org.telegram.messenger.web
+org.telegram.messenger.beta
 com.zhiliaoapp.musically
 com.ss.android.ugc.trill
 tv.twitch.android.app

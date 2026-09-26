@@ -22,6 +22,7 @@ import io.github.nexalloy.revanced.protonvpn.ProtonVpnPatches
 import io.github.nexalloy.revanced.spotify.SpotifyPatches
 import io.github.nexalloy.revanced.strava.StravaPatches
 import io.github.nexalloy.revanced.swiftbackup.SwiftBackupPatches
+import io.github.nexalloy.revanced.telegram.TelegramPatches
 import io.github.nexalloy.revanced.tiktok.TikTokPatches
 import io.github.nexalloy.revanced.twitch.TwitchPatches
 import io.github.nexalloy.revanced.twitter.TwitterPatches
@@ -43,6 +44,9 @@ val appPatchConfigurations = listOf(
     AppPatchInfo("Messenger", "com.facebook.orca", MessengerPatches),
     AppPatchInfo("Facebook", "com.facebook.katana", FacebookPatches),
     AppPatchInfo("X (Twitter)", "com.twitter.android", TwitterPatches),
+    AppPatchInfo("Telegram", "org.telegram.messenger", TelegramPatches),
+    AppPatchInfo("Telegram (Direct)", "org.telegram.messenger.web", TelegramPatches),
+    AppPatchInfo("Telegram Beta", "org.telegram.messenger.beta", TelegramPatches),
     AppPatchInfo("TikTok", "com.zhiliaoapp.musically", TikTokPatches),
     AppPatchInfo("TikTok (Trill)", "com.ss.android.ugc.trill", TikTokPatches),
     AppPatchInfo("Twitch", "tv.twitch.android.app", TwitchPatches),

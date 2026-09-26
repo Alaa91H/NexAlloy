@@ -107,6 +107,12 @@
 - Remove session tracking token from shared links
 - Block redirecting to X Lite
 
+### Telegram
+- Remove sponsored messages and channel/video ads
+- Remove sponsored search results
+- Remove MTProxy sponsor dialogs while preserving Telegram PSA messages
+- Supports Play Store, direct-download, and beta packages
+
 ### TikTok
 - Allow screenshots and screen recording (optional)
 - Hide feed ads
